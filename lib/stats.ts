@@ -1,2 +1,130 @@
-// Totals, rankings and groupings: revenue, nights sold, occupancy, average
-// stay and cancellation rate, by room, channel, country and month.
+// Totals, rankings and groupings over completed stays (SPEC sections 1 and 3).
+// Not implemented yet: each function returns a placeholder of the right shape.
+
+import {
+  EXAMPLE_CHANNELS,
+  EXAMPLE_COUNTRIES,
+  EXAMPLE_MONTHS,
+  EXAMPLE_ROOM_IDS,
+} from "@/lib/placeholders";
+import type {
+  Booking,
+  CancellationRate,
+  ChannelMix,
+  ChannelNet,
+  CommissionRates,
+  OrphanNight,
+  PeriodKpi,
+  Room,
+  RoomKpi,
+  RoomMonthOccupancy,
+} from "@/types";
+
+function examplePeriod(period: string): PeriodKpi {
+  return {
+    period,
+    nightsSold: 100,
+    nightsAvailable: 240,
+    occupancy: 100 / 240,
+    revenue: 10000,
+    adr: 100,
+    revpar: 10000 / 240,
+  };
+}
+
+/** The whole period, with `period: "year"`. */
+export function kpisForYear(bookings: Booking[], rooms: Room[]): PeriodKpi {
+  // TODO: implement (SPEC section 4, "Whole period")
+  return { ...examplePeriod("year"), nightsSold: 1200, nightsAvailable: 2920 };
+}
+
+/** 12 rows, oldest month first. */
+export function kpisByMonth(bookings: Booking[], rooms: Room[]): PeriodKpi[] {
+  // TODO: implement (SPEC section 4, "By month")
+  return EXAMPLE_MONTHS.map(examplePeriod);
+}
+
+/** 8 rows, one per room. */
+export function kpisByRoom(bookings: Booking[], rooms: Room[]): RoomKpi[] {
+  // TODO: implement (SPEC section 4, "By room")
+  return EXAMPLE_ROOM_IDS.map((roomId) => ({
+    roomId,
+    name: `Quarto ${roomId}`,
+    nightsSold: 150,
+    nightsAvailable: 365,
+    occupancy: 150 / 365,
+    revenue: 15000,
+  }));
+}
+
+/** 3 rows, highest revenue first. */
+export function channelMix(bookings: Booking[]): ChannelMix[] {
+  // TODO: implement (SPEC section 4, "Channel mix")
+  return EXAMPLE_CHANNELS.map((channel) => ({
+    channel,
+    bookings: 160,
+    bookingsShare: 1 / 3,
+    nightsSold: 400,
+    nightsShare: 1 / 3,
+    revenue: 40000,
+    revenueShare: 1 / 3,
+  }));
+}
+
+/** One row per channel or per country, highest rate first. */
+export function cancellationRates(
+  bookings: Booking[],
+  by: "channel" | "country",
+): CancellationRate[] {
+  // TODO: implement (SPEC section 4, "Cancellations")
+  const keys = by === "channel" ? EXAMPLE_CHANNELS : EXAMPLE_COUNTRIES;
+  return keys.map((key) => ({
+    key,
+    bookings: 60,
+    cancelled: 6,
+    rate: 0.1,
+  }));
+}
+
+/** 3 rows, highest net revenue first. */
+export function channelNet(
+  bookings: Booking[],
+  rates: CommissionRates,
+): ChannelNet[] {
+  // TODO: implement (SPEC section 4, "Net revenue by channel")
+  return EXAMPLE_CHANNELS.map((channel) => ({
+    channel,
+    nightsSold: 400,
+    revenue: 40000,
+    commissionRate: 0.1,
+    commission: 4000,
+    netRevenue: 36000,
+    netAdr: 90,
+  }));
+}
+
+/** 96 rows (8 rooms × 12 months), by room then month. */
+export function occupancyByRoomMonth(
+  bookings: Booking[],
+  rooms: Room[],
+): RoomMonthOccupancy[] {
+  // TODO: implement (SPEC section 4, "Occupancy by room and month")
+  return EXAMPLE_ROOM_IDS.flatMap((roomId) =>
+    EXAMPLE_MONTHS.map((month) => ({
+      roomId,
+      month,
+      nightsSold: 12,
+      nightsAvailable: 30,
+      occupancy: 0.4,
+    })),
+  );
+}
+
+/** Empty nights between two occupied nights in the same room, by room then date. */
+export function orphanNights(
+  bookings: Booking[],
+  rooms: Room[],
+): OrphanNight[] {
+  // TODO: implement (SPEC section 4, "Orphan nights")
+  return EXAMPLE_ROOM_IDS.map((roomId) => ({ roomId, date: "2024-07-15" }));
+}
