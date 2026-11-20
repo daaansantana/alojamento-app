@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "Suite Mar",
+    "type": "Suite",
+    "capacity": 4,
+    "price_per_night": 140
+  },
+  {
+    "id": 2,
+    "name": "Quarto Duplo Vista Mar 1",
+    "type": "Duplo",
+    "capacity": 2,
+    "price_per_night": 105
+  },
+  {
+    "id": 3,
+    "name": "Quarto Duplo Vista Mar 2",
+    "type": "Duplo",
+    "capacity": 2,
+    "price_per_night": 105
+  },
+  {
+    "id": 4,
+    "name": "Quarto Duplo Jardim",
+    "type": "Duplo",
+    "capacity": 2,
+    "price_per_night": 85
+  },
+  {
+    "id": 5,
+    "name": "Quarto Twin",
+    "type": "Twin",
+    "capacity": 2,
+    "price_per_night": 80
+  },
+  {
+    "id": 6,
+    "name": "Quarto Familiar",
+    "type": "Familiar",
+    "capacity": 4,
+    "price_per_night": 120
+  },
+  {
+    "id": 7,
+    "name": "Estúdio Terraço",
+    "type": "Estúdio",
+    "capacity": 3,
+    "price_per_night": 110
+  },
+  {
+    "id": 8,
+    "name": "Quarto Individual",
+    "type": "Individual",
+    "capacity": 1,
+    "price_per_night": 60
+  }
+]
