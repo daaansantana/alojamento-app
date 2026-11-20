@@ -1,0 +1,4 @@
+# Auto detect text files and perform LF normalization
+# eol=lf: mesmo com autocrlf=true no Windows, o checkout mantém LF —
+# o Biome (formatador do projeto) exige LF e rebenta com CRLF
+* text=auto eol=lf
