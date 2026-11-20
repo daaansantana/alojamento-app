@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "test": "tsx scripts/test-data.ts",
+    "verificar": "npm run lint && npm run test && tsc --noEmit && next build"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -29,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
