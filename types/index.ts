@@ -273,7 +273,11 @@ export interface PainelView {
   period: string;
   summary: { sentence: string; figures: PainelFigure[] };
   actions: PainelAction[];
-  contacts: { first: PainelContact[]; total: number };
+  contacts: {
+    first: PainelContact[]; // the first 3 winterReturners
+    all: PainelContact[]; // every winterReturner, same order
+    total: number;
+  };
   gain: { likely: string; range: string; assumption: string };
   months: { bars: PainelMonth[]; best: string; price: string };
 }

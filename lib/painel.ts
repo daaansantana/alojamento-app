@@ -143,6 +143,7 @@ export function buildPainel(input: PainelInput): PainelView {
   const optimistic = scenario(gains, "optimistic");
 
   const adrs = thermometer.map((m) => m.adr);
+  const contacts = input.winterReturners.map(contact);
 
   return {
     month: input.month,
@@ -161,7 +162,8 @@ export function buildPainel(input: PainelInput): PainelView {
     },
     actions: input.alerts.map((a) => action(a.id, a.when, input)),
     contacts: {
-      first: input.winterReturners.slice(0, 3).map(contact),
+      first: contacts.slice(0, 3),
+      all: contacts,
       total: input.winterReturners.length,
     },
     gain: {
