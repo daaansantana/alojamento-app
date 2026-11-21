@@ -9,7 +9,8 @@
     "lint": "biome check",
     "format": "biome format --write",
     "test": "tsx scripts/test-data.ts",
-    "verificar": "npm run lint && npm run test && tsc --noEmit && next build"
+    "verificar": "npm run lint && npm run test && tsc --noEmit && next build",
+    "gabaritos": "tsx scripts/golden.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
