@@ -211,6 +211,20 @@ export interface Alert {
   when: AlertWhen;
 }
 
+// Version 3
+
+export type GainScenarioId = "cautious" | "likely" | "optimistic";
+
+export interface GainScenario {
+  id: GainScenarioId;
+  conversionRate: number; // share of platform return stays that move to direct
+  directDiscount: number; // discount offered on the direct channel
+  winterReturnRate: number; // share of the winter returners who come back once
+  directGain: number; // simulateDirectBookings(…).yearlyGain
+  winterGain: number; // simulateWinterCampaign(…, { discount: 0 }).extraRevenue
+  total: number; // directGain + winterGain
+}
+
 // What the hooks return (SPEC section 6).
 
 export type DataStatus = "idle" | "loading" | "ready" | "error";
