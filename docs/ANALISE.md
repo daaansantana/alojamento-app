@@ -81,10 +81,10 @@ Leitura: a casa vendeu menos de metade das noites. 54% das noites do ano ficaram
 
 | Mês | Ocupação | Receita | Procura | Fonte |
 | --- | --- | --- | --- | --- |
-| nov 2025 | 38% | 9 550 € | menos procurado | SPEC §4, Por mês e Termómetro |
-| dez 2025 | 39% | 9 595 € | menos procurado | SPEC §4, Por mês e Termómetro |
-| jan 2026 | 32% | 7 715 € | menos procurado | SPEC §4, Por mês e Termómetro |
-| fev 2026 | 41% | 9 180 € | normal | SPEC §4, Por mês e Termómetro |
+| nov 2025 | 38% | 9550 € | menos procurado | SPEC §4, Por mês e Termómetro |
+| dez 2025 | 39% | 9595 € | menos procurado | SPEC §4, Por mês e Termómetro |
+| jan 2026 | 32% | 7715 € | menos procurado | SPEC §4, Por mês e Termómetro |
+| fev 2026 | 41% | 9180 € | normal | SPEC §4, Por mês e Termómetro |
 | mar 2026 | 44% | 10 615 € | normal | SPEC §4, Por mês e Termómetro |
 | abr 2026 | 50% | 12 390 € | normal | SPEC §4, Por mês e Termómetro |
 | mai 2026 | 50% | 12 105 € | normal | SPEC §4, Por mês e Termómetro |
@@ -92,7 +92,7 @@ Leitura: a casa vendeu menos de metade das noites. 54% das noites do ano ficaram
 | jul 2026 | 56% | 13 475 € | mais procurado | SPEC §4, Por mês e Termómetro |
 | ago 2026 | 65% | 15 990 € | mais procurado | SPEC §4, Por mês e Termómetro |
 | set 2026 | 48% | 11 555 € | normal | SPEC §4, Por mês e Termómetro |
-| out 2026 | 40% | 9 415 € | menos procurado | SPEC §4, Por mês e Termómetro |
+| out 2026 | 40% | 9415 € | menos procurado | SPEC §4, Por mês e Termómetro |
 
 «Mais procurado» é uma ocupação de 55% ou mais; «menos procurado», de 40% ou menos (SPEC §3, `THERMOMETER`).
 
@@ -117,9 +117,9 @@ Leitura: nenhum quarto passa dos 52%. Os dois duplos com vista mar têm o mesmo 
 
 | Canal | Reservas | Noites | Parte das noites | Receita | Comissão | Fica por noite | Fonte |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Booking | 220 | 632 | 47,0% | 62 595 € | 9 389,25 € | 84,19 € | SPEC §4, Channel mix e Net revenue |
+| Booking | 220 | 632 | 47,0% | 62 595 € | 9389,25 € | 84,19 € | SPEC §4, Channel mix e Net revenue |
 | Direto | 127 | 383 | 28,5% | 37 605 € | 0 € | 98,19 € | SPEC §4, Channel mix e Net revenue |
-| Airbnb | 134 | 329 | 24,5% | 33 785 € | 5 236,68 € | 86,77 € | SPEC §4, Channel mix e Net revenue |
+| Airbnb | 134 | 329 | 24,5% | 33 785 € | 5236,68 € | 86,77 € | SPEC §4, Channel mix e Net revenue |
 
 As comissões usam as taxas típicas: 15% no Booking e 15,5% no Airbnb (`lib/benchmarks.ts`).
 
@@ -159,8 +159,8 @@ Leitura: o canal não muda os cancelamentos; a diferença não é significativa 
 | Quem volta vale, por hóspede, no ano | 2,22 vezes mais | explorar, ponto 4 |
 | Regressos (estadas depois da primeira) | 128, 38 115 € | SPEC §4, Guests |
 | Regressos pelas plataformas | 95 de 128 (74%), 28 265 € | SPEC §4, Guests; explorar, ponto 8 |
-| Comissão desses regressos, com 15% | 4 239,75 € | SPEC §4, Direct-booking simulator |
-| Comissão desses regressos, do mínimo ao máximo | 3 317,55 € a 4 895,58 € | explorar, ponto 6 |
+| Comissão desses regressos, com 15% | 4239,75 € | SPEC §4, Direct-booking simulator |
+| Comissão desses regressos, do mínimo ao máximo | 3317,55 € a 4895,58 € | explorar, ponto 6 |
 | Primeira estada direta, regressos pelas plataformas | 27 de 37 | SPEC §5, achados exploratórios |
 | Estadas de inverno: quem volta / veio uma vez | 25% / 32% | explorar, ponto 5 |
 | Hóspedes que voltam e já vieram no inverno | 49 | SPEC §4, Winter returners |
@@ -187,7 +187,7 @@ Leitura: uma noite solta é difícil de vender a quem procura duas ou mais. Há 
 | Preços diferentes no mesmo quarto, por canal, mês ou nº de hóspedes | 1 (nunca muda) | explorar, ponto 2 |
 | Preço médio por noite, mês a mês | de 96,07 € a 104,12 € | SPEC §4, Termómetro |
 | Ocupação, mês a mês | de 32% a 65% | SPEC §4, Termómetro |
-| +10% em julho e agosto, com as mesmas noites | 2 946,50 € a mais | SPEC §4, Pricing simulator |
+| +10% em julho e agosto, com as mesmas noites | 2946,50 € a mais | SPEC §4, Pricing simulator |
 | Noites que podia perder em julho e agosto e ganhar o mesmo | até 27 | SPEC §4, Pricing simulator |
 
 Leitura: o preço é o mesmo o ano todo, em todos os canais. A ocupação duplica de janeiro para agosto e o preço não acompanha.
@@ -249,9 +249,9 @@ A app apoia quatro decisões. Cada uma tem o número que a sustenta.
 
 | Decisão | O que os dados mostram | Quanto vale | Fonte |
 | --- | --- | --- | --- |
-| **Quem contactar e quando.** No inverno, escrever a quem já veio nessa altura. | 600 noites de inverno por vender; 49 hóspedes que voltam já vieram de novembro a fevereiro | Se 1 em cada 5 voltar, com 10% de desconto: 10 estadas e 2 643,84 € | SPEC §4, Alert facts e Winter campaign |
-| **Que desconto dar na reserva direta.** Pedir a quem volta pelas plataformas que reserve diretamente, com um desconto abaixo da comissão. | 95 regressos pelas plataformas pagaram 4 239,75 € de comissão; quem volta não é leal a um canal (H1) | Se metade passar a reservar diretamente, com 5% de desconto: 1 413,25 € por ano. O desconto deixa de compensar quando chega aos 15%, a comissão | SPEC §4, Direct-booking simulator; HIPOTESES H1 |
-| **Que preço cobrar em cada época.** Subir um pouco o preço nos meses mais procurados. | Julho e agosto com 56% e 65% de ocupação, ao preço de sempre | +10% em julho e agosto, com as mesmas noites: 2 946,50 €. Pode vender até 27 noites a menos e ganhar o mesmo | SPEC §4, Pricing simulator |
+| **Quem contactar e quando.** No inverno, escrever a quem já veio nessa altura. | 600 noites de inverno por vender; 49 hóspedes que voltam já vieram de novembro a fevereiro | Se 1 em cada 5 voltar, com 10% de desconto: 10 estadas e 2643,84 € | SPEC §4, Alert facts e Winter campaign |
+| **Que desconto dar na reserva direta.** Pedir a quem volta pelas plataformas que reserve diretamente, com um desconto abaixo da comissão. | 95 regressos pelas plataformas pagaram 4239,75 € de comissão; quem volta não é leal a um canal (H1) | Se metade passar a reservar diretamente, com 5% de desconto: 1413,25 € por ano. O desconto deixa de compensar quando chega aos 15%, a comissão | SPEC §4, Direct-booking simulator; HIPOTESES H1 |
+| **Que preço cobrar em cada época.** Subir um pouco o preço nos meses mais procurados. | Julho e agosto com 56% e 65% de ocupação, ao preço de sempre | +10% em julho e agosto, com as mesmas noites: 2946,50 €. Pode vender até 27 noites a menos e ganhar o mesmo | SPEC §4, Pricing simulator |
 | **As noites soltas.** Vender as noites vazias entre duas estadas, por exemplo com um preço para uma noite. | 87 noites soltas, 46 de junho a setembro | Sem valor estimado: o SPEC não tem um simulador para elas | SPEC §4, Orphan nights |
 
 Leitura: as três primeiras decisões têm um valor em euros que vem dos dados da casa. A quarta fica como aviso, sem número, até haver uma regra para a estimar.
@@ -267,7 +267,7 @@ Leitura: as três primeiras decisões têm um valor em euros que vem dos dados d
 | Receita por quarto disponível (receita ÷ noites disponíveis) | 45,89 € | 72,4 € em Portugal em 2025: a casa fica nos 63% | SPEC §4; INE 2025, em `lib/benchmarks.ts`; explorar, ponto 8 |
 | Parte das comissões na receita | 10,9% (14 625,93 €) | — | SPEC §4, Net revenue |
 | Parte de quem volta no gasto | 51,9% | — | SPEC §4, Guest totals |
-| Valor de 1 ponto de ocupação | 2 910,98 € por ano (29,2 noites × 99,69 €) | — | explorar, ponto 7 |
+| Valor de 1 ponto de ocupação | 2910,98 € por ano (29,2 noites × 99,69 €) | — | explorar, ponto 7 |
 
 A comparação com o INE é só uma referência: é um valor de Portugal inteiro, e esta é uma casa com 8 quartos.
 
@@ -277,9 +277,9 @@ O KPI soma duas decisões da secção 5: os regressos pelas plataformas que pass
 
 | Cenário | Quem volta pelas plataformas e passa a direto | Desconto direto | Hóspedes de inverno que voltam | Direto | Inverno | Total por ano | Peso na receita do ano | Fonte |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Prudente | 1 em cada 5 (20%) | 5% | 1 em cada 10 (10%) | 565,30 € | 1 468,80 € | 2 034,10 € (cerca de 2030 €) | 1,5% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
-| Provável | metade (50%) | 5% | 1 em cada 5 (20%) | 1 413,25 € | 2 937,60 € | 4 350,85 € (cerca de 4350 €) | 3,2% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
-| Otimista | todos (100%) | 0% | 3 em cada 10 (30%) | 4 239,75 € | 4 406,40 € | 8 646,15 € (cerca de 8650 €) | 6,5% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
+| Prudente | 1 em cada 5 (20%) | 5% | 1 em cada 10 (10%) | 565,30 € | 1468,80 € | 2034,10 € (cerca de 2030 €) | 1,5% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
+| Provável | metade (50%) | 5% | 1 em cada 5 (20%) | 1413,25 € | 2937,60 € | 4350,85 € (cerca de 4350 €) | 3,2% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
+| Otimista | todos (100%) | 0% | 3 em cada 10 (30%) | 4239,75 € | 4406,40 € | 8646,15 € (cerca de 8650 €) | 6,5% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
 
 A comissão usada é a típica do Booking, 15% (`lib/benchmarks.ts`). As estadas de inverno valem 293,76 € cada, a média das estadas de inverno (SPEC §4, Winter campaign).
 
