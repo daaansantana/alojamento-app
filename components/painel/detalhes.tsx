@@ -21,7 +21,7 @@ export interface SourceRow {
 }
 
 // One colour, lighter to darker; at its darkest it still keeps dark text readable.
-const MAP_COLOUR = "#0369a1";
+const MAP_COLOUR = "var(--map)";
 const mapShade = (occupancy: number) =>
   `color-mix(in oklch, ${MAP_COLOUR} ${Math.round(8 + occupancy * 62)}%, white)`;
 

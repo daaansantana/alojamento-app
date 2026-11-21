@@ -170,6 +170,7 @@ export function Simular({
               min={range.min}
               max={range.max}
               step={range.step}
+              format={{ style: "unit", unit: "percent" }}
               onValueChange={(next) => {
                 if (typeof next === "number") onValueChange(question, next);
               }}

@@ -49,6 +49,11 @@
 }
 
 :root {
+  /* Demand levels and the occupancy map: each 3:1 or more on white. */
+  --level-hot: #c2410c;
+  --level-normal: #64748b;
+  --level-cold: #0369a1;
+  --map: #0369a1;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -126,6 +131,9 @@
   }
   html {
     @apply font-sans;
+  }
+  p {
+    text-wrap: pretty;
   }
 }
 

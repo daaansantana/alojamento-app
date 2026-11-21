@@ -92,9 +92,12 @@ export function Acoes({
                 <li key={action.id} className="flex gap-4 py-4">
                   <ActionIcon id={action.id} />
                   <div className="flex min-w-0 flex-col gap-1">
-                    <span className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
+                    <Badge
+                      variant="secondary"
+                      className="h-6 self-start px-2.5 text-sm"
+                    >
                       {action.when}
-                    </span>
+                    </Badge>
                     <h3 className="text-lg font-semibold text-balance">
                       {action.title}
                     </h3>

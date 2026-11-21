@@ -11,9 +11,9 @@ export interface MonthBar extends PainelMonth {
 
 // Each colour has a contrast of 3:1 or more against the white background.
 const TONE: Record<MonthLevel, string> = {
-  hot: "#c2410c",
-  normal: "#64748b",
-  cold: "#0369a1",
+  hot: "var(--level-hot)",
+  normal: "var(--level-normal)",
+  cold: "var(--level-cold)",
 };
 const LEGEND: { tone: MonthLevel; label: string }[] = [
   { tone: "hot", label: "mais procurado" },
