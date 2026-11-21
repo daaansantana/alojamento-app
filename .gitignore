@@ -45,3 +45,6 @@ NOTAS.md
 
 # capturas do npm run capturas
 .capturas/
+
+# relatórios da ferramenta de desenho
+.impeccable/
