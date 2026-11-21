@@ -167,7 +167,7 @@ Leitura: o canal não muda os cancelamentos; a diferença não é significativa 
 
 O mínimo da comissão usa o Booking a 15% e o Airbnb a 3% (taxa repartida); o máximo, o Booking a 18% (com Preferred Partner) e o Airbnb a 15,5% (`lib/benchmarks.ts`).
 
-Leitura: quem volta gasta o mesmo por estada, mas vale mais do dobro no ano porque volta. Traz metade da receita, e 3 em cada 4 regressos chegam por uma plataforma, que cobra comissão por um hóspede que já é da casa.
+Leitura: quem volta gasta o mesmo por estada, mas vale mais do dobro no ano porque volta. Traz metade do que os hóspedes gastam, e 3 em cada 4 regressos chegam por uma plataforma, que cobra comissão por um hóspede que já é da casa.
 
 ### As noites soltas
 
@@ -241,7 +241,7 @@ Estes achados vieram de explorar os dados depois de testar as hipóteses. Mostra
 
 ## 5. Conclusões
 
-**O problema numa frase:** a dona vive de quem volta, que traz metade da receita (51,9%), mas paga comissão em 3 de cada 4 regressos (95 de 128), cobra o mesmo preço o ano inteiro e deixa mais de metade das noites por vender (54%).
+**O problema numa frase:** a dona vive de quem volta, que traz metade do que os hóspedes gastam (51,9%), mas paga comissão em 3 de cada 4 regressos (95 de 128), cobra o mesmo preço o ano inteiro e deixa mais de metade das noites por vender (54%).
 
 Fontes: SPEC §4, Guest totals e Guests; explorar, pontos 2 e 8.
 

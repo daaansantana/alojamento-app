@@ -167,7 +167,7 @@ Reading: the channel does not change cancellations; the difference is not signif
 
 The minimum commission uses Booking at 15% and Airbnb at 3% (split fee); the maximum, Booking at 18% (with Preferred Partner) and Airbnb at 15.5% (`lib/benchmarks.ts`).
 
-Reading: returning guests spend the same per stay, but are worth more than twice as much in the year because they come back. They bring half the revenue, and 3 in 4 return stays arrive through a platform, which charges commission for a guest who already belongs to the house.
+Reading: returning guests spend the same per stay, but are worth more than twice as much in the year because they come back. They bring half of what guests spend, and 3 in 4 return stays arrive through a platform, which charges commission for a guest who already belongs to the house.
 
 ### Orphan nights
 
@@ -241,7 +241,7 @@ These findings came from exploring the data after testing the hypotheses. They a
 
 ## 5. Conclusions
 
-**The problem in one sentence:** the owner lives off returning guests, who bring half the revenue (51.9%), but she pays commission on 3 of every 4 return stays (95 of 128), charges the same price all year and leaves more than half of the nights unsold (54%).
+**The problem in one sentence:** the owner lives off returning guests, who bring half of what guests spend (51.9%), but she pays commission on 3 of every 4 return stays (95 of 128), charges the same price all year and leaves more than half of the nights unsold (54%).
 
 Sources: SPEC §4, Guest totals and Guests; explorar, points 2 and 8.
 
