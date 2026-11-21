@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect } from "react";
+import { Acoes } from "@/components/painel/acoes";
 import { Resumo } from "@/components/painel/resumo";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
@@ -64,6 +65,10 @@ export default function Home() {
   }
 
   const { summary, actions, contacts, gain, months } = view;
+  const monthOptions = months.bars.map((bar) => {
+    const month = Number(bar.period.split("-")[1]);
+    return { value: month, label: monthName(month) };
+  });
 
   return (
     <Shell>
@@ -76,56 +81,14 @@ export default function Home() {
 
       <Resumo summary={summary} period={view.period} />
 
-      <section aria-labelledby="fazer" className="flex flex-col gap-4">
-        <h2 id="fazer" className="text-xl font-semibold">
-          O que fazer
-        </h2>
-        <label className="flex flex-col gap-1 text-base">
-          Ver outro mês
-          <select
-            value={view.month}
-            onChange={(event) => setSelectedMonth(Number(event.target.value))}
-            className={`min-h-11 w-full rounded-lg border border-input bg-background px-3 text-base sm:w-64 ${FOCUS}`}
-          >
-            {months.bars.map((bar) => {
-              const month = Number(bar.period.split("-")[1]);
-              return (
-                <option key={bar.period} value={month}>
-                  {monthName(month)}
-                </option>
-              );
-            })}
-          </select>
-        </label>
-        {actions.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <ol className="flex flex-col gap-4">
-            {actions.map((action) => (
-              <li
-                key={action.id}
-                className="flex flex-col gap-2 rounded-lg border p-4"
-              >
-                <span className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                  {action.when}
-                </span>
-                <h3 className="text-lg font-semibold">{action.title}</h3>
-                <p>{action.text}</p>
-                {action.worth && (
-                  <p className="font-semibold">{action.worth}</p>
-                )}
-                <a
-                  href={action.target}
-                  onClick={() => openFolded(action.target)}
-                  className={`self-start ${LINK}`}
-                >
-                  {action.cta}
-                </a>
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
+      <Acoes
+        actions={actions}
+        month={view.month}
+        onMonthChange={setSelectedMonth}
+        monthOptions={monthOptions}
+        onAction={(action) => openFolded(action.target)}
+        empty={<EmptyState />}
+      />
 
       <section
         id="contactos"
