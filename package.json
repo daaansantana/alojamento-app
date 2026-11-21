@@ -9,11 +9,13 @@
     "lint": "biome check",
     "format": "biome format --write",
     "test": "tsx scripts/test-data.ts",
-    "verificar": "npm run lint && npm run test && tsc --noEmit && next build",
-    "gabaritos": "tsx scripts/golden.test.ts"
+    "verificar": "npm run lint && npm run test && npm run requisitos && tsc --noEmit && next build",
+    "gabaritos": "tsx scripts/golden.test.ts",
+    "requisitos": "tsx scripts/requisitos.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
+    "@solar-icons/react": "^2.7.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
     "lucide-react": "^1.77.0",

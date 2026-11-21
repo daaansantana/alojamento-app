@@ -6,6 +6,7 @@ import {
   channelTransitions,
   contactFirst,
   guestProfiles,
+  guestTotals,
   returningGuests,
   returnStays,
   winterReturners,
@@ -25,6 +26,7 @@ export function useReturningGuests(): ReturningData | null {
       winterReturners: winterReturners(bookings),
       transitions: channelTransitions(bookings),
       returnStays: returnStays(bookings),
+      totals: guestTotals(bookings),
     };
   }, [bookings, status]);
 }

@@ -13,11 +13,13 @@ import type {
   ChannelMix,
   ChannelNet,
   CommissionRates,
+  MonthTemperature,
   OrphanNight,
   PeriodKpi,
   Room,
   RoomKpi,
   RoomMonthOccupancy,
+  ThermometerThresholds,
 } from "@/types";
 
 function examplePeriod(period: string): PeriodKpi {
@@ -127,4 +129,21 @@ export function orphanNights(
 ): OrphanNight[] {
   // TODO: implement (SPEC section 4, "Orphan nights")
   return EXAMPLE_ROOM_IDS.map((roomId) => ({ roomId, date: "2024-07-15" }));
+}
+
+/** Occupancy thresholds the app uses for the price thermometer. */
+export const THERMOMETER: ThermometerThresholds = { hot: 0.55, cold: 0.4 };
+
+/** One row per row of byMonth, same order, with its level. */
+export function priceThermometer(
+  byMonth: PeriodKpi[],
+  thresholds: ThermometerThresholds,
+): MonthTemperature[] {
+  // TODO: implement (SPEC section 4, "Price thermometer")
+  return EXAMPLE_MONTHS.map((period, i) => ({
+    period,
+    occupancy: 0.45,
+    adr: 100,
+    level: i >= 5 && i <= 7 ? "hot" : i <= 1 ? "cold" : "normal",
+  }));
 }

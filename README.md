@@ -12,6 +12,7 @@ Precisa de Node 20 ou mais recente.
 npm install
 npm run dev        # http://localhost:3000
 npm run verificar  # lint, testes, tsc e build
+npm run requisitos  # requisitos do enunciado e regras do SPEC
 ```
 
 ## Estrutura

@@ -2,6 +2,8 @@
 
 This is the contract between the data functions in `lib/` and the interface. Every expected value was computed twice, independently: once in Python from `alojamento.xlsx`, once in TypeScript from the JSON files. `npm run gabaritos` runs `scripts/golden.test.ts`, which checks them all.
 
+Version 2 adds the guest totals, the price thermometer, the winter campaign and the action alerts (sections 2, 3, 4 and 6). Their expected values were also computed twice, independently, in Python and in TypeScript.
+
 If a check fails, fix the function, never the expected value. If you believe an expected value is wrong, stop and tell the team before changing anything.
 
 ## 1. Data rules
@@ -152,6 +154,64 @@ export interface PricingResult {
   newRevenue: number; // baseRevenue × (1 + priceChange), if the same nights sell
   nightsForSameRevenue: number; // nightsSold ÷ (1 + priceChange)
 }
+
+// Version 2
+
+export interface GuestTotals {
+  guests: number; // guests with at least one completed stay
+  stays: number; // completed stays
+  spent: number; // sum of the whole `total` of those stays, as in guestProfiles
+  returningGuests: number; // guests with 2 or more completed stays
+  returningStays: number;
+  returningSpent: number;
+}
+
+export type MonthLevel = "hot" | "normal" | "cold";
+
+export interface ThermometerThresholds {
+  hot: number; // occupancy at or above this is hot
+  cold: number; // occupancy at or below this is cold
+}
+
+export interface MonthTemperature {
+  period: string; // "2025-11"
+  occupancy: number;
+  adr: number;
+  level: MonthLevel;
+}
+
+export interface WinterCampaignScenario {
+  returnRate: number; // share of the winter returners who come back once, 0 to 1
+  discount: number; // campaign discount, 0 to 1
+}
+
+export interface WinterCampaignResult {
+  guests: number; // winterReturners(bookings).length
+  extraStays: number; // Math.round(guests × returnRate): whole stays
+  avgStayValue: number; // mean `total` of the completed stays that check in from 2025-11-01 to 2026-02-28
+  extraRevenue: number; // extraStays × avgStayValue × (1 − discount)
+  discountCost: number; // extraStays × avgStayValue × discount
+}
+
+export interface AlertFacts {
+  winterEmptyNights: number; // room-nights not sold from 2025-11-01 to 2026-02-28
+  winterReturners: number; // winterReturners(bookings).length
+  platformReturnStays: number; // return stays through Booking or Airbnb
+  commissionToday: number; // sum of the `total` of those stays × BOOKING_COMMISSION
+  julyOccupancy: number; // occupancy of 2026-07 in kpisByMonth
+  augustOccupancy: number; // occupancy of 2026-08 in kpisByMonth
+  summerGain: number; // simulatePricing with { priceChange: 0.1, months: ["2026-07", "2026-08"] }: newRevenue − baseRevenue
+  orphanNights: number; // orphanNights(bookings, rooms).length
+  summerOrphanNights: number; // the orphan nights from June to September
+}
+
+export type AlertId = "winter" | "commission" | "summer" | "orphans";
+export type AlertWhen = "now" | "prepare" | "always" | "later";
+
+export interface Alert {
+  id: AlertId;
+  when: AlertWhen;
+}
 ```
 
 ## 3. Functions
@@ -175,6 +235,11 @@ export interface PricingResult {
 | `lib/guests.ts` | `channelTransitions(bookings)` | `ChannelTransition[]`: for each return stay, the channel of the guest's first stay and of that stay |
 | `lib/guests.ts` | `winterReturners(bookings)` | returning guests with at least one night between 2025-11-01 and 2026-02-28, sorted like `contactFirst` |
 | `lib/simulator.ts` | `simulatePricing(bookings, scenario)` | `PricingResult` |
+| `lib/guests.ts` | `guestTotals(bookings)` | `GuestTotals` |
+| `lib/stats.ts` | `priceThermometer(byMonth, thresholds)` | `MonthTemperature[]`, one per row of `byMonth`, same order: `"hot"` when occupancy ≥ `thresholds.hot`, `"cold"` when occupancy ≤ `thresholds.cold`, else `"normal"` |
+| `lib/simulator.ts` | `simulateWinterCampaign(bookings, scenario)` | `WinterCampaignResult` |
+| `lib/alerts.ts` | `alertFacts(bookings, rooms)` | `AlertFacts` |
+| `lib/alerts.ts` | `actionAlerts(facts, month)` | `Alert[]` in the order for `month` (1 to 12); an alert whose number is 0 is left out |
 
 `lib/dates.ts` keeps the date helpers. No function in `lib/` fetches data or reads the store.
 
@@ -187,6 +252,21 @@ export interface PricingResult {
 | `HOTREC_SMALL_HOTEL_OTA_SHARE` | 0.321 (direct 0.595), hotels with fewer than 20 rooms, 2023 data | HOTREC European Hotel Distribution Study 2024 |
 | `INE_REVPAR_PT_2025` | 72.4 € | INE, Estatísticas do Turismo 2025 (reported by ECO, 10 Jul 2026) |
 | `DMA_PARITY_BAN_SINCE` | "2024-11-14" | European Commission, DMA factsheet on Booking.com, 28 Sep 2026 |
+
+`lib/stats.ts` also exports `THERMOMETER = { hot: 0.55, cold: 0.4 }`, the thresholds the app uses.
+
+`alertFacts` only combines version 1 functions (`kpisByMonth`, `returnStays`, `winterReturners`, `orphanNights`, `simulatePricing`) with `BOOKING_COMMISSION`. `simulateWinterCampaign` uses `winterReturners` and the mean `total` of the winter stays. Neither adds a data rule.
+
+**The order of the action alerts.** `actionAlerts` only reads the month and the facts. The month is a number from 1 to 12.
+
+| Months | Alerts in order, with `when` |
+| --- | --- |
+| 11, 12, 1, 2 | winter now · commission always · summer prepare · orphans later |
+| 3, 4, 5, 6 | summer prepare · commission always · orphans prepare · winter later |
+| 7, 8 | summer now · orphans now · commission always · winter prepare |
+| 9, 10 | winter prepare · commission always · orphans later · summer later |
+
+An alert is left out when its number is 0: winter → `winterReturners`, commission → `platformReturnStays`, summer → `summerGain`, orphans → `orphanNights`. The interface shows `when` as «Agora» (now), «A preparar» (prepare), «Sempre» (always) and «Mais tarde» (later), and writes each alert's sentence from the facts.
 
 ## 4. Expected values
 
@@ -351,6 +431,60 @@ Commissions add up to 14,625.93 €, 10.9% of the period's revenue.
 
 Read it as: with +10% in July and August, the house can sell up to 27 fewer nights and still earn the same; with −10% in winter, it needs 40 more nights to earn the same.
 
+
+### Guest totals
+
+`guestTotals`: 312 guests, 440 stays, €134,065. Returning: 102 guests, 230 stays, €69,535 (51.9% of the spend). The spend counts each stay's whole `total`, as `guestProfiles` does, so it adds up to €134,065 and not to the period's €133,985.
+
+### Price thermometer
+
+With `THERMOMETER` and the rows of `kpisByMonth`:
+
+| Month | Occupancy | Level |
+| --- | --- | --- |
+| 2025-11 | 92 / 240 = 0.3833 | cold |
+| 2025-12 | 97 / 248 = 0.3911 | cold |
+| 2026-01 | 79 / 248 = 0.3185 | cold |
+| 2026-02 | 92 / 224 = 0.4107 | normal |
+| 2026-03 | 108 / 248 = 0.4355 | normal |
+| 2026-04 | 119 / 240 = 0.4958 | normal |
+| 2026-05 | 123 / 248 = 0.4960 | normal |
+| 2026-06 | 122 / 240 = 0.5083 | normal |
+| 2026-07 | 139 / 248 = 0.5605 | hot |
+| 2026-08 | 160 / 248 = 0.6452 | hot |
+| 2026-09 | 115 / 240 = 0.4792 | normal |
+| 2026-10 | 98 / 248 = 0.3952 | cold |
+
+`adr` is the month's `adr`: it stays between €96.07 and €104.12 while occupancy goes from 0.32 to 0.65.
+
+### Winter campaign
+
+`avgStayValue`: 125 completed stays check in from 2025-11-01 to 2026-02-28, for €36,720, so €293.76. `guests` = 49, the winter returners.
+
+| returnRate | discount | extraStays | extraRevenue (€) | discountCost (€) |
+| --- | --- | --- | --- | --- |
+| 0.2 | 0.1 | 10 | 2,643.84 | 293.76 |
+| 0.1 | 0 | 5 | 1,468.80 | 0 |
+| 0.3 | 0.05 | 15 | 4,186.08 | 220.32 |
+
+`extraStays` counts whole stays: 49 × 0.2 = 9.8, so 10. Read it with the pricing simulator: +10% in July and August brings €2,946.50 with the same nights, about 10 times the €293.76 the campaign's discount costs.
+
+### Alert facts and action alerts
+
+| `alertFacts` field | Value |
+| --- | --- |
+| winterEmptyNights | 600 (960 room-nights, 360 sold) |
+| winterReturners | 49 |
+| platformReturnStays | 95 |
+| commissionToday | 4,239.75 (28,265 × 0.15) |
+| julyOccupancy | 139 / 248 |
+| augustOccupancy | 160 / 248 |
+| summerGain | 2,946.50 |
+| orphanNights | 87 |
+| summerOrphanNights | 46 |
+
+`actionAlerts` with these facts follows the order table in section 3; the tests use months 11, 4, 8 and 10. With `orphanNights: 0`, month 11 gives 3 alerts: winter, commission and summer.
+
 ## 5. Hypotheses: how each was computed, and the result
 
 These were registered in `HIPOTESES.md` before looking at the results. The criteria do not change.
@@ -402,6 +536,7 @@ interface DashboardData {
   orphanNights: OrphanNight[];
   cancellationsByChannel: CancellationRate[];
   cancellationsByCountry: CancellationRate[];
+  thermometer: MonthTemperature[]; // with THERMOMETER
 }
 
 interface ReturningData {
@@ -410,18 +545,24 @@ interface ReturningData {
   winterReturners: GuestProfile[];
   transitions: ChannelTransition[];
   returnStays: Booking[];
+  totals: GuestTotals;
 }
 
-useData(): { rooms: Room[]; bookings: Booking[]; status: DataStatus; error: string | null }
+useData(): { rooms: Room[]; bookings: Booking[]; status: DataStatus; error: string | null; retry: () => void }
 useDashboard(): DashboardData | null
 useReturningGuests(): ReturningData | null
 useDirectSimulation(scenario: DirectBookingScenario): DirectBookingResult | null
 usePricing(scenario: PricingScenario): PricingResult | null
 useWinterRoom(scenario: WinterRoomScenario): WinterRoomResult | null
+useAlerts(): { month: number; alerts: Alert[]; facts: AlertFacts } | null
+useWinterCampaign(scenario: WinterCampaignScenario): WinterCampaignResult | null
+useMonthSelection(): { selectedMonth: number | null; setSelectedMonth: (month: number | null) => void }
 ```
 
 - `useData` loads `quartos.json` and `reservas.json` once, through a Zustand store and `services/data.ts`.
 - The other hooks return `null` until `status` is `"ready"`. While they are `null`, the page shows the loading or error state from `components/states/`.
 - They compute with `useMemo` over the functions in `lib/`, so a screen shows real numbers as soon as its function is implemented, with no change to the components.
 - `DataStatus`, `DashboardData` and `ReturningData` go in `types/index.ts`.
+- `retry` loads the files again after an error, through the store's `load`. Pages pass it to the error state as `onRetry`, which shows a «Tentar de novo» button.
+- The store keeps `selectedMonth: number | null` and `setSelectedMonth(month)`. `null` means the month of the reference date, 11. `useAlerts` reads it and returns the month it used. Pages read and change it through `useMonthSelection`, never the store itself.
 - A type or a hook only changes through a PR approved by both Ana and Kamil.

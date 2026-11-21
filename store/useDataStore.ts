@@ -7,7 +7,10 @@ interface DataState {
   bookings: Booking[];
   status: DataStatus;
   error: string | null;
+  // month for the action alerts, 1 to 12; null = the reference date's month
+  selectedMonth: number | null;
   load: () => Promise<void>;
+  setSelectedMonth: (month: number | null) => void;
 }
 
 // Reads quartos.json and reservas.json once and shares them between pages.
@@ -18,6 +21,8 @@ export const useDataStore = create<DataState>()((set, get) => ({
   bookings: [],
   status: "idle",
   error: null,
+  selectedMonth: null,
+  setSelectedMonth: (month) => set({ selectedMonth: month }),
   load: async () => {
     const { status } = get();
     if (status === "loading" || status === "ready") return;
