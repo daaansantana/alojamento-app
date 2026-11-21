@@ -4,6 +4,8 @@ This is the contract between the data functions in `lib/` and the interface. Eve
 
 Version 2 adds the guest totals, the price thermometer, the winter campaign and the action alerts (sections 2, 3, 4 and 6). Their expected values were also computed twice, independently, in Python and in TypeScript.
 
+Version 3 adds the yearly gain scenarios, the KPI (sections 2, 3 and 4). They only combine two version 1 and 2 simulators; their expected values were computed in Python from `public/data/`.
+
 If a check fails, fix the function, never the expected value. If you believe an expected value is wrong, stop and tell the team before changing anything.
 
 ## 1. Data rules
@@ -212,6 +214,20 @@ export interface Alert {
   id: AlertId;
   when: AlertWhen;
 }
+
+// Version 3
+
+export type GainScenarioId = "cautious" | "likely" | "optimistic";
+
+export interface GainScenario {
+  id: GainScenarioId;
+  conversionRate: number; // share of platform return stays that move to direct
+  directDiscount: number; // discount offered on the direct channel
+  winterReturnRate: number; // share of the winter returners who come back once
+  directGain: number; // simulateDirectBookings(…).yearlyGain
+  winterGain: number; // simulateWinterCampaign(…, { discount: 0 }).extraRevenue
+  total: number; // directGain + winterGain
+}
 ```
 
 ## 3. Functions
@@ -240,6 +256,7 @@ export interface Alert {
 | `lib/simulator.ts` | `simulateWinterCampaign(bookings, scenario)` | `WinterCampaignResult` |
 | `lib/alerts.ts` | `alertFacts(bookings, rooms)` | `AlertFacts` |
 | `lib/alerts.ts` | `actionAlerts(facts, month)` | `Alert[]` in the order for `month` (1 to 12); an alert whose number is 0 is left out |
+| `lib/kpi.ts` | `gainScenarios(bookings)` | `GainScenario[]`, 3 rows: cautious, likely, optimistic (version 3) |
 
 `lib/dates.ts` keeps the date helpers. No function in `lib/` fetches data or reads the store.
 
@@ -265,6 +282,14 @@ export interface Alert {
 | 3, 4, 5, 6 | summer prepare · commission always · orphans prepare · winter later |
 | 7, 8 | summer now · orphans now · commission always · winter prepare |
 | 9, 10 | winter prepare · commission always · orphans later · summer later |
+
+**The yearly gain scenarios (version 3).** The KPI is how much the house can gain in a year. `lib/kpi.ts` exports `GAIN_SCENARIOS`, the three sets of assumptions, and `gainScenarios(bookings)`, which returns one `GainScenario` per set, in the order cautious, likely, optimistic:
+
+- `directGain` = `simulateDirectBookings(bookings, { commissionRate: BOOKING_COMMISSION, conversionRate, directDiscount }).yearlyGain`
+- `winterGain` = `simulateWinterCampaign(bookings, { returnRate: winterReturnRate, discount: 0 }).extraRevenue`: the extra winter stays at the normal price
+- `total` = `directGain + winterGain`
+
+It adds no data rule.
 
 An alert is left out when its number is 0: winter → `winterReturners`, commission → `platformReturnStays`, summer → `summerGain`, orphans → `orphanNights`. The interface shows `when` as «Agora» (now), «A preparar» (prepare), «Sempre» (always) and «Mais tarde» (later), and writes each alert's sentence from the facts.
 
@@ -484,6 +509,18 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | summerOrphanNights | 46 |
 
 `actionAlerts` with these facts follows the order table in section 3; the tests use months 11, 4, 8 and 10. With `orphanNights: 0`, month 11 gives 3 alerts: winter, commission and summer.
+
+### Yearly gain scenarios
+
+`gainScenarios`, with `BOOKING_COMMISSION` = 0.15 (version 3):
+
+| id | conversionRate | directDiscount | winterReturnRate | directGain (€) | winterGain (€) | total (€) |
+| --- | --- | --- | --- | --- | --- | --- |
+| cautious | 0.2 | 0.05 | 0.1 | 565.30 | 1,468.80 | 2,034.10 |
+| likely | 0.5 | 0.05 | 0.2 | 1,413.25 | 2,937.60 | 4,350.85 |
+| optimistic | 1 | 0 | 0.3 | 4,239.75 | 4,406.40 | 8,646.15 |
+
+`directGain` is 28,265 × `conversionRate` × (0.15 − `directDiscount`). `winterGain` is `Math.round(49 × winterReturnRate)` stays of €293.76: 5, 10 and 15 stays.
 
 ## 5. Hypotheses: how each was computed, and the result
 
