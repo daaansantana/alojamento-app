@@ -1,6 +1,7 @@
 // "What if" scenarios (SPEC sections 3 and 4).
 // Not implemented yet: each function returns a placeholder of the right shape.
 
+import { returnStays } from "@/lib/guests";
 import type {
   Booking,
   DirectBookingResult,
@@ -19,13 +20,18 @@ export function simulateDirectBookings(
   bookings: Booking[],
   scenario: DirectBookingScenario,
 ): DirectBookingResult {
-  // TODO: implement (SPEC section 4, "Direct-booking simulator")
+  const { commissionRate, conversionRate, directDiscount } = scenario;
+  const platformStays = returnStays(bookings).filter(
+    (stay) => stay.channel === "Booking" || stay.channel === "Airbnb",
+  );
+  const baseRevenue = platformStays.reduce((sum, stay) => sum + stay.total, 0);
   return {
-    baseStays: 90,
-    baseRevenue: 27000,
-    commissionToday: 4000,
-    yearlyGain: 1000,
-    breakEvenDiscount: 0.12,
+    baseStays: platformStays.length,
+    baseRevenue,
+    commissionToday: baseRevenue * commissionRate,
+    yearlyGain:
+      baseRevenue * conversionRate * (commissionRate - directDiscount),
+    breakEvenDiscount: commissionRate,
   };
 }
 
