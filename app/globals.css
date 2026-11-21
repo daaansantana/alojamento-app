@@ -129,9 +129,12 @@
   }
 }
 
-/* Outside the layers on purpose: it beats the `outline-none` utilities that
-   components/ui puts on buttons, toggles, selects and triggers. */
+/* Keyboard focus, the same on every control. Important on purpose: it beats
+   the faint `outline-ring/50` and `outline-none` that components/ui uses on
+   buttons, toggles, selects and triggers, without editing those files. */
 :focus-visible {
-  outline: 2px solid var(--foreground);
-  outline-offset: 2px;
+  /* biome-ignore lint/complexity/noImportantStyles: must beat components/ui */
+  outline: 2px solid var(--foreground) !important;
+  /* biome-ignore lint/complexity/noImportantStyles: must beat components/ui */
+  outline-offset: 2px !important;
 }

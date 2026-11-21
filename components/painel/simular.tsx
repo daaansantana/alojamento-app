@@ -84,7 +84,7 @@ export function Simular({
           <Amount>{eur(pricing.newRevenue - pricing.baseRevenue)}</Amount>.
         </p>
         {nights > 0 && (
-          <p className="text-muted-foreground">
+          <p>
             Também pode vender até {int(nights)} noites a menos e ganhar o mesmo
             que hoje.
           </p>

@@ -73,7 +73,7 @@ function Shell({ children }: { children: ReactNode }) {
 }
 
 export default function Home() {
-  const { status, error, retry } = useData();
+  const { status, retry } = useData();
   const view = usePainel();
   const dashboard = useDashboard();
   const { setSelectedMonth } = useMonthSelection();
@@ -107,7 +107,10 @@ export default function Home() {
   if (status === "error") {
     return (
       <Shell>
-        <ErrorState message={error ?? undefined} onRetry={retry} />
+        <ErrorState
+          message="Não foi possível carregar as reservas. Verifique a ligação à internet e tente de novo."
+          onRetry={retry}
+        />
       </Shell>
     );
   }
@@ -164,7 +167,7 @@ export default function Home() {
             );
           openFolded(action.target);
         }}
-        empty={<EmptyState />}
+        empty={<EmptyState message="Neste mês não há nenhuma sugestão." />}
       />
 
       <Contactos

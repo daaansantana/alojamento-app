@@ -4,7 +4,7 @@ export function EmptyState({
   message?: string;
 }) {
   return (
-    <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+    <div className="rounded-lg border border-dashed p-6 text-center text-base text-muted-foreground">
       {message}
     </div>
   );

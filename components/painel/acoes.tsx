@@ -132,7 +132,7 @@ export function Acoes({
         >
           <SelectTrigger
             aria-labelledby="mes-label"
-            className="h-11 w-full px-3 text-base sm:w-56"
+            className="h-11 w-full px-3 text-base data-[size=default]:h-11 sm:w-56"
           >
             <SelectValue />
           </SelectTrigger>
