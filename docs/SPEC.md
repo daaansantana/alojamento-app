@@ -4,7 +4,7 @@ This is the contract between the data functions in `lib/` and the interface. Eve
 
 Version 2 adds the guest totals, the price thermometer, the winter campaign and the action alerts (sections 2, 3, 4 and 6). Their expected values were also computed twice, independently, in Python and in TypeScript.
 
-Version 3 adds the yearly gain scenarios, the KPI (sections 2, 3 and 4). They only combine two version 1 and 2 simulators; their expected values were computed in Python from `public/data/`.
+Version 3 adds the yearly gain scenarios, the KPI, and the page view, every text of the single page (sections 2, 3, 4 and 6). The gain scenarios only combine two simulators; their expected values were computed in Python from `public/data/`. The page view only writes text from the other results; its expected texts are in section 4.
 
 If a check fails, fix the function, never the expected value. If you believe an expected value is wrong, stop and tell the team before changing anything.
 
@@ -228,6 +228,59 @@ export interface GainScenario {
   winterGain: number; // simulateWinterCampaign(…, { discount: 0 }).extraRevenue
   total: number; // directGain + winterGain
 }
+
+export interface PainelInput {
+  year: PeriodKpi;
+  byMonth: PeriodKpi[];
+  thermometer: MonthTemperature[];
+  totals: GuestTotals;
+  facts: AlertFacts;
+  alerts: Alert[]; // already in the order for `month`
+  month: number; // 1 to 12
+  winterReturners: GuestProfile[];
+  campaign: WinterCampaignResult; // with PAINEL_WINTER_CAMPAIGN
+  direct: DirectBookingResult; // with PAINEL_DIRECT
+  gains: GainScenario[]; // gainScenarios(bookings)
+}
+
+export interface PainelFigure {
+  value: string; // "133 985 €"
+  label: string; // "recebeu no ano"
+}
+
+export interface PainelAction {
+  id: AlertId;
+  when: string; // "Agora", "A preparar", "Sempre" or "Mais tarde"
+  title: string;
+  text: string;
+  worth: string | null; // what it is worth, when there is a number for it
+  cta: string;
+  target: string; // "#contactos", "#simular" or "#detalhes"
+}
+
+export interface PainelContact {
+  name: string;
+  detail: string; // "4 estadas · 1810 € · última pelo Airbnb"
+  mailto: string;
+}
+
+export interface PainelMonth {
+  period: string; // "2026-08"
+  label: string; // "ago"
+  percent: string; // "65%"
+  level: string; // "mais procurado", "normal" or "menos procurado"
+}
+
+export interface PainelView {
+  month: number;
+  monthName: string; // "novembro"
+  period: string;
+  summary: { sentence: string; figures: PainelFigure[] };
+  actions: PainelAction[];
+  contacts: { first: PainelContact[]; total: number };
+  gain: { likely: string; range: string; assumption: string };
+  months: { bars: PainelMonth[]; best: string; price: string };
+}
 ```
 
 ## 3. Functions
@@ -257,6 +310,9 @@ export interface GainScenario {
 | `lib/alerts.ts` | `alertFacts(bookings, rooms)` | `AlertFacts` |
 | `lib/alerts.ts` | `actionAlerts(facts, month)` | `Alert[]` in the order for `month` (1 to 12); an alert whose number is 0 is left out |
 | `lib/kpi.ts` | `gainScenarios(bookings)` | `GainScenario[]`, 3 rows: cautious, likely, optimistic (version 3) |
+| `lib/painel.ts` | `buildPainel(input)` | `PainelView`: every text of the single page (version 3) |
+| `lib/format.ts` | `eur`, `int`, `pct`, `monthName`, `monthShort`, `about` | display text in pt-PT (version 3) |
+| `lib/email.ts` | `invitationMailto(guest, kind)` | a `mailto:` link with the subject and body filled in, `kind` = `"winter"` or `"direct"` (version 3) |
 
 `lib/dates.ts` keeps the date helpers. No function in `lib/` fetches data or reads the store.
 
@@ -290,6 +346,8 @@ export interface GainScenario {
 - `total` = `directGain + winterGain`
 
 It adds no data rule.
+
+**The page view (version 3).** `buildPainel` is pure and writes every text of the page from `PainelInput`. Its input comes from the hooks: `campaign` is `simulateWinterCampaign` with `PAINEL_WINTER_CAMPAIGN` = `{ returnRate: 0.2, discount: 0.1 }`, `direct` is `simulateDirectBookings` with `PAINEL_DIRECT` = `{ commissionRate: BOOKING_COMMISSION, conversionRate: 0.5, directDiscount: 0.05 }`, `gains` is `gainScenarios`. Numbers are formatted with `lib/format.ts`: the spaces inside numbers and before the € are no-break spaces (U+00A0), so the € never ends up alone on a line. The best month is the one with the highest occupancy. `actions` follow the order of `alerts`. `contacts.first` are the first 3 `winterReturners`; their link is `invitationMailto(guest, "winter")`, in the guest's first name and with an opt-out line.
 
 An alert is left out when its number is 0: winter → `winterReturners`, commission → `platformReturnStays`, summer → `summerGain`, orphans → `orphanNights`. The interface shows `when` as «Agora» (now), «A preparar» (prepare), «Sempre» (always) and «Mais tarde» (later), and writes each alert's sentence from the facts.
 
@@ -521,6 +579,48 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | optimistic | 1 | 0 | 0.3 | 4,239.75 | 4,406.40 | 8,646.15 |
 
 `directGain` is 28,265 × `conversionRate` × (0.15 − `directDiscount`). `winterGain` is `Math.round(49 × winterReturnRate)` stays of €293.76: 5, 10 and 15 stays.
+
+### Page view
+
+`buildPainel` with the values of this section, for month 11. Every space shown inside a number or before € is U+00A0.
+
+| Field | Text |
+| --- | --- |
+| `monthName` | novembro |
+| `period` | De novembro de 2025 a outubro de 2026 |
+| `summary.sentence` | Este ano a casa rendeu 133 985 €. Agosto foi o melhor mês: 65% das noites com hóspedes. |
+| `summary.figures` | «133 985 €» recebeu no ano · «46%» das noites com hóspedes · «102» hóspedes voltaram e trouxeram 52% da receita (52% = `returningSpent ÷ spent`) |
+| `gain.likely` | Cerca de 4350 € por ano |
+| `gain.range` | Entre cerca de 2030 € e 8650 €, conforme quantos hóspedes aceitarem. |
+| `gain.assumption` | No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez. |
+| `months.best` | Agosto foi o melhor mês: 65% das noites com hóspedes. |
+| `months.price` | O preço por noite quase não mudou: entre 96 € e 104 €. |
+
+`gain` rounds each total to the nearest ten (`about`).
+
+The actions, with `when` as «Agora», «A preparar», «Sempre» or «Mais tarde»:
+
+| id | title | text | worth | cta → target |
+| --- | --- | --- | --- | --- |
+| winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Ver os 49 hóspedes → `#contactos` |
+| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Simular o desconto → `#simular` |
+| summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Simular o verão → `#simular` |
+| orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | Ver o mapa → `#detalhes` |
+
+Order for month 11: winter Agora · commission Sempre · summer A preparar · orphans Mais tarde. For month 8: summer Agora · orphans Agora · commission Sempre · winter A preparar.
+
+Each contact's `detail` is «4 estadas · 1810 € · última pelo Airbnb», or «· última direta» when the last channel is Direto. `contacts.total` = `winterReturners.length`.
+
+`months.bars` has 12 rows `{ period, label, percent, level }`: `label` is the short month without a dot («ago»), `percent` the occupancy («65%») and `level` «mais procurado» (hot), «normal» or «menos procurado» (cold).
+
+The invitation emails (`lib/email.ts`), both in the guest's first name and both ending with «Se preferir não receber mais mensagens nossas, responda com «Não» e retiramos o seu contacto.»:
+
+| kind | Subject | Discount in the body |
+| --- | --- | --- |
+| winter | Volte este inverno, com 10% de desconto | 10% if they book directly |
+| direct | Da próxima vez, reserve diretamente connosco | 5% |
+
+`npm test` checks these texts letter by letter (`scripts/test-format.ts`, `scripts/test-email.ts`, `scripts/test-painel.ts`).
 
 ## 5. Hypotheses: how each was computed, and the result
 

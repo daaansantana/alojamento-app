@@ -225,6 +225,59 @@ export interface GainScenario {
   total: number; // directGain + winterGain
 }
 
+export interface PainelInput {
+  year: PeriodKpi;
+  byMonth: PeriodKpi[];
+  thermometer: MonthTemperature[];
+  totals: GuestTotals;
+  facts: AlertFacts;
+  alerts: Alert[]; // already in the order for `month`
+  month: number; // 1 to 12
+  winterReturners: GuestProfile[];
+  campaign: WinterCampaignResult; // with PAINEL_WINTER_CAMPAIGN
+  direct: DirectBookingResult; // with PAINEL_DIRECT
+  gains: GainScenario[]; // gainScenarios(bookings)
+}
+
+export interface PainelFigure {
+  value: string; // "133 985 €"
+  label: string; // "recebeu no ano"
+}
+
+export interface PainelAction {
+  id: AlertId;
+  when: string; // "Agora", "A preparar", "Sempre" or "Mais tarde"
+  title: string;
+  text: string;
+  worth: string | null; // what it is worth, when there is a number for it
+  cta: string;
+  target: string; // "#contactos", "#simular" or "#detalhes"
+}
+
+export interface PainelContact {
+  name: string;
+  detail: string; // "4 estadas · 1810 € · última pelo Airbnb"
+  mailto: string;
+}
+
+export interface PainelMonth {
+  period: string; // "2026-08"
+  label: string; // "ago"
+  percent: string; // "65%"
+  level: string; // "mais procurado", "normal" or "menos procurado"
+}
+
+export interface PainelView {
+  month: number;
+  monthName: string; // "novembro"
+  period: string;
+  summary: { sentence: string; figures: PainelFigure[] };
+  actions: PainelAction[];
+  contacts: { first: PainelContact[]; total: number };
+  gain: { likely: string; range: string; assumption: string };
+  months: { bars: PainelMonth[]; best: string; price: string };
+}
+
 // What the hooks return (SPEC section 6).
 
 export type DataStatus = "idle" | "loading" | "ready" | "error";
