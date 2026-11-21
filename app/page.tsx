@@ -5,7 +5,6 @@ import { type ReactNode, useEffect } from "react";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
 import { LoadingState } from "@/components/states/loading-state";
-import { Button } from "@/components/ui/button";
 import { useData } from "@/hooks/useData";
 import { useMonthSelection } from "@/hooks/useMonthSelection";
 import { usePainel } from "@/hooks/usePainel";
@@ -51,10 +50,7 @@ export default function Home() {
   if (status === "error") {
     return (
       <Shell>
-        <ErrorState message={error ?? undefined} />
-        <Button onClick={retry} className="h-11 self-start px-4 text-base">
-          Tentar de novo
-        </Button>
+        <ErrorState message={error ?? undefined} onRetry={retry} />
       </Shell>
     );
   }
