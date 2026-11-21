@@ -62,8 +62,15 @@ export function returningGuests(profiles: GuestProfile[]): GuestProfile[] {
 
 /** Returning guests whose last channel is a platform, in contact order. */
 export function contactFirst(profiles: GuestProfile[]): GuestProfile[] {
-  // TODO: implement (SPEC section 3 for the order, section 4 for the values)
-  return exampleProfiles(80, 2);
+  return returningGuests(profiles)
+    .filter((p) => p.lastChannel === "Booking" || p.lastChannel === "Airbnb")
+    .sort(
+      (a, b) =>
+        b.spent - a.spent ||
+        b.stays - a.stays ||
+        a.recencyDays - b.recencyDays ||
+        (a.email < b.email ? -1 : a.email > b.email ? 1 : 0),
+    );
 }
 
 /** Every completed stay after each guest's first. */
