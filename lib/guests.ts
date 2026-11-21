@@ -1,6 +1,5 @@
 // Guests: a guest is a guest_email; stays ordered by check_in, then id
 // (SPEC sections 1 and 3).
-// Not implemented yet: each function returns a placeholder of the right shape.
 
 import {
   compareStays,
@@ -10,11 +9,6 @@ import {
   stayNights,
   WINTER,
 } from "@/lib/dates";
-import {
-  EXAMPLE_CHANNELS,
-  exampleBookings,
-  exampleProfiles,
-} from "@/lib/placeholders";
 import type {
   Booking,
   ChannelTransition,
@@ -142,13 +136,14 @@ export function winterReturners(bookings: Booking[]): GuestProfile[] {
 
 /** Guests, stays and spend, overall and for returning guests. */
 export function guestTotals(bookings: Booking[]): GuestTotals {
-  // TODO: implement (SPEC section 4, "Guest totals")
+  const profiles = guestProfiles(bookings);
+  const returning = returningGuests(profiles);
   return {
-    guests: 300,
-    stays: 420,
-    spent: 120000,
-    returningGuests: 100,
-    returningStays: 220,
-    returningSpent: 60000,
+    guests: profiles.length,
+    stays: profiles.reduce((sum, p) => sum + p.stays, 0),
+    spent: profiles.reduce((sum, p) => sum + p.spent, 0),
+    returningGuests: returning.length,
+    returningStays: returning.reduce((sum, p) => sum + p.stays, 0),
+    returningSpent: returning.reduce((sum, p) => sum + p.spent, 0),
   };
 }
