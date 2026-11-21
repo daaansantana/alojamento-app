@@ -1,69 +1,207 @@
-import Image from "next/image";
+"use client";
+
+import type { ReactNode } from "react";
+
+import { EmptyState } from "@/components/states/empty-state";
+import { ErrorState } from "@/components/states/error-state";
+import { LoadingState } from "@/components/states/loading-state";
+import { Button } from "@/components/ui/button";
+import { useData } from "@/hooks/useData";
+import { useMonthSelection } from "@/hooks/useMonthSelection";
+import { usePainel } from "@/hooks/usePainel";
+import { int, monthName } from "@/lib/format";
+
+const FOCUS =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
+const LINK = `inline-flex min-h-11 items-center font-medium underline underline-offset-4 ${FOCUS}`;
+
+function Shell({ children }: { children: ReactNode }) {
+  return (
+    <main className="mx-auto flex w-full max-w-2xl flex-col gap-10 px-4 py-8 text-base leading-relaxed sm:py-12">
+      {children}
+    </main>
+  );
+}
 
 export default function Home() {
+  const { status, error, retry } = useData();
+  const view = usePainel();
+  const { setSelectedMonth } = useMonthSelection();
+
+  if (status === "error") {
+    return (
+      <Shell>
+        <ErrorState message={error ?? undefined} />
+        <Button onClick={retry} className="h-11 self-start px-4 text-base">
+          Tentar de novo
+        </Button>
+      </Shell>
+    );
+  }
+
+  if (!view) {
+    return (
+      <Shell>
+        <LoadingState />
+      </Shell>
+    );
+  }
+
+  const { summary, actions, contacts, gain, months } = view;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Shell>
+      <header className="flex flex-col gap-1">
+        <h1 className="text-3xl font-semibold tracking-tight">
+          A sua casa este ano
+        </h1>
+        <p className="text-muted-foreground">{view.period}</p>
+      </header>
+
+      <section aria-labelledby="resumo" className="flex flex-col gap-4">
+        <h2 id="resumo" className="text-xl font-semibold">
+          Como correu o ano
+        </h2>
+        <p className="text-lg">{summary.sentence}</p>
+        <dl className="grid gap-4 sm:grid-cols-3">
+          {summary.figures.map((figure) => (
+            <div key={figure.label} className="flex flex-col">
+              <dt className="order-2 text-base text-muted-foreground">
+                {figure.label}
+              </dt>
+              <dd className="order-1 text-2xl font-semibold">{figure.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section aria-labelledby="fazer" className="flex flex-col gap-4">
+        <h2 id="fazer" className="text-xl font-semibold">
+          O que fazer
+        </h2>
+        <label className="flex flex-col gap-1 text-base">
+          Ver outro mês
+          <select
+            value={view.month}
+            onChange={(event) => setSelectedMonth(Number(event.target.value))}
+            className={`min-h-11 w-full rounded-lg border border-input bg-background px-3 text-base sm:w-64 ${FOCUS}`}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            {months.bars.map((bar) => {
+              const month = Number(bar.period.split("-")[1]);
+              return (
+                <option key={bar.period} value={month}>
+                  {monthName(month)}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+        {actions.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <ol className="flex flex-col gap-4">
+            {actions.map((action) => (
+              <li
+                key={action.id}
+                className="flex flex-col gap-2 rounded-lg border p-4"
+              >
+                <span className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                  {action.when}
+                </span>
+                <h3 className="text-lg font-semibold">{action.title}</h3>
+                <p>{action.text}</p>
+                {action.worth && (
+                  <p className="font-semibold">{action.worth}</p>
+                )}
+                <a href={action.target} className={`self-start ${LINK}`}>
+                  {action.cta}
+                </a>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
+
+      <section
+        id="contactos"
+        aria-labelledby="contactos-titulo"
+        className="flex flex-col gap-4"
+      >
+        <h2 id="contactos-titulo" className="text-xl font-semibold">
+          Comece por estes três
+        </h2>
+        <ul className="flex flex-col divide-y">
+          {contacts.first.map((guest) => (
+            <li
+              key={guest.mailto}
+              className="flex flex-wrap items-center justify-between gap-x-4 py-3"
+            >
+              <span className="flex flex-col">
+                <span className="font-medium">{guest.name}</span>
+                <span className="text-muted-foreground">{guest.detail}</span>
+              </span>
+              <a href={guest.mailto} className={LINK}>
+                Enviar email
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p className="text-muted-foreground">
+          Ao todo, {int(contacts.total)} hóspedes.
+        </p>
+      </section>
+
+      <section aria-labelledby="ganho" className="flex flex-col gap-2">
+        <h2 id="ganho" className="text-xl font-semibold">
+          Quanto pode ganhar por ano
+        </h2>
+        <p className="text-2xl font-semibold">{gain.likely}</p>
+        <p>{gain.range}</p>
+        <p className="text-muted-foreground">{gain.assumption}</p>
+      </section>
+
+      <section aria-labelledby="meses" className="flex flex-col gap-4">
+        <h2 id="meses" className="text-xl font-semibold">
+          O ano, mês a mês
+        </h2>
+        <ul className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+          {months.bars.map((bar) => (
+            <li
+              key={bar.period}
+              className="flex justify-between gap-4 border-b py-2"
+            >
+              <span>
+                {bar.label} <span className="font-semibold">{bar.percent}</span>
+              </span>
+              <span className="text-muted-foreground">{bar.level}</span>
+            </li>
+          ))}
+        </ul>
+        <p>{months.best}</p>
+        <p>{months.price}</p>
+      </section>
+
+      <section aria-labelledby="simular-titulo">
+        <details id="simular" className="rounded-lg border p-4">
+          <summary className={`min-h-11 cursor-pointer ${FOCUS}`}>
+            <h2 id="simular-titulo" className="inline text-xl font-semibold">
+              E se…?
+            </h2>
+          </summary>
+          <p className="pt-2">Os gráficos entram aqui.</p>
+        </details>
+      </section>
+
+      <section aria-labelledby="detalhes-titulo">
+        <details id="detalhes" className="rounded-lg border p-4">
+          <summary className={`min-h-11 cursor-pointer ${FOCUS}`}>
+            <h2 id="detalhes-titulo" className="inline text-xl font-semibold">
+              Ver os números
+            </h2>
+          </summary>
+          <p className="pt-2">Os gráficos entram aqui.</p>
+        </details>
+      </section>
+    </Shell>
   );
 }
