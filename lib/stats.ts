@@ -1,5 +1,4 @@
 // Totals, rankings and groupings over completed stays (SPEC sections 1 and 3).
-// Not implemented yet: each function returns a placeholder of the right shape.
 
 import {
   addDays,
@@ -10,12 +9,6 @@ import {
   PERIOD,
   soldNights,
 } from "@/lib/dates";
-import {
-  EXAMPLE_CHANNELS,
-  EXAMPLE_COUNTRIES,
-  EXAMPLE_MONTHS,
-  EXAMPLE_ROOM_IDS,
-} from "@/lib/placeholders";
 import type {
   Booking,
   CancellationRate,
@@ -235,11 +228,17 @@ export function priceThermometer(
   byMonth: PeriodKpi[],
   thresholds: ThermometerThresholds,
 ): MonthTemperature[] {
-  // TODO: implement (SPEC section 4, "Price thermometer")
-  return EXAMPLE_MONTHS.map((period, i) => ({
-    period,
-    occupancy: 0.45,
-    adr: 100,
-    level: i >= 5 && i <= 7 ? "hot" : i <= 1 ? "cold" : "normal",
-  }));
+  return byMonth.map(
+    ({ period, occupancy, adr }): MonthTemperature => ({
+      period,
+      occupancy,
+      adr,
+      level:
+        occupancy >= thresholds.hot
+          ? "hot"
+          : occupancy <= thresholds.cold
+            ? "cold"
+            : "normal",
+    }),
+  );
 }
