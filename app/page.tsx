@@ -1,5 +1,6 @@
 "use client";
 
+import { HomeSmileIcon } from "@solar-icons/react/linear/home-smile";
 import { type ReactNode, useEffect, useState } from "react";
 import { Acoes } from "@/components/painel/acoes";
 import { Contactos } from "@/components/painel/contactos";
@@ -65,7 +66,7 @@ function openFolded(hash: string) {
 
 function Shell({ children }: { children: ReactNode }) {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-10 px-4 py-8 text-base leading-relaxed sm:py-12">
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-12 px-4 pt-6 pb-16 text-base leading-relaxed sm:px-6 sm:pt-10">
       {children}
     </main>
   );
@@ -133,11 +134,16 @@ export default function Home() {
 
   return (
     <Shell>
-      <header className="flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          A sua casa este ano
-        </h1>
-        <p className="text-muted-foreground">{view.period}</p>
+      <header className="flex items-center gap-4">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+          <HomeSmileIcon size={28} aria-hidden="true" />
+        </span>
+        <div className="flex flex-col">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            A sua casa este ano
+          </h1>
+          <p className="text-muted-foreground">{view.period}</p>
+        </div>
       </header>
 
       <Resumo summary={summary} period={view.period} />

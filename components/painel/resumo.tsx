@@ -10,16 +10,16 @@ export function Resumo({
 }) {
   return (
     <section aria-labelledby="resumo" className="flex flex-col gap-5">
-      <div className="flex flex-col gap-1">
-        <h2 id="resumo" className="text-xl font-semibold tracking-tight">
-          Como correu o ano
-        </h2>
-        <p className="text-muted-foreground">{period}</p>
-      </div>
+      <h2 id="resumo" className="text-xl font-semibold tracking-tight">
+        Como correu o ano
+      </h2>
       <p className="max-w-[60ch] text-xl leading-snug text-balance sm:text-2xl">
         {summary.sentence}
       </p>
-      <dl className="grid grid-cols-1 gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3">
+      <dl
+        aria-label={`O ano em números, ${period.charAt(0).toLowerCase()}${period.slice(1)}`}
+        className="grid grid-cols-1 gap-px overflow-hidden rounded-xl border bg-border sm:grid-cols-3"
+      >
         {summary.figures.map((figure) => (
           <div
             key={figure.label}
