@@ -9,11 +9,11 @@ export function Resumo({
   period: string;
 }) {
   return (
-    <section aria-labelledby="resumo" className="flex flex-col gap-5">
+    <section aria-labelledby="resumo" className="flex flex-col gap-4">
       <h2 id="resumo" className="text-xl font-semibold tracking-tight">
         Como correu o ano
       </h2>
-      <p className="max-w-[60ch] text-xl leading-snug text-balance sm:text-2xl">
+      <p className="max-w-[60ch] text-lg leading-snug text-balance sm:text-2xl">
         {summary.sentence}
       </p>
       <dl
@@ -23,12 +23,12 @@ export function Resumo({
         {summary.figures.map((figure) => (
           <div
             key={figure.label}
-            className="flex flex-col gap-1 bg-background p-4"
+            className="flex items-baseline gap-3 bg-background px-4 py-3 sm:flex-col sm:items-start sm:gap-1 sm:p-4"
           >
             <dt className="order-2 text-base leading-snug text-muted-foreground">
               {figure.label}
             </dt>
-            <dd className="order-1 text-3xl font-semibold tracking-tight tabular-nums">
+            <dd className="order-1 shrink-0 text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl">
               {figure.value}
             </dd>
           </div>

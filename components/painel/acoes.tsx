@@ -47,44 +47,14 @@ export function Acoes({
   empty?: ReactNode;
 }) {
   const [first, ...rest] = actions;
+  const monthLabel =
+    monthOptions.find((option) => option.value === month)?.label ?? "";
 
   return (
     <section aria-labelledby="fazer" className="flex flex-col gap-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <h2 id="fazer" className="text-xl font-semibold tracking-tight">
-          O que fazer
-        </h2>
-        <div className="flex flex-col gap-1">
-          <span id="mes-label" className="text-base text-muted-foreground">
-            Ver outro mês
-          </span>
-          <Select
-            items={monthOptions}
-            value={month}
-            onValueChange={(value) => {
-              if (typeof value === "number") onMonthChange(value);
-            }}
-          >
-            <SelectTrigger
-              aria-labelledby="mes-label"
-              className="h-11 w-full px-3 text-base sm:w-56"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {monthOptions.map((option) => (
-                <SelectItem
-                  key={option.value}
-                  value={option.value}
-                  className="min-h-11 px-3 text-base"
-                >
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      <h2 id="fazer" className="text-xl font-semibold tracking-tight">
+        O que fazer em {monthLabel}
+      </h2>
 
       {!first ? (
         empty
@@ -148,6 +118,37 @@ export function Acoes({
           )}
         </>
       )}
+
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+        <span id="mes-label" className="text-base text-muted-foreground">
+          Ver outro mês
+        </span>
+        <Select
+          items={monthOptions}
+          value={month}
+          onValueChange={(value) => {
+            if (typeof value === "number") onMonthChange(value);
+          }}
+        >
+          <SelectTrigger
+            aria-labelledby="mes-label"
+            className="h-11 w-full px-3 text-base sm:w-56"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {monthOptions.map((option) => (
+              <SelectItem
+                key={option.value}
+                value={option.value}
+                className="min-h-11 px-3 text-base"
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
     </section>
   );
 }

@@ -127,8 +127,11 @@
   html {
     @apply font-sans;
   }
-  :focus-visible {
-    outline: 2px solid var(--foreground);
-    outline-offset: 2px;
-  }
+}
+
+/* Outside the layers on purpose: it beats the `outline-none` utilities that
+   components/ui puts on buttons, toggles, selects and triggers. */
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
 }

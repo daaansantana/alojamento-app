@@ -106,6 +106,23 @@ export function Meses({
         </ChartContainer>
       </div>
 
+      <dl className="flex flex-col gap-1">
+        {LEGEND.filter((item) => item.tone !== "normal").map((item) => {
+          const names = bars
+            .filter((bar) => bar.tone === item.tone)
+            .map((bar) => bar.label);
+          if (names.length === 0) return null;
+          return (
+            <div key={item.tone} className="flex flex-wrap gap-x-2">
+              <dt className="font-medium">
+                {item.label.charAt(0).toUpperCase() + item.label.slice(1)}:
+              </dt>
+              <dd>{names.join(", ")}</dd>
+            </div>
+          );
+        })}
+      </dl>
+
       <ul className="sr-only">
         {bars.map((bar) => (
           <li key={bar.period}>
