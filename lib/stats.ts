@@ -99,16 +99,25 @@ export function kpisByRoom(bookings: Booking[], rooms: Room[]): RoomKpi[] {
 
 /** 3 rows, highest revenue first. */
 export function channelMix(bookings: Booking[]): ChannelMix[] {
-  // TODO: implement (SPEC section 4, "Channel mix")
-  return EXAMPLE_CHANNELS.map((channel) => ({
-    channel,
-    bookings: 160,
-    bookingsShare: 1 / 3,
-    nightsSold: 400,
-    nightsShare: 1 / 3,
-    revenue: 40000,
-    revenueShare: 1 / 3,
-  }));
+  const nights = soldNights(bookings);
+  const totalRevenue = nights.reduce((sum, night) => sum + night.revenue, 0);
+  const channels = [...new Set(bookings.map((booking) => booking.channel))];
+  return channels
+    .map((channel) => {
+      const count = bookings.filter((b) => b.channel === channel).length;
+      const inChannel = nights.filter((n) => n.booking.channel === channel);
+      const revenue = inChannel.reduce((sum, night) => sum + night.revenue, 0);
+      return {
+        channel,
+        bookings: count,
+        bookingsShare: count / bookings.length,
+        nightsSold: inChannel.length,
+        nightsShare: nights.length ? inChannel.length / nights.length : 0,
+        revenue,
+        revenueShare: totalRevenue ? revenue / totalRevenue : 0,
+      };
+    })
+    .sort((a, b) => b.revenue - a.revenue);
 }
 
 /** One row per channel or per country, highest rate first. */
