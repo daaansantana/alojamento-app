@@ -1,7 +1,8 @@
 "use client";
 
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Acoes } from "@/components/painel/acoes";
+import { Contactos } from "@/components/painel/contactos";
 import { Resumo } from "@/components/painel/resumo";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
@@ -9,11 +10,10 @@ import { LoadingState } from "@/components/states/loading-state";
 import { useData } from "@/hooks/useData";
 import { useMonthSelection } from "@/hooks/useMonthSelection";
 import { usePainel } from "@/hooks/usePainel";
-import { int, monthName } from "@/lib/format";
+import { monthName } from "@/lib/format";
 
 const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
-const LINK = `inline-flex min-h-11 items-center font-medium underline underline-offset-4 ${FOCUS}`;
 
 const FOLDED = ["#simular", "#detalhes"];
 
@@ -38,6 +38,7 @@ export default function Home() {
   const { status, error, retry } = useData();
   const view = usePainel();
   const { setSelectedMonth } = useMonthSelection();
+  const [listOpen, setListOpen] = useState(false);
   const ready = view !== null;
 
   useEffect(() => {
@@ -86,38 +87,18 @@ export default function Home() {
         month={view.month}
         onMonthChange={setSelectedMonth}
         monthOptions={monthOptions}
-        onAction={(action) => openFolded(action.target)}
+        onAction={(action) => {
+          if (action.target === "#contactos") setListOpen(true);
+          else openFolded(action.target);
+        }}
         empty={<EmptyState />}
       />
 
-      <section
-        id="contactos"
-        aria-labelledby="contactos-titulo"
-        className="flex flex-col gap-4"
-      >
-        <h2 id="contactos-titulo" className="text-xl font-semibold">
-          Comece por estes três
-        </h2>
-        <ul className="flex flex-col divide-y">
-          {contacts.first.map((guest) => (
-            <li
-              key={guest.mailto}
-              className="flex flex-wrap items-center justify-between gap-x-4 py-3"
-            >
-              <span className="flex flex-col">
-                <span className="font-medium">{guest.name}</span>
-                <span className="text-muted-foreground">{guest.detail}</span>
-              </span>
-              <a href={guest.mailto} className={LINK}>
-                Enviar email
-              </a>
-            </li>
-          ))}
-        </ul>
-        <p className="text-muted-foreground">
-          Ao todo, {int(contacts.total)} hóspedes.
-        </p>
-      </section>
+      <Contactos
+        contacts={contacts}
+        listOpen={listOpen}
+        onListOpenChange={setListOpen}
+      />
 
       <section aria-labelledby="ganho" className="flex flex-col gap-2">
         <h2 id="ganho" className="text-xl font-semibold">
