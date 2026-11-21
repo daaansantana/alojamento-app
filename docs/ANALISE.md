@@ -255,3 +255,34 @@ A app apoia quatro decisões. Cada uma tem o número que a sustenta.
 | **As noites soltas.** Vender as noites vazias entre duas estadas, por exemplo com um preço para uma noite. | 87 noites soltas, 46 de junho a setembro | Sem valor estimado: o SPEC não tem um simulador para elas | SPEC §4, Orphan nights |
 
 Leitura: as três primeiras decisões têm um valor em euros que vem dos dados da casa. A quarta fica como aviso, sem número, até haver uma regra para a estimar.
+
+## 6. Indicadores e KPI
+
+### Indicadores do negócio
+
+| Indicador | Valor da casa | Comparação | Fonte |
+| --- | --- | --- | --- |
+| Ocupação (noites vendidas ÷ disponíveis) | 46% | de 32% em janeiro a 65% em agosto | SPEC §4, Período inteiro e Por mês |
+| Preço médio por noite (receita ÷ noites vendidas) | 99,69 € | de 96,07 € a 104,12 € ao longo dos meses | SPEC §4, Período inteiro e Termómetro |
+| Receita por quarto disponível (receita ÷ noites disponíveis) | 45,89 € | 72,4 € em Portugal em 2025: a casa fica nos 63% | SPEC §4; INE 2025, em `lib/benchmarks.ts`; explorar, ponto 8 |
+| Parte das comissões na receita | 10,9% (14 625,93 €) | — | SPEC §4, Net revenue |
+| Parte de quem volta no gasto | 51,9% | — | SPEC §4, Guest totals |
+| Valor de 1 ponto de ocupação | 2 910,98 € por ano (29,2 noites × 99,69 €) | — | explorar, ponto 7 |
+
+A comparação com o INE é só uma referência: é um valor de Portugal inteiro, e esta é uma casa com 8 quartos.
+
+### O KPI: quanto a casa pode ganhar por ano
+
+O KPI soma duas decisões da secção 5: os regressos pelas plataformas que passam a reservar diretamente e as estadas a mais no inverno, ao preço normal. Não conta a subida de preço no verão.
+
+| Cenário | Quem volta pelas plataformas e passa a direto | Desconto direto | Hóspedes de inverno que voltam | Direto | Inverno | Total por ano | Peso na receita do ano | Fonte |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Prudente | 1 em cada 5 (20%) | 5% | 1 em cada 10 (10%) | 565,30 € | 1 468,80 € | 2 034,10 € (cerca de 2030 €) | 1,5% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
+| Provável | metade (50%) | 5% | 1 em cada 5 (20%) | 1 413,25 € | 2 937,60 € | 4 350,85 € (cerca de 4350 €) | 3,2% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
+| Otimista | todos (100%) | 0% | 3 em cada 10 (30%) | 4 239,75 € | 4 406,40 € | 8 646,15 € (cerca de 8650 €) | 6,5% | SPEC §4, Yearly gain scenarios; explorar, ponto 8 |
+
+A comissão usada é a típica do Booking, 15% (`lib/benchmarks.ts`). As estadas de inverno valem 293,76 € cada, a média das estadas de inverno (SPEC §4, Winter campaign).
+
+### A resposta à pergunta do professor
+
+Com estes dados, a app é interessante para a persona porque lhe diz quem contactar e com que desconto, o que vale cerca de 4350 € por ano no cenário mais provável (entre cerca de 2030 € e 8650 €, 3,2% da receita do ano), sem obras nem mais quartos.
