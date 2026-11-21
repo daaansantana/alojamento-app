@@ -1,5 +1,4 @@
 // "What if" scenarios (SPEC sections 3 and 4).
-// Not implemented yet: each function returns a placeholder of the right shape.
 
 import {
   compareStays,
@@ -10,7 +9,7 @@ import {
   stayNights,
   WINTER,
 } from "@/lib/dates";
-import { returnStays } from "@/lib/guests";
+import { returnStays, winterReturners } from "@/lib/guests";
 import type {
   Booking,
   DirectBookingResult,
@@ -135,12 +134,23 @@ export function simulateWinterCampaign(
   bookings: Booking[],
   scenario: WinterCampaignScenario,
 ): WinterCampaignResult {
-  // TODO: implement (SPEC section 4, "Winter campaign")
+  const guests = winterReturners(bookings).length;
+  const winterStays = bookings.filter(
+    (b) =>
+      b.status === "Concluída" &&
+      isBetween(b.check_in, WINTER.start, WINTER.end),
+  );
+  const avgStayValue = winterStays.length
+    ? winterStays.reduce((sum, stay) => sum + stay.total, 0) /
+      winterStays.length
+    : 0;
+  const extraStays = Math.round(guests * scenario.returnRate);
+  const value = extraStays * avgStayValue;
   return {
-    guests: 40,
-    extraStays: 8,
-    avgStayValue: 280,
-    extraRevenue: 2016,
-    discountCost: 224,
+    guests,
+    extraStays,
+    avgStayValue,
+    extraRevenue: value * (1 - scenario.discount),
+    discountCost: value * scenario.discount,
   };
 }
