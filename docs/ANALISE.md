@@ -238,3 +238,20 @@ Estes achados vieram de explorar os dados depois de testar as hipóteses. Mostra
 | Quem volta vem menos no inverno, mas 49 já vieram nessa altura | 25% das estadas contra 32% | SPEC §5; explorar, ponto 5 |
 | Noites soltas | 87, 46 delas de junho a setembro | SPEC §5 |
 | Estadas de uma semana parecem mais diretas, mas não é um achado | 14 de 36 (39%); o intervalo de 95% (25% a 55%) inclui os 26% gerais | SPEC §5 |
+
+## 5. Conclusões
+
+**O problema numa frase:** a dona vive de quem volta, que traz metade da receita (51,9%), mas paga comissão em 3 de cada 4 regressos (95 de 128), cobra o mesmo preço o ano inteiro e deixa mais de metade das noites por vender (54%).
+
+Fontes: SPEC §4, Guest totals e Guests; explorar, pontos 2 e 8.
+
+A app apoia quatro decisões. Cada uma tem o número que a sustenta.
+
+| Decisão | O que os dados mostram | Quanto vale | Fonte |
+| --- | --- | --- | --- |
+| **Quem contactar e quando.** No inverno, escrever a quem já veio nessa altura. | 600 noites de inverno por vender; 49 hóspedes que voltam já vieram de novembro a fevereiro | Se 1 em cada 5 voltar, com 10% de desconto: 10 estadas e 2 643,84 € | SPEC §4, Alert facts e Winter campaign |
+| **Que desconto dar na reserva direta.** Pedir a quem volta pelas plataformas que reserve diretamente, com um desconto abaixo da comissão. | 95 regressos pelas plataformas pagaram 4 239,75 € de comissão; quem volta não é leal a um canal (H1) | Se metade passar a reservar diretamente, com 5% de desconto: 1 413,25 € por ano. O desconto deixa de compensar quando chega aos 15%, a comissão | SPEC §4, Direct-booking simulator; HIPOTESES H1 |
+| **Que preço cobrar em cada época.** Subir um pouco o preço nos meses mais procurados. | Julho e agosto com 56% e 65% de ocupação, ao preço de sempre | +10% em julho e agosto, com as mesmas noites: 2 946,50 €. Pode vender até 27 noites a menos e ganhar o mesmo | SPEC §4, Pricing simulator |
+| **As noites soltas.** Vender as noites vazias entre duas estadas, por exemplo com um preço para uma noite. | 87 noites soltas, 46 de junho a setembro | Sem valor estimado: o SPEC não tem um simulador para elas | SPEC §4, Orphan nights |
+
+Leitura: as três primeiras decisões têm um valor em euros que vem dos dados da casa. A quarta fica como aviso, sem número, até haver uma regra para a estimar.
