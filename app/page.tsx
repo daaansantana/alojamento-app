@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
@@ -15,6 +15,17 @@ const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 const LINK = `inline-flex min-h-11 items-center font-medium underline underline-offset-4 ${FOCUS}`;
 
+const FOLDED = ["#simular", "#detalhes"];
+
+/** Opens the folded section a link points to and scrolls to it. */
+function openFolded(hash: string) {
+  if (!FOLDED.includes(hash)) return;
+  const details = document.querySelector<HTMLDetailsElement>(hash);
+  if (!details) return;
+  details.open = true;
+  details.scrollIntoView({ block: "start" });
+}
+
 function Shell({ children }: { children: ReactNode }) {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-10 px-4 py-8 text-base leading-relaxed sm:py-12">
@@ -27,6 +38,15 @@ export default function Home() {
   const { status, error, retry } = useData();
   const view = usePainel();
   const { setSelectedMonth } = useMonthSelection();
+  const ready = view !== null;
+
+  useEffect(() => {
+    if (!ready) return;
+    openFolded(window.location.hash);
+    const onHashChange = () => openFolded(window.location.hash);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, [ready]);
 
   if (status === "error") {
     return (
@@ -113,7 +133,11 @@ export default function Home() {
                 {action.worth && (
                   <p className="font-semibold">{action.worth}</p>
                 )}
-                <a href={action.target} className={`self-start ${LINK}`}>
+                <a
+                  href={action.target}
+                  onClick={() => openFolded(action.target)}
+                  className={`self-start ${LINK}`}
+                >
                   {action.cta}
                 </a>
               </li>
