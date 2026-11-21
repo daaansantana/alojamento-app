@@ -556,6 +556,7 @@ usePricing(scenario: PricingScenario): PricingResult | null
 useWinterRoom(scenario: WinterRoomScenario): WinterRoomResult | null
 useAlerts(): { month: number; alerts: Alert[]; facts: AlertFacts } | null
 useWinterCampaign(scenario: WinterCampaignScenario): WinterCampaignResult | null
+useMonthSelection(): { selectedMonth: number | null; setSelectedMonth: (month: number | null) => void }
 ```
 
 - `useData` loads `quartos.json` and `reservas.json` once, through a Zustand store and `services/data.ts`.
@@ -563,5 +564,5 @@ useWinterCampaign(scenario: WinterCampaignScenario): WinterCampaignResult | null
 - They compute with `useMemo` over the functions in `lib/`, so a screen shows real numbers as soon as its function is implemented, with no change to the components.
 - `DataStatus`, `DashboardData` and `ReturningData` go in `types/index.ts`.
 - `retry` loads the files again after an error, through the store's `load`. Pages pass it to the error state as `onRetry`, which shows a «Tentar de novo» button.
-- The store keeps `selectedMonth: number | null` and `setSelectedMonth(month)`. `null` means the month of the reference date, 11. `useAlerts` reads it and returns the month it used.
+- The store keeps `selectedMonth: number | null` and `setSelectedMonth(month)`. `null` means the month of the reference date, 11. `useAlerts` reads it and returns the month it used. Pages read and change it through `useMonthSelection`, never the store itself.
 - A type or a hook only changes through a PR approved by both Ana and Kamil.
