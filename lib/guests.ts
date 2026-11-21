@@ -7,7 +7,12 @@ import {
   exampleBookings,
   exampleProfiles,
 } from "@/lib/placeholders";
-import type { Booking, ChannelTransition, GuestProfile } from "@/types";
+import type {
+  Booking,
+  ChannelTransition,
+  GuestProfile,
+  GuestTotals,
+} from "@/types";
 
 /** Every guest with at least one completed stay. */
 export function guestProfiles(bookings: Booking[]): GuestProfile[] {
@@ -45,4 +50,17 @@ export function channelTransitions(bookings: Booking[]): ChannelTransition[] {
 export function winterReturners(bookings: Booking[]): GuestProfile[] {
   // TODO: implement (SPEC section 4, "Winter returners")
   return exampleProfiles(40, 2);
+}
+
+/** Guests, stays and spend, overall and for returning guests. */
+export function guestTotals(bookings: Booking[]): GuestTotals {
+  // TODO: implement (SPEC section 4, "Guest totals")
+  return {
+    guests: 300,
+    stays: 420,
+    spent: 120000,
+    returningGuests: 100,
+    returningStays: 220,
+    returningSpent: 60000,
+  };
 }
