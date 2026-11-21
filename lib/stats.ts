@@ -174,16 +174,31 @@ export function occupancyByRoomMonth(
   bookings: Booking[],
   rooms: Room[],
 ): RoomMonthOccupancy[] {
-  // TODO: implement (SPEC section 4, "Occupancy by room and month")
-  return EXAMPLE_ROOM_IDS.flatMap((roomId) =>
-    EXAMPLE_MONTHS.map((month) => ({
-      roomId,
-      month,
-      nightsSold: 12,
-      nightsAvailable: 30,
-      occupancy: 0.4,
-    })),
+  const months = monthsBetween(PERIOD.start, PERIOD.end);
+  const sold = new Map(
+    rooms.map((room) => [room.id, new Map<string, number>()]),
   );
+  for (const night of soldNights(bookings)) {
+    const byMonth = sold.get(night.booking.room_id);
+    if (!byMonth) continue;
+    const month = monthKey(night.date);
+    byMonth.set(month, (byMonth.get(month) ?? 0) + 1);
+  }
+  return [...rooms]
+    .sort((a, b) => a.id - b.id)
+    .flatMap((room) =>
+      months.map((month) => {
+        const nightsSold = sold.get(room.id)?.get(month) ?? 0;
+        const nightsAvailable = daysInMonth(month);
+        return {
+          roomId: room.id,
+          month,
+          nightsSold,
+          nightsAvailable,
+          occupancy: nightsSold / nightsAvailable,
+        };
+      }),
+    );
 }
 
 /** Empty nights between two occupied nights in the same room, by room then date. */
