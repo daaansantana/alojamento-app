@@ -66,3 +66,141 @@ O `npm run explorar` verifica as duas folhas. Nenhuma regra falha.
 | Integridade | 5 | todas as reservas apontam para um quarto que existe | explorar |
 
 Leitura: os dados estão limpos. Não foi preciso corrigir nem apagar nenhuma linha. Esta limpeza também é um sinal de que a base é fictícia (ver secção 7).
+
+## 3. Exploração
+
+### O ano
+
+| Noites vendidas | Noites disponíveis | Ocupação | Receita | Preço médio por noite | Receita por quarto disponível | Fonte |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1344 | 2920 | 46% | 133 985 € | 99,69 € | 45,89 € | SPEC §4, Período inteiro |
+
+Leitura: a casa vendeu menos de metade das noites. 54% das noites do ano ficaram por vender (explorar, ponto 8).
+
+### Os meses
+
+| Mês | Ocupação | Receita | Procura | Fonte |
+| --- | --- | --- | --- | --- |
+| nov 2025 | 38% | 9 550 € | menos procurado | SPEC §4, Por mês e Termómetro |
+| dez 2025 | 39% | 9 595 € | menos procurado | SPEC §4, Por mês e Termómetro |
+| jan 2026 | 32% | 7 715 € | menos procurado | SPEC §4, Por mês e Termómetro |
+| fev 2026 | 41% | 9 180 € | normal | SPEC §4, Por mês e Termómetro |
+| mar 2026 | 44% | 10 615 € | normal | SPEC §4, Por mês e Termómetro |
+| abr 2026 | 50% | 12 390 € | normal | SPEC §4, Por mês e Termómetro |
+| mai 2026 | 50% | 12 105 € | normal | SPEC §4, Por mês e Termómetro |
+| jun 2026 | 51% | 12 400 € | normal | SPEC §4, Por mês e Termómetro |
+| jul 2026 | 56% | 13 475 € | mais procurado | SPEC §4, Por mês e Termómetro |
+| ago 2026 | 65% | 15 990 € | mais procurado | SPEC §4, Por mês e Termómetro |
+| set 2026 | 48% | 11 555 € | normal | SPEC §4, Por mês e Termómetro |
+| out 2026 | 40% | 9 415 € | menos procurado | SPEC §4, Por mês e Termómetro |
+
+«Mais procurado» é uma ocupação de 55% ou mais; «menos procurado», de 40% ou menos (SPEC §3, `THERMOMETER`).
+
+Leitura: agosto foi o melhor mês e janeiro o pior. De novembro a fevereiro ficaram 600 das 960 noites por vender, 62,5% (SPEC §4, Alert facts; explorar, ponto 8).
+
+### Os quartos
+
+| Quarto | Noites | Ocupação | Receita | Fonte |
+| --- | --- | --- | --- | --- |
+| Suite Mar | 146 | 40% | 20 440 € | SPEC §4, Por quarto |
+| Quarto Duplo Vista Mar 1 | 191 | 52% | 20 055 € | SPEC §4, Por quarto |
+| Quarto Duplo Vista Mar 2 | 156 | 43% | 16 380 € | SPEC §4, Por quarto |
+| Quarto Duplo Jardim | 188 | 52% | 15 980 € | SPEC §4, Por quarto |
+| Quarto Twin | 166 | 45% | 13 280 € | SPEC §4, Por quarto |
+| Quarto Familiar | 173 | 47% | 20 760 € | SPEC §4, Por quarto |
+| Estúdio Terraço | 153 | 42% | 16 830 € | SPEC §4, Por quarto |
+| Quarto Individual | 171 | 47% | 10 260 € | SPEC §4, Por quarto |
+
+Leitura: nenhum quarto passa dos 52%. Os dois duplos com vista mar têm o mesmo preço mas não a mesma procura: o segundo esteve ocupado em 26 das 120 noites de inverno (SPEC §4, Winter room).
+
+### Os canais
+
+| Canal | Reservas | Noites | Parte das noites | Receita | Comissão | Fica por noite | Fonte |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Booking | 220 | 632 | 47,0% | 62 595 € | 9 389,25 € | 84,19 € | SPEC §4, Channel mix e Net revenue |
+| Direto | 127 | 383 | 28,5% | 37 605 € | 0 € | 98,19 € | SPEC §4, Channel mix e Net revenue |
+| Airbnb | 134 | 329 | 24,5% | 33 785 € | 5 236,68 € | 86,77 € | SPEC §4, Channel mix e Net revenue |
+
+As comissões usam as taxas típicas: 15% no Booking e 15,5% no Airbnb (`lib/benchmarks.ts`).
+
+Leitura: as comissões somam 14 626 €, 10,9% da receita do período (SPEC §4). As plataformas vendem 71,5% das noites. Nos hotéis europeus com menos de 20 quartos, essa parte é 32,1% (HOTREC 2024, em `lib/benchmarks.ts`).
+
+### Os cancelamentos
+
+| Canal | Canceladas / reservas | Taxa | Fonte |
+| --- | --- | --- | --- |
+| Airbnb | 11 / 134 | 8,2% | SPEC §4, Cancellations |
+| Booking | 17 / 220 | 7,7% | SPEC §4, Cancellations |
+| Direto | 9 / 127 | 7,1% | SPEC §4, Cancellations |
+| Todas | 37 / 481 | 7,7% | SPEC §4, Cancellations |
+
+| País da reserva | Canceladas / reservas | Taxa | Fonte |
+| --- | --- | --- | --- |
+| Alemanha | 6 / 46 | 13,0% | SPEC §4, Cancellations |
+| Espanha | 10 / 81 | 12,3% | SPEC §4, Cancellations |
+| Brasil | 5 / 45 | 11,1% | SPEC §4, Cancellations |
+| França | 4 / 39 | 10,3% | SPEC §4, Cancellations |
+| Portugal | 9 / 166 | 5,4% | SPEC §4, Cancellations |
+| Países Baixos | 2 / 38 | 5,3% | SPEC §4, Cancellations |
+| Reino Unido | 1 / 66 | 1,5% | SPEC §4, Cancellations |
+
+Leitura: o canal não muda os cancelamentos; a diferença não é significativa (p = 0,94, SPEC §5, H2). Os países têm poucas reservas cada, por isso as taxas por país são frágeis.
+
+### Quem volta
+
+| Grupo | Hóspedes | Estadas | Gasto | Por estada | Por hóspede | Fonte |
+| --- | --- | --- | --- | --- | --- | --- |
+| Quem volta | 102 | 230 | 69 535 € | 302 € | 682 € | SPEC §4, Guest totals; explorar, ponto 4 |
+| Veio uma vez | 210 | 210 | 64 530 € | 307 € | 307 € | explorar, ponto 4 |
+
+| O quê | Valor | Fonte |
+| --- | --- | --- |
+| Parte de quem volta no gasto | 51,9% de 134 065 € | SPEC §4, Guest totals |
+| Quem volta vale, por hóspede, no ano | 2,22 vezes mais | explorar, ponto 4 |
+| Regressos (estadas depois da primeira) | 128, 38 115 € | SPEC §4, Guests |
+| Regressos pelas plataformas | 95 de 128 (74%), 28 265 € | SPEC §4, Guests; explorar, ponto 8 |
+| Comissão desses regressos, com 15% | 4 239,75 € | SPEC §4, Direct-booking simulator |
+| Comissão desses regressos, do mínimo ao máximo | 3 317,55 € a 4 895,58 € | explorar, ponto 6 |
+| Primeira estada direta, regressos pelas plataformas | 27 de 37 | SPEC §5, achados exploratórios |
+| Estadas de inverno: quem volta / veio uma vez | 25% / 32% | explorar, ponto 5 |
+| Hóspedes que voltam e já vieram no inverno | 49 | SPEC §4, Winter returners |
+
+O mínimo da comissão usa o Booking a 15% e o Airbnb a 3% (taxa repartida); o máximo, o Booking a 18% (com Preferred Partner) e o Airbnb a 15,5% (`lib/benchmarks.ts`).
+
+Leitura: quem volta gasta o mesmo por estada, mas vale mais do dobro no ano porque volta. Traz metade da receita, e 3 em cada 4 regressos chegam por uma plataforma, que cobra comissão por um hóspede que já é da casa.
+
+### As noites soltas
+
+| O quê | Valor | Fonte |
+| --- | --- | --- |
+| Noites vazias entre duas estadas no mesmo quarto | 87 | SPEC §4, Orphan nights |
+| Dessas, de junho a setembro | 46 | SPEC §4, Orphan nights |
+
+Leitura: uma noite solta é difícil de vender a quem procura duas ou mais. Há 87 no ano, e mais de metade no verão, quando a procura é maior.
+
+### O preço
+
+| O quê | Valor | Fonte |
+| --- | --- | --- |
+| Preço por noite dos 8 quartos | de 60 € a 140 € | explorar, ponto 2 |
+| `total` igual ao preço do quarto × noites | em todas as 481 reservas | explorar, ponto 2 |
+| Preços diferentes no mesmo quarto, por canal, mês ou nº de hóspedes | 1 (nunca muda) | explorar, ponto 2 |
+| Preço médio por noite, mês a mês | de 96,07 € a 104,12 € | SPEC §4, Termómetro |
+| Ocupação, mês a mês | de 32% a 65% | SPEC §4, Termómetro |
+| +10% em julho e agosto, com as mesmas noites | 2 946,50 € a mais | SPEC §4, Pricing simulator |
+| Noites que podia perder em julho e agosto e ganhar o mesmo | até 27 | SPEC §4, Pricing simulator |
+
+Leitura: o preço é o mesmo o ano todo, em todos os canais. A ocupação duplica de janeiro para agosto e o preço não acompanha.
+
+### Como são as estadas
+
+| O quê | Valor | Fonte |
+| --- | --- | --- |
+| Estadas concluídas | 440 | explorar, ponto 3 |
+| Noites por estada | média de 3,06; 2 noites em 28% e 3 noites em 28% | explorar, ponto 3 |
+| Estadas de uma pessoa | 226 (51%) | explorar, ponto 3 |
+| País da reserva mais frequente | Portugal, 157 (36%); depois Espanha, 70 (16%) | explorar, ponto 3 |
+| Dia de entrada | entre 12% (segunda) e 16% (terça e sábado) | explorar, ponto 3 |
+| Mês de entrada | entre 6% (janeiro e fevereiro) e 10% (abril, agosto e setembro) | explorar, ponto 3 |
+
+Leitura: estadas curtas, metade de uma só pessoa, e entradas espalhadas pela semana. Não há um dia de entrada que se destaque.
