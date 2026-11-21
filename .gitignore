@@ -42,3 +42,6 @@ next-env.d.ts
 
 # notas pessoais
 NOTAS.md
+
+# capturas do npm run capturas
+.capturas/
