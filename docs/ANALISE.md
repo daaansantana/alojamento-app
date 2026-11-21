@@ -286,3 +286,40 @@ A comissão usada é a típica do Booking, 15% (`lib/benchmarks.ts`). As estadas
 ### A resposta à pergunta do professor
 
 Com estes dados, a app é interessante para a persona porque lhe diz quem contactar e com que desconto, o que vale cerca de 4350 € por ano no cenário mais provável (entre cerca de 2030 € e 8650 €, 3,2% da receita do ano), sem obras nem mais quartos.
+
+## 7. Limites, fontes e próximo passo
+
+### Limites
+
+- **A base é fictícia, mas é tratada como facto.** Os dados não têm vazios, erros nem duplicados (secção 2), e o preço nunca muda. Num alojamento real, os números seriam outros. O método e a app ficam iguais.
+- **Há só um ano.** Não dá para separar a época do acaso, nem ver se um mês fraco se repete.
+- **Não há data de reserva.** Não se sabe com quanta antecedência cada hóspede reserva, por isso a app não diz quando subir ou baixar o preço antes de uma data.
+- **Não há preços da concorrência.** A app não sabe se 99,69 € por noite está acima ou abaixo do mercado à volta. Só tem a comparação nacional do INE.
+- **Os cenários são suposições.** Quantos hóspedes aceitam reservar diretamente ou voltar no inverno não está nos dados. Por isso o KPI tem três cenários e não um só número.
+- **Amostras pequenas.** Por país e por tipo de estada há poucas reservas. Os testes que o SPEC §5 mostra (H1, H2 e H4) dizem que várias diferenças não são significativas.
+
+### Fontes
+
+Referências de mercado, em `lib/benchmarks.ts`:
+
+| Referência | Valor | Fonte |
+| --- | --- | --- |
+| Comissão típica do Booking | 15%; de 10% a 25%; mais cerca de 3% com Preferred Partner | Hostfully, «Booking.com host fees», 4 nov 2026 |
+| Taxa do Airbnb só para o anfitrião | 15,5%; cerca de 3% com a taxa repartida | Airbnb, «Simplifying Airbnb service fees» |
+| Parte das noites por plataformas em hotéis europeus com menos de 20 quartos | 32,1% (direto: 59,5%), dados de 2023 | HOTREC European Hotel Distribution Study 2024 |
+| Receita por quarto disponível em Portugal, 2025 | 72,4 € | INE, Estatísticas do Turismo 2025 (noticiado pelo ECO, 10 jul 2026) |
+| Data desde a qual o Booking não pode impor paridade de preços | 14 nov 2024 | Comissão Europeia, ficha do Regulamento dos Mercados Digitais sobre o Booking.com, 28 set 2026 |
+
+Contexto da persona, em `PRODUCT.md`:
+
+| Dado | Valor | Fonte |
+| --- | --- | --- |
+| Donos de alojamento local que gerem sozinhos | 76% | NOVA SBE para a ALEP, 2023 |
+| Titulares de registo com um só alojamento | 8 em cada 10 | RNAL, no estudo da NOVA SBE para a ALEP, 2025 |
+| Donos para quem o alojamento é mais de 60% do orçamento da família | 39% | NOVA SBE para a ALEP, 2023 |
+| Pessoas dos 16 aos 74 anos com competências digitais abaixo do básico, em Portugal | 27,6% | Comissão Europeia, Digital Skills Indicator 2.0, 2025 |
+| Pessoas dos 16 aos 74 anos que não usam a internet, em Portugal | 10,6% | Comissão Europeia, Digital Skills Indicator 2.0, 2025 |
+
+### Próximo passo
+
+Um agente que vigia os preços do mercado à volta da casa e avisa a dona quando vale a pena mudar o preço. Respondia ao limite dos preços da concorrência. Precisa de dados de fora e de um servidor que corra sozinho, e o enunciado não prevê nenhum dos dois: a app de hoje não tem servidor e só lê os ficheiros de `public/data/`.
