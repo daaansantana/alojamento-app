@@ -147,16 +147,26 @@ export function channelNet(
   bookings: Booking[],
   rates: CommissionRates,
 ): ChannelNet[] {
-  // TODO: implement (SPEC section 4, "Net revenue by channel")
-  return EXAMPLE_CHANNELS.map((channel) => ({
-    channel,
-    nightsSold: 400,
-    revenue: 40000,
-    commissionRate: 0.1,
-    commission: 4000,
-    netRevenue: 36000,
-    netAdr: 90,
-  }));
+  const nights = soldNights(bookings);
+  const channels = [...new Set(bookings.map((booking) => booking.channel))];
+  return channels
+    .map((channel) => {
+      const inChannel = nights.filter((n) => n.booking.channel === channel);
+      const revenue = inChannel.reduce((sum, night) => sum + night.revenue, 0);
+      const commissionRate = rates[channel] ?? 0;
+      const commission = revenue * commissionRate;
+      const netRevenue = revenue - commission;
+      return {
+        channel,
+        nightsSold: inChannel.length,
+        revenue,
+        commissionRate,
+        commission,
+        netRevenue,
+        netAdr: inChannel.length ? netRevenue / inChannel.length : 0,
+      };
+    })
+    .sort((a, b) => b.netRevenue - a.netRevenue);
 }
 
 /** 96 rows (8 rooms × 12 months), by room then month. */
