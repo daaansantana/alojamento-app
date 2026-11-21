@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { Acoes } from "@/components/painel/acoes";
 import { Contactos } from "@/components/painel/contactos";
+import { Ganho } from "@/components/painel/ganho";
 import { Resumo } from "@/components/painel/resumo";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
@@ -100,14 +101,7 @@ export default function Home() {
         onListOpenChange={setListOpen}
       />
 
-      <section aria-labelledby="ganho" className="flex flex-col gap-2">
-        <h2 id="ganho" className="text-xl font-semibold">
-          Quanto pode ganhar por ano
-        </h2>
-        <p className="text-2xl font-semibold">{gain.likely}</p>
-        <p>{gain.range}</p>
-        <p className="text-muted-foreground">{gain.assumption}</p>
-      </section>
+      <Ganho gain={gain} />
 
       <section aria-labelledby="meses" className="flex flex-col gap-4">
         <h2 id="meses" className="text-xl font-semibold">
