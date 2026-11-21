@@ -1,6 +1,7 @@
 // "What if" scenarios (SPEC sections 3 and 4).
 // Not implemented yet: each function returns a placeholder of the right shape.
 
+import { monthKey, soldNights } from "@/lib/dates";
 import { returnStays } from "@/lib/guests";
 import type {
   Booking,
@@ -60,12 +61,17 @@ export function simulatePricing(
   bookings: Booking[],
   scenario: PricingScenario,
 ): PricingResult {
-  // TODO: implement (SPEC section 4, "Pricing simulator")
+  const months = new Set(scenario.months);
+  const nights = soldNights(bookings).filter((night) =>
+    months.has(monthKey(night.date)),
+  );
+  const baseRevenue = nights.reduce((sum, night) => sum + night.revenue, 0);
+  const factor = 1 + scenario.priceChange;
   return {
-    nightsSold: 250,
-    baseRevenue: 25000,
-    newRevenue: 26000,
-    nightsForSameRevenue: 240,
+    nightsSold: nights.length,
+    baseRevenue,
+    newRevenue: baseRevenue * factor,
+    nightsForSameRevenue: nights.length / factor,
   };
 }
 
