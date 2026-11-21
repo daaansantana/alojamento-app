@@ -6,19 +6,51 @@ import { Contactos } from "@/components/painel/contactos";
 import { Ganho } from "@/components/painel/ganho";
 import { Meses } from "@/components/painel/meses";
 import { Resumo } from "@/components/painel/resumo";
+import {
+  type Question,
+  Simular,
+  type SliderRange,
+} from "@/components/painel/simular";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
 import { LoadingState } from "@/components/states/loading-state";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useData } from "@/hooks/useData";
+import { useDirectSimulation } from "@/hooks/useDirectSimulation";
 import { useMonthSelection } from "@/hooks/useMonthSelection";
 import { usePainel } from "@/hooks/usePainel";
+import { usePricing } from "@/hooks/usePricing";
+import { useWinterCampaign } from "@/hooks/useWinterCampaign";
 import { monthName } from "@/lib/format";
+import {
+  PAINEL_DIRECT,
+  PAINEL_SUMMER,
+  PAINEL_WINTER_CAMPAIGN,
+} from "@/lib/painel";
+import type { AlertId } from "@/types";
 
 const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 
 const FOLDED = ["#simular", "#detalhes"];
+
+// «E se…?» starts from the scenarios behind the actions' worth.
+const INITIAL: Record<Question, number> = {
+  summer: Math.round(PAINEL_SUMMER.priceChange * 100),
+  winter: Math.round(PAINEL_WINTER_CAMPAIGN.returnRate * 100),
+  direct: Math.round(PAINEL_DIRECT.conversionRate * 100),
+};
+const RANGES: Record<Question, SliderRange> = {
+  summer: { min: 0, max: 20, step: 5 },
+  winter: { min: 0, max: 50, step: 5 },
+  direct: { min: 0, max: 100, step: 10 },
+};
+// The question each action's «Simular» opens.
+const QUESTION_FOR: Partial<Record<AlertId, Question>> = {
+  summer: "summer",
+  commission: "direct",
+  winter: "winter",
+};
 
 /** Opens the folded section a link points to and scrolls to it. */
 function openFolded(hash: string) {
@@ -43,6 +75,20 @@ export default function Home() {
   const dashboard = useDashboard();
   const { setSelectedMonth } = useMonthSelection();
   const [listOpen, setListOpen] = useState(false);
+  const [question, setQuestion] = useState<Question>("summer");
+  const [values, setValues] = useState(INITIAL);
+  const pricing = usePricing({
+    priceChange: values.summer / 100,
+    months: PAINEL_SUMMER.months,
+  });
+  const winter = useWinterCampaign({
+    returnRate: values.winter / 100,
+    discount: PAINEL_WINTER_CAMPAIGN.discount,
+  });
+  const direct = useDirectSimulation({
+    ...PAINEL_DIRECT,
+    conversionRate: values.direct / 100,
+  });
   const ready = view !== null;
 
   useEffect(() => {
@@ -99,7 +145,9 @@ export default function Home() {
         monthOptions={monthOptions}
         onAction={(action) => {
           if (action.target === "#contactos") setListOpen(true);
-          else openFolded(action.target);
+          const next = QUESTION_FOR[action.id];
+          if (action.target === "#simular" && next) setQuestion(next);
+          openFolded(action.target);
         }}
         empty={<EmptyState />}
       />
@@ -114,16 +162,23 @@ export default function Home() {
 
       <Meses months={months} bars={monthBars} />
 
-      <section aria-labelledby="simular-titulo">
-        <details id="simular" className="rounded-lg border p-4">
-          <summary className={`min-h-11 cursor-pointer ${FOCUS}`}>
-            <h2 id="simular-titulo" className="inline text-xl font-semibold">
-              E se…?
-            </h2>
-          </summary>
-          <p className="pt-2">Os gráficos entram aqui.</p>
-        </details>
-      </section>
+      <Simular
+        question={question}
+        onQuestionChange={setQuestion}
+        values={values}
+        onValueChange={(q, value) =>
+          setValues((current) => ({ ...current, [q]: value }))
+        }
+        ranges={RANGES}
+        onReset={() => setValues(INITIAL)}
+        discounts={{
+          winter: PAINEL_WINTER_CAMPAIGN.discount,
+          direct: PAINEL_DIRECT.directDiscount,
+        }}
+        pricing={pricing}
+        winter={winter}
+        direct={direct}
+      />
 
       <section aria-labelledby="detalhes-titulo">
         <details id="detalhes" className="rounded-lg border p-4">
