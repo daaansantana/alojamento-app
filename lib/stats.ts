@@ -2,6 +2,7 @@
 // Not implemented yet: each function returns a placeholder of the right shape.
 
 import {
+  addDays,
   datesBetween,
   daysInMonth,
   monthKey,
@@ -206,8 +207,24 @@ export function orphanNights(
   bookings: Booking[],
   rooms: Room[],
 ): OrphanNight[] {
-  // TODO: implement (SPEC section 4, "Orphan nights")
-  return EXAMPLE_ROOM_IDS.map((roomId) => ({ roomId, date: "2024-07-15" }));
+  const occupied = new Map(rooms.map((room) => [room.id, new Set<string>()]));
+  for (const night of soldNights(bookings)) {
+    occupied.get(night.booking.room_id)?.add(night.date);
+  }
+  const dates = datesBetween(PERIOD.start, PERIOD.end);
+  return [...rooms]
+    .sort((a, b) => a.id - b.id)
+    .flatMap((room) => {
+      const nights = occupied.get(room.id) ?? new Set<string>();
+      return dates
+        .filter(
+          (date) =>
+            !nights.has(date) &&
+            nights.has(addDays(date, -1)) &&
+            nights.has(addDays(date, 1)),
+        )
+        .map((date) => ({ roomId: room.id, date }));
+    });
 }
 
 /** Occupancy thresholds the app uses for the price thermometer. */
