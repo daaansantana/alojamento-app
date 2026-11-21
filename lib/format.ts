@@ -28,14 +28,19 @@ export function int(value: number): string {
   return formatNumber(value, 0);
 }
 
-const percentFormat = new Intl.NumberFormat("pt-PT", {
-  style: "percent",
-  maximumFractionDigits: 0,
-});
+const percentFormats = new Map<number, Intl.NumberFormat>();
 
-/** A share from 0 to 1 as a whole percentage: 0.4603 → "46%". */
-export function pct(share: number): string {
-  return percentFormat.format(share).replace(/\s/g, NBSP);
+/** A share from 0 to 1 as a percentage: 0.4603 → "46%"; pct(0.155, 1) → "15,5%". */
+export function pct(share: number, maxDecimals = 0): string {
+  let format = percentFormats.get(maxDecimals);
+  if (!format) {
+    format = new Intl.NumberFormat("pt-PT", {
+      style: "percent",
+      maximumFractionDigits: maxDecimals,
+    });
+    percentFormats.set(maxDecimals, format);
+  }
+  return format.format(share).replace(/\s/g, NBSP);
 }
 
 const monthLong = new Intl.DateTimeFormat("pt-PT", {

@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { Acoes } from "@/components/painel/acoes";
 import { Contactos } from "@/components/painel/contactos";
+import { type DetailPart, Detalhes } from "@/components/painel/detalhes";
 import { Ganho } from "@/components/painel/ganho";
 import { Meses } from "@/components/painel/meses";
 import { Resumo } from "@/components/painel/resumo";
@@ -20,7 +21,9 @@ import { useDirectSimulation } from "@/hooks/useDirectSimulation";
 import { useMonthSelection } from "@/hooks/useMonthSelection";
 import { usePainel } from "@/hooks/usePainel";
 import { usePricing } from "@/hooks/usePricing";
+import { useReturningGuests } from "@/hooks/useReturningGuests";
 import { useWinterCampaign } from "@/hooks/useWinterCampaign";
+import { SOURCES } from "@/lib/benchmarks";
 import { monthName } from "@/lib/format";
 import {
   PAINEL_DIRECT,
@@ -28,9 +31,6 @@ import {
   PAINEL_WINTER_CAMPAIGN,
 } from "@/lib/painel";
 import type { AlertId } from "@/types";
-
-const FOCUS =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground";
 
 const FOLDED = ["#simular", "#detalhes"];
 
@@ -45,20 +45,22 @@ const RANGES: Record<Question, SliderRange> = {
   winter: { min: 0, max: 50, step: 5 },
   direct: { min: 0, max: 100, step: 10 },
 };
-// The question each action's «Simular» opens.
+// The question or the part each action's link opens.
 const QUESTION_FOR: Partial<Record<AlertId, Question>> = {
   summer: "summer",
   commission: "direct",
-  winter: "winter",
+};
+const DETAIL_FOR: Partial<Record<AlertId, DetailPart>> = {
+  orphans: "mapa",
 };
 
 /** Opens the folded section a link points to and scrolls to it. */
 function openFolded(hash: string) {
   if (!FOLDED.includes(hash)) return;
-  const details = document.querySelector<HTMLDetailsElement>(hash);
-  if (!details) return;
-  details.open = true;
-  details.scrollIntoView({ block: "start" });
+  const target = document.querySelector<HTMLElement>(hash);
+  if (!target) return;
+  if (target instanceof HTMLDetailsElement) target.open = true;
+  target.scrollIntoView({ block: "start" });
 }
 
 function Shell({ children }: { children: ReactNode }) {
@@ -77,6 +79,8 @@ export default function Home() {
   const [listOpen, setListOpen] = useState(false);
   const [question, setQuestion] = useState<Question>("summer");
   const [values, setValues] = useState(INITIAL);
+  const [detailsOpen, setDetailsOpen] = useState<DetailPart[]>([]);
+  const returning = useReturningGuests();
   const pricing = usePricing({
     priceChange: values.summer / 100,
     months: PAINEL_SUMMER.months,
@@ -147,6 +151,11 @@ export default function Home() {
           if (action.target === "#contactos") setListOpen(true);
           const next = QUESTION_FOR[action.id];
           if (action.target === "#simular" && next) setQuestion(next);
+          const part = DETAIL_FOR[action.id];
+          if (action.target === "#detalhes" && part)
+            setDetailsOpen((open) =>
+              open.includes(part) ? open : [...open, part],
+            );
           openFolded(action.target);
         }}
         empty={<EmptyState />}
@@ -180,16 +189,17 @@ export default function Home() {
         direct={direct}
       />
 
-      <section aria-labelledby="detalhes-titulo">
-        <details id="detalhes" className="rounded-lg border p-4">
-          <summary className={`min-h-11 cursor-pointer ${FOCUS}`}>
-            <h2 id="detalhes-titulo" className="inline text-xl font-semibold">
-              Ver os números
-            </h2>
-          </summary>
-          <p className="pt-2">Os gráficos entram aqui.</p>
-        </details>
-      </section>
+      {dashboard && returning && (
+        <Detalhes
+          open={detailsOpen}
+          onOpenChange={setDetailsOpen}
+          netByChannel={dashboard.netByChannel}
+          roomMonth={dashboard.roomMonth}
+          rooms={dashboard.byRoom}
+          transitions={returning.transitions}
+          sources={SOURCES}
+        />
+      )}
     </Shell>
   );
 }
