@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect } from "react";
-
+import { Resumo } from "@/components/painel/resumo";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
 import { LoadingState } from "@/components/states/loading-state";
@@ -74,22 +74,7 @@ export default function Home() {
         <p className="text-muted-foreground">{view.period}</p>
       </header>
 
-      <section aria-labelledby="resumo" className="flex flex-col gap-4">
-        <h2 id="resumo" className="text-xl font-semibold">
-          Como correu o ano
-        </h2>
-        <p className="text-lg">{summary.sentence}</p>
-        <dl className="grid gap-4 sm:grid-cols-3">
-          {summary.figures.map((figure) => (
-            <div key={figure.label} className="flex flex-col">
-              <dt className="order-2 text-base text-muted-foreground">
-                {figure.label}
-              </dt>
-              <dd className="order-1 text-2xl font-semibold">{figure.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+      <Resumo summary={summary} period={view.period} />
 
       <section aria-labelledby="fazer" className="flex flex-col gap-4">
         <h2 id="fazer" className="text-xl font-semibold">
