@@ -4,10 +4,12 @@ import { type ReactNode, useEffect, useState } from "react";
 import { Acoes } from "@/components/painel/acoes";
 import { Contactos } from "@/components/painel/contactos";
 import { Ganho } from "@/components/painel/ganho";
+import { Meses } from "@/components/painel/meses";
 import { Resumo } from "@/components/painel/resumo";
 import { EmptyState } from "@/components/states/empty-state";
 import { ErrorState } from "@/components/states/error-state";
 import { LoadingState } from "@/components/states/loading-state";
+import { useDashboard } from "@/hooks/useDashboard";
 import { useData } from "@/hooks/useData";
 import { useMonthSelection } from "@/hooks/useMonthSelection";
 import { usePainel } from "@/hooks/usePainel";
@@ -38,6 +40,7 @@ function Shell({ children }: { children: ReactNode }) {
 export default function Home() {
   const { status, error, retry } = useData();
   const view = usePainel();
+  const dashboard = useDashboard();
   const { setSelectedMonth } = useMonthSelection();
   const [listOpen, setListOpen] = useState(false);
   const ready = view !== null;
@@ -67,6 +70,12 @@ export default function Home() {
   }
 
   const { summary, actions, contacts, gain, months } = view;
+  const monthBars = months.bars.flatMap((bar) => {
+    const month = dashboard?.thermometer.find((m) => m.period === bar.period);
+    return month
+      ? [{ ...bar, occupancy: month.occupancy, tone: month.level }]
+      : [];
+  });
   const monthOptions = months.bars.map((bar) => {
     const month = Number(bar.period.split("-")[1]);
     return { value: month, label: monthName(month) };
@@ -103,26 +112,7 @@ export default function Home() {
 
       <Ganho gain={gain} />
 
-      <section aria-labelledby="meses" className="flex flex-col gap-4">
-        <h2 id="meses" className="text-xl font-semibold">
-          O ano, mês a mês
-        </h2>
-        <ul className="grid grid-cols-1 gap-x-8 sm:grid-cols-2">
-          {months.bars.map((bar) => (
-            <li
-              key={bar.period}
-              className="flex justify-between gap-4 border-b py-2"
-            >
-              <span>
-                {bar.label} <span className="font-semibold">{bar.percent}</span>
-              </span>
-              <span className="text-muted-foreground">{bar.level}</span>
-            </li>
-          ))}
-        </ul>
-        <p>{months.best}</p>
-        <p>{months.price}</p>
-      </section>
+      <Meses months={months} bars={monthBars} />
 
       <section aria-labelledby="simular-titulo">
         <details id="simular" className="rounded-lg border p-4">
