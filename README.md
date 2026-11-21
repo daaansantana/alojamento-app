@@ -13,6 +13,7 @@ npm install
 npm run dev        # http://localhost:3000
 npm run verificar  # lint, testes, tsc e build
 npm run requisitos  # requisitos do enunciado e regras do SPEC
+npm run explorar    # qualidade dos dados e o que o SPEC não tem
 ```
 
 ## Estrutura
@@ -28,6 +29,13 @@ public/data/       quartos.json (8 quartos) e reservas.json (481 reservas)
 scripts/           testes, corridos com tsx
 .agents/skills/    skills dos agentes (.claude/skills aponta para aqui)
 ```
+
+Documentos:
+
+- [docs/ANALISE.md](docs/ANALISE.md): a análise dos dados (exploração, hipóteses, conclusões, indicadores e KPI), com a fonte de cada número. Versão em inglês: [docs/ANALYSIS.en.md](docs/ANALYSIS.en.md).
+- [PRODUCT.md](PRODUCT.md): a persona e o propósito da app.
+- [docs/SPEC.md](docs/SPEC.md): o contrato dos dados e os valores esperados.
+- `npm run explorar` (`scripts/explorar.ts`): imprime a qualidade dos dados e os números da análise que o SPEC não tem.
 
 Fluxo dos dados: `public/data/*.json` → `services/` → `lib/` → hooks → componentes.
 
