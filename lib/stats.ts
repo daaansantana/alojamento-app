@@ -125,14 +125,21 @@ export function cancellationRates(
   bookings: Booking[],
   by: "channel" | "country",
 ): CancellationRate[] {
-  // TODO: implement (SPEC section 4, "Cancellations")
-  const keys = by === "channel" ? EXAMPLE_CHANNELS : EXAMPLE_COUNTRIES;
-  return keys.map((key) => ({
-    key,
-    bookings: 60,
-    cancelled: 6,
-    rate: 0.1,
-  }));
+  const keyOf = (booking: Booking) =>
+    by === "channel" ? booking.channel : booking.country;
+  const keys = [...new Set(bookings.map(keyOf))];
+  return keys
+    .map((key) => {
+      const rows = bookings.filter((booking) => keyOf(booking) === key);
+      const cancelled = rows.filter((b) => b.status === "Cancelada").length;
+      return {
+        key,
+        bookings: rows.length,
+        cancelled,
+        rate: cancelled / rows.length,
+      };
+    })
+    .sort((a, b) => b.rate - a.rate || a.key.localeCompare(b.key, "pt"));
 }
 
 /** 3 rows, highest net revenue first. */
