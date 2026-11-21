@@ -204,3 +204,37 @@ Leitura: o preço é o mesmo o ano todo, em todos os canais. A ocupação duplic
 | Mês de entrada | entre 6% (janeiro e fevereiro) e 10% (abril, agosto e setembro) | explorar, ponto 3 |
 
 Leitura: estadas curtas, metade de uma só pessoa, e entradas espalhadas pela semana. Não há um dia de entrada que se destaque.
+
+## 4. Hipóteses
+
+Estas seis hipóteses foram registadas em `HIPOTESES.md` antes de vermos os resultados. Os critérios não mudaram depois.
+
+| # | Hipótese | Critério | Resultado | Estado | Fonte |
+| --- | --- | --- | --- | --- | --- |
+| H1 | Quem volta continua a reservar pelo canal da primeira vez | Mais de metade dos regressos usa o canal da primeira reserva | 34% dos regressos (44 de 128); ao acaso seriam 36% (p = 0,80) | Rejeitada | HIPOTESES H1; SPEC §5 |
+| H2 | As reservas diretas valem mais | Estada direta 0,3 noites acima das plataformas e cancelamentos 2 pontos abaixo | Estada direta 0,33 noites mais longa (3,302 contra 2,969); cancelamentos 0,8 pontos abaixo (7,09% contra 7,91%); nenhuma diferença é significativa | Rejeitada | HIPOTESES H2; SPEC §5 |
+| H3 | A casa depende mais das plataformas do que um hotel europeu pequeno | Mais de 32,1% das noites por plataformas | 71,5% das noites por plataformas | Confirmada | HIPOTESES H3; SPEC §5 |
+| H4 | Quem viaja sozinho fica em quartos maiores do que precisa | Mais de 20% das estadas de uma pessoa em quartos para 3 ou 4 | 21,2% (48 de 226); estatisticamente igual a 20% (p = 0,35) | Confirmada pelo critério | HIPOTESES H4; SPEC §5 |
+| H5 | No inverno, um quarto pode sair das reservas curtas sem perder clientes | Nenhuma noite de novembro a fevereiro com os 8 quartos ocupados | No máximo 7 dos 8 quartos ocupados | Confirmada | HIPOTESES H5; SPEC §5 |
+| H6 | Quem menos cancela é quem mais volta | Os 2 países com menos cancelamentos estão entre os 3 com mais hóspedes que voltam | Menos cancelam: Reino Unido e Países Baixos. Mais voltam: Portugal, Espanha e Reino Unido | Rejeitada | HIPOTESES H6; SPEC §5 |
+
+O que mudam na app:
+
+- **H1 rejeitada:** quem volta não tem lealdade a um canal. Vale a pena pedir-lhe que reserve diretamente.
+- **H2 rejeitada:** a reserva direta não vale mais por ser mais longa ou cancelar menos. Vale mais porque não paga comissão.
+- **H3 confirmada:** a casa depende muito das plataformas, e por isso das comissões.
+- **H5 confirmada:** no inverno há sempre pelo menos um quarto livre. É espaço para convidar quem já veio nessa altura.
+
+### Achados exploratórios (não registados antes de ver os dados)
+
+Estes achados vieram de explorar os dados depois de testar as hipóteses. Mostram-se à parte e com a sua incerteza.
+
+| Achado | Valor | Fonte |
+| --- | --- | --- |
+| Um só preço por quarto, igual o ano todo, em todos os canais e para qualquer número de hóspedes | 1 preço por quarto | SPEC §5; explorar, ponto 2 |
+| Depois da comissão, uma noite vale | 98,19 € direto, 86,77 € no Airbnb, 84,19 € no Booking | SPEC §5 |
+| Quem volta gasta o mesmo por estada que quem veio uma vez | 302 € contra 307 €; vale 2,2 vezes mais no ano | SPEC §5; explorar, ponto 4 |
+| Quem reservou direto da primeira vez voltou pelas plataformas | 27 de 37 estadas (73%, intervalo de 95%: 57% a 85%) | SPEC §5 |
+| Quem volta vem menos no inverno, mas 49 já vieram nessa altura | 25% das estadas contra 32% | SPEC §5; explorar, ponto 5 |
+| Noites soltas | 87, 46 delas de junho a setembro | SPEC §5 |
+| Estadas de uma semana parecem mais diretas, mas não é um achado | 14 de 36 (39%); o intervalo de 95% (25% a 55%) inclui os 26% gerais | SPEC §5 |
