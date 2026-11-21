@@ -75,15 +75,36 @@ export function contactFirst(profiles: GuestProfile[]): GuestProfile[] {
 
 /** Every completed stay after each guest's first. */
 export function returnStays(bookings: Booking[]): Booking[] {
-  // TODO: implement (SPEC section 4, "Guests")
-  return exampleBookings(128);
+  const seen = new Set<string>();
+  return bookings
+    .filter((booking) => booking.status === "Concluída")
+    .sort(compareStays)
+    .filter((stay) => {
+      if (seen.has(stay.guest_email)) return true;
+      seen.add(stay.guest_email);
+      return false;
+    });
 }
 
 /** For each return stay: the channel of the guest's first stay and of that stay. */
 export function channelTransitions(bookings: Booking[]): ChannelTransition[] {
-  // TODO: implement (SPEC section 4, "Channel transitions")
-  return EXAMPLE_CHANNELS.flatMap((from) =>
-    EXAMPLE_CHANNELS.map((to) => ({ from, to, stays: 10 })),
+  const firstChannel = new Map(
+    guestProfiles(bookings).map((p) => [p.email, p.firstChannel]),
+  );
+  const rows = new Map<string, ChannelTransition>();
+  for (const stay of returnStays(bookings)) {
+    const from = firstChannel.get(stay.guest_email);
+    if (from === undefined) continue;
+    const key = `${from}→${stay.channel}`;
+    const row = rows.get(key) ?? { from, to: stay.channel, stays: 0 };
+    row.stays += 1;
+    rows.set(key, row);
+  }
+  return [...rows.values()].sort(
+    (a, b) =>
+      b.stays - a.stays ||
+      a.from.localeCompare(b.from, "pt") ||
+      a.to.localeCompare(b.to, "pt"),
   );
 }
 
