@@ -2,7 +2,14 @@
 // (SPEC sections 1 and 3).
 // Not implemented yet: each function returns a placeholder of the right shape.
 
-import { compareStays, daysBetween, referenceDate } from "@/lib/dates";
+import {
+  compareStays,
+  daysBetween,
+  isBetween,
+  referenceDate,
+  stayNights,
+  WINTER,
+} from "@/lib/dates";
 import {
   EXAMPLE_CHANNELS,
   exampleBookings,
@@ -110,8 +117,27 @@ export function channelTransitions(bookings: Booking[]): ChannelTransition[] {
 
 /** Returning guests with a night from November to February, sorted like contactFirst. */
 export function winterReturners(bookings: Booking[]): GuestProfile[] {
-  // TODO: implement (SPEC section 4, "Winter returners")
-  return exampleProfiles(40, 2);
+  const winterGuests = new Set(
+    bookings
+      .filter(
+        (booking) =>
+          booking.status === "Concluída" &&
+          stayNights(booking.check_in, booking.check_out).some((night) =>
+            isBetween(night, WINTER.start, WINTER.end),
+          ),
+      )
+      .map((booking) => booking.guest_email),
+  );
+  // The same order as contactFirst.
+  return returningGuests(guestProfiles(bookings))
+    .filter((profile) => winterGuests.has(profile.email))
+    .sort(
+      (a, b) =>
+        b.spent - a.spent ||
+        b.stays - a.stays ||
+        a.recencyDays - b.recencyDays ||
+        (a.email < b.email ? -1 : a.email > b.email ? 1 : 0),
+    );
 }
 
 /** Guests, stays and spend, overall and for returning guests. */
