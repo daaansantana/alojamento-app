@@ -2,6 +2,7 @@
 // Not implemented yet: each function returns a placeholder of the right shape.
 
 import {
+  datesBetween,
   daysInMonth,
   monthKey,
   monthsBetween,
@@ -68,15 +69,32 @@ export function kpisByMonth(bookings: Booking[], rooms: Room[]): PeriodKpi[] {
 
 /** 8 rows, one per room. */
 export function kpisByRoom(bookings: Booking[], rooms: Room[]): RoomKpi[] {
-  // TODO: implement (SPEC section 4, "By room")
-  return EXAMPLE_ROOM_IDS.map((roomId) => ({
-    roomId,
-    name: `Quarto ${roomId}`,
-    nightsSold: 150,
-    nightsAvailable: 365,
-    occupancy: 150 / 365,
-    revenue: 15000,
-  }));
+  const nightsAvailable = datesBetween(PERIOD.start, PERIOD.end).length;
+  const byRoom = new Map(
+    rooms.map((room) => [room.id, { nightsSold: 0, revenue: 0 }]),
+  );
+  for (const night of soldNights(bookings)) {
+    const row = byRoom.get(night.booking.room_id);
+    if (!row) continue;
+    row.nightsSold += 1;
+    row.revenue += night.revenue;
+  }
+  return [...rooms]
+    .sort((a, b) => a.id - b.id)
+    .map((room) => {
+      const { nightsSold, revenue } = byRoom.get(room.id) ?? {
+        nightsSold: 0,
+        revenue: 0,
+      };
+      return {
+        roomId: room.id,
+        name: room.name,
+        nightsSold,
+        nightsAvailable,
+        occupancy: nightsSold / nightsAvailable,
+        revenue,
+      };
+    });
 }
 
 /** 3 rows, highest revenue first. */
