@@ -2,6 +2,13 @@
 // Not implemented yet: each function returns a placeholder of the right shape.
 
 import {
+  daysInMonth,
+  monthKey,
+  monthsBetween,
+  PERIOD,
+  soldNights,
+} from "@/lib/dates";
+import {
   EXAMPLE_CHANNELS,
   EXAMPLE_COUNTRIES,
   EXAMPLE_MONTHS,
@@ -22,28 +29,41 @@ import type {
   ThermometerThresholds,
 } from "@/types";
 
-function examplePeriod(period: string): PeriodKpi {
-  return {
-    period,
-    nightsSold: 100,
-    nightsAvailable: 240,
-    occupancy: 100 / 240,
-    revenue: 10000,
-    adr: 100,
-    revpar: 10000 / 240,
-  };
-}
-
 /** The whole period, with `period: "year"`. */
 export function kpisForYear(bookings: Booking[], rooms: Room[]): PeriodKpi {
-  // TODO: implement (SPEC section 4, "Whole period")
-  return { ...examplePeriod("year"), nightsSold: 1200, nightsAvailable: 2920 };
+  const months = kpisByMonth(bookings, rooms);
+  const nightsSold = months.reduce((sum, m) => sum + m.nightsSold, 0);
+  const nightsAvailable = months.reduce((sum, m) => sum + m.nightsAvailable, 0);
+  const revenue = months.reduce((sum, m) => sum + m.revenue, 0);
+  return {
+    period: "year",
+    nightsSold,
+    nightsAvailable,
+    occupancy: nightsAvailable ? nightsSold / nightsAvailable : 0,
+    revenue,
+    adr: nightsSold ? revenue / nightsSold : 0,
+    revpar: nightsAvailable ? revenue / nightsAvailable : 0,
+  };
 }
 
 /** 12 rows, oldest month first. */
 export function kpisByMonth(bookings: Booking[], rooms: Room[]): PeriodKpi[] {
-  // TODO: implement (SPEC section 4, "By month")
-  return EXAMPLE_MONTHS.map(examplePeriod);
+  const nights = soldNights(bookings);
+  return monthsBetween(PERIOD.start, PERIOD.end).map((period) => {
+    const inMonth = nights.filter((night) => monthKey(night.date) === period);
+    const nightsSold = inMonth.length;
+    const nightsAvailable = rooms.length * daysInMonth(period);
+    const revenue = inMonth.reduce((sum, night) => sum + night.revenue, 0);
+    return {
+      period,
+      nightsSold,
+      nightsAvailable,
+      occupancy: nightsAvailable ? nightsSold / nightsAvailable : 0,
+      revenue,
+      adr: nightsSold ? revenue / nightsSold : 0,
+      revpar: nightsAvailable ? revenue / nightsAvailable : 0,
+    };
+  });
 }
 
 /** 8 rows, one per room. */
