@@ -16,11 +16,11 @@ export function YearSummary({
       <dl className="flex flex-col divide-y border-y">
         {figures.map((figure) => (
           <div key={figure.label} className="flex flex-col py-4">
-            <dt className="sr-only">{figure.label}</dt>
-            <dd className="text-figure leading-tight font-bold tabular-nums">
+            {/* The label comes first for screen readers, the number first on screen. */}
+            <dt className="order-2 text-muted-foreground">{figure.label}</dt>
+            <dd className="order-1 text-figure leading-tight font-bold tabular-nums">
               {figure.value}
             </dd>
-            <dd className="text-muted-foreground">{figure.label}</dd>
           </div>
         ))}
       </dl>
