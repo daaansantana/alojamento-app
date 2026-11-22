@@ -45,6 +45,30 @@ Four screens, each answering one of her questions, that turn the guest house's o
 
 Success: she can say what to do this month after a few seconds on the first screen, and how much it is worth per year (the KPI).
 
+## Product Vision
+
+The MVP helps her decide. The next steps help her be found and then run the house with less effort. None of this is built: it is the direction, so the MVP's choices do not close it off.
+
+| Stage | What it solves | What |
+| --- | --- | --- |
+| Today (the MVP) | Deciding | The four screens: the action of the month, who to write to, her price next to the market's, and the year |
+| Next | Being found | A one-page site for the house, made from what she fills in (photos, rooms, phone, WhatsApp, map, a booking request), with the registration number. Her Google Business Profile, step by step. A card with a QR code to her page, handed to each guest at check-out. A review request after each stay |
+| Later | Running it with less effort | One calendar with the platforms, so direct bookings never overlap. An agent that fetches the INE values when they come out, watches the prices around the house and tells her when a change is worth it. The local-accommodation paperwork in one place |
+| Scale | Other owners like her | Owners with one house who run it themselves |
+
+Why the page and Google go together:
+- On Google, a guest house like hers counts as a hotel property (inns, hotels, bed and breakfasts), not as a vacation rental, so she can have a free Business Profile on Search and Maps.
+- Google's free booking links show a direct price next to the platforms at no cost to the property, but the link must take the guest to the property's own site, and only hotels that are bookable online can add rates. The page is what makes that possible.
+- Sources: Google Hotel Center Help, «Connect with more travelers using free booking links» and «How to add and manage rates and availability to your Google Business Profile»; Google, «Make your hotel stand out on Google».
+
+Rules the page and the card must follow:
+- Advertising, commercial documents and merchandising of a local-accommodation property must show its name or logo and its registration number (Decreto-Lei n.º 128/2014, art. 17.º, n.º 2). nexo would add the number on its own.
+- Only guests who gave their contact to the house are written to, with an opt-out in every message (Lei 41/2004, art. 13.º-A).
+
+Scale:
+- There were 120,002 local-accommodation registrations in Portugal in October 2026 (ALEP study, reported by RTP, 19 November 2026), and eight in ten registration holders have one property (RNAL, in the NOVA SBE study for ALEP, 2025).
+- Business model, a hypothesis to test: a monthly fee lower than the commissions nexo helps her save.
+
 ## Operating Context
 
 - No backend: the browser reads `public/data/quartos.json` and `public/data/reservas.json`.
