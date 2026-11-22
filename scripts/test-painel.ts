@@ -13,6 +13,7 @@ import {
   marketIntro,
   marketMonthLabel,
   marketSentence,
+  marketSourceLine,
   marketStandIn,
   marketYear,
   showMoreGuests,
@@ -616,6 +617,17 @@ check(
   "marketSentence",
   marketSentence(market),
   `Em agosto, o mercado cobrou em média 163${_}€ por noite; a casa, 100${_}€.`,
+);
+
+check(
+  "marketSourceLine, November",
+  marketSourceLine(MARKET_BY_MONTH[0]),
+  `novembro de 2025: 97,8${_}€, publicado a 31 de dezembro de 2025`,
+);
+check(
+  "marketSourceLine, October (stand-in)",
+  marketSourceLine(MARKET_BY_MONTH[11]),
+  `outubro de 2025 (em vez de outubro de 2026): 122,6${_}€, publicado a 28 de novembro de 2025`,
 );
 
 console.log("\npainel: gain");

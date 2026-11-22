@@ -6,11 +6,12 @@ import { Numbers, type NumbersPart } from "@/components/ano/numeros";
 import { YearSummary } from "@/components/ano/resumo";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useData } from "@/hooks/useData";
+import { useMarket } from "@/hooks/useMarket";
 import { usePainel } from "@/hooks/usePainel";
 import { useReturningGuests } from "@/hooks/useReturningGuests";
 import { SOURCES } from "@/lib/benchmarks";
 import { monthName } from "@/lib/format";
-import { channelFlowSentence } from "@/lib/painel";
+import { channelFlowSentence, marketSentence } from "@/lib/painel";
 import { ScreenState } from "../screen-state";
 
 /** O ano: «Como correu o ano?» */
@@ -19,6 +20,7 @@ export default function Ano() {
   const view = usePainel();
   const dashboard = useDashboard();
   const returning = useReturningGuests();
+  const market = useMarket();
   const [open, setOpen] = useState<NumbersPart[]>([]);
   const ready = view !== null && dashboard !== null && returning !== null;
 
@@ -72,7 +74,7 @@ export default function Ano() {
         summary={view.months.best}
         levels={view.months.levels}
         price={view.months.price}
-        market={null}
+        market={market ? marketSentence(market) : null}
       />
       <Numbers
         open={open}

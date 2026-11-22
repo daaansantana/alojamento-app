@@ -29,6 +29,7 @@ import type {
   GuestProfile,
   MarketComparison,
   MarketComparisonMonth,
+  MarketMonth,
   MonthLevel,
   PainelAction,
   PainelContact,
@@ -242,6 +243,17 @@ export function channelFlowSentence(transitions: ChannelTransition[]): string {
 /** Under «O seu preço e o do mercado»: what the market is. */
 export function marketIntro(segment: string): string {
   return `O preço médio por noite da sua casa, ao lado ${segment}.`;
+}
+
+/** One line of the source: «novembro de 2025: 97,8 €, publicado a 31 de dezembro de 2025». */
+export function marketSourceLine(month: MarketMonth): string {
+  const [fy, fm] = month.from.split("-").map(Number);
+  const [py, pm, pd] = month.published.split("-").map(Number);
+  const instead =
+    month.from === month.period
+      ? ""
+      : ` (em vez de ${monthName(Number(month.period.slice(5)))} de ${month.period.slice(0, 4)})`;
+  return `${monthName(fm)} de ${fy}${instead}: ${eur(month.adr, 1)}, publicado a ${pd} de ${monthName(pm)} de ${py}`;
 }
 
 /** Right under the intro: how to read the market's average. */
