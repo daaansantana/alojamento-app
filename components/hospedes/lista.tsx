@@ -1,8 +1,8 @@
 "use client";
 
 import { AltArrowDownIcon } from "@solar-icons/react/linear/alt-arrow-down";
+import { CheckIcon } from "@solar-icons/react/linear/check";
 import { CheckCircleIcon } from "@solar-icons/react/linear/check-circle";
-import { CheckReadIcon } from "@solar-icons/react/linear/check-read";
 import { LetterIcon } from "@solar-icons/react/linear/letter";
 import { UndoLeftIcon } from "@solar-icons/react/linear/undo-left";
 import { useState } from "react";
@@ -140,7 +140,7 @@ export function GuestList({
                     focusLater(`desfazer-${i}`);
                   }}
                 >
-                  <CheckReadIcon size={22} aria-hidden={true} />
+                  <CheckIcon size={22} aria-hidden={true} />
                   Já escrevi
                 </button>
               </div>
