@@ -286,6 +286,9 @@ export interface PainelView {
 
 export type DataStatus = "idle" | "loading" | "ready" | "error";
 
+/** «Letra maior»: the base text goes from 18 px to 20 px. */
+export type TextSize = "normal" | "maior";
+
 export interface DashboardData {
   year: PeriodKpi;
   byMonth: PeriodKpi[];
