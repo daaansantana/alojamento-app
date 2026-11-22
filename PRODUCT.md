@@ -22,6 +22,9 @@ Where each trait comes from:
 - Runs it herself: 76% of local-accommodation owners manage alone (NOVA SBE for ALEP, 2023). Eight in ten registration holders have one property (RNAL, in the NOVA SBE study for ALEP, 2025).
 - The house matters to the family budget: for 39% of owners it is more than 60% of it (NOVA SBE for ALEP, 2023).
 - Not confident with digital tools: in Portugal, 27.6% of people aged 16 to 74 have below-basic digital skills and 10.6% do not use the internet (European Commission, Digital Skills Indicator 2.0, 2025). The team chose this trait for the persona.
+- Very good at hosting, basic online: 102 of the 312 guests came back, and they brought 52% of the revenue (the data). Online she does the basics, so guests who already know her often come back through the platforms: 3 in 4 returns paid a commission, and guests whose first stay was booked direct came back through a platform in 27 of 37 stays (the data).
+- A possible story, not a finding: a guest who wants to come back looks for the house, does not find a phone number and books on a platform. The data does not say why guests return through the platforms.
+- The platforms are not the enemy: they bring guests who do not know her yet. Being listed on an online travel agency also brings bookings through the hotel's own channels, the «billboard effect»: a listing on Expedia raised reservations through the hotels' own channels by 7.5% to 26% (Anderson, «The Billboard Effect: Online Travel Agent Impact on Non-OTA Reservation Volume», Cornell Center for Hospitality Research, 2009). nexo helps the guests who already know her come back through her.
 
 Her name is Isabel («Isabel, que não é nenhum hóspede da base»: no guest in the data has this name).
 
