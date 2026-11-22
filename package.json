@@ -12,7 +12,8 @@
     "verificar": "npm run lint && npm run test && npm run requisitos && tsc --noEmit && next build",
     "gabaritos": "tsx scripts/golden.test.ts",
     "requisitos": "tsx scripts/requisitos.ts",
-    "capturas": "tsx scripts/capturas.ts"
+    "capturas": "tsx scripts/capturas.ts",
+    "explorar": "tsx scripts/explorar.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
