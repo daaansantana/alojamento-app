@@ -11,10 +11,10 @@ export function MarketSource({
       <p>{intro}</p>
       <ul className="flex flex-col gap-1.5">
         {lines.map((line) => (
-          <li key={line.url + line.text} className="first-letter:uppercase">
+          <li key={line.url + line.text}>
             <a
               href={line.url}
-              className="inline-block py-1.5 text-primary underline underline-offset-4"
+              className="inline-block py-1.5 text-primary underline underline-offset-4 first-letter:uppercase"
               target="_blank"
               rel="noreferrer"
             >
