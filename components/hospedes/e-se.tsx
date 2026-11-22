@@ -50,7 +50,7 @@ export function StepWhatIf({
         <output
           aria-live="polite"
           aria-labelledby="e-se-pergunta"
-          className="min-w-0 flex-1 text-center text-[2rem] font-bold tabular-nums sm:flex-none sm:min-w-24 sm:text-kpi"
+          className="min-w-0 flex-1 text-center text-figure font-bold tabular-nums sm:flex-none sm:min-w-24 sm:text-kpi"
         >
           {pct(value / 100)}
         </output>

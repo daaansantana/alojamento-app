@@ -50,6 +50,16 @@ typography:
     fontSize: "0.889rem"
     fontWeight: 400
     lineHeight: 1.45
+  statement:
+    fontFamily: "Atkinson Hyperlegible Next, system-ui, sans-serif"
+    fontSize: "1.333rem"
+    fontWeight: 700
+    lineHeight: 1.35
+  figure:
+    fontFamily: "Atkinson Hyperlegible Next, system-ui, sans-serif"
+    fontSize: "2rem"
+    fontWeight: 700
+    lineHeight: 1.15
   kpi:
     fontFamily: "Atkinson Hyperlegible Next, system-ui, sans-serif"
     fontSize: "2.333rem"
@@ -153,13 +163,15 @@ Atkinson Hyperlegible Next, from the Braille Institute, made for low vision, loa
 | `h1` | 30 px | up to 36 px |
 | `h2` | 21 to 24 px | 21 to 24 px |
 | Opening sentence | 19 px | 19 px |
+| A screen's statement («Em 7 dos 12 meses…», the year's sentence) | 24 px | 24 px |
+| A figure (46%, 104 €) | 36 px | 36 px |
 | Body | 18 px | 18 px |
 | Smallest text | 16 px | 16 px |
 | The KPI figure | 42 px | 42 px |
 
 ### Named Rules
 
-- **Nothing under 16 px.** Not badges, not axis ticks, not legends.
+- **Nothing under 16 px.** Not badges, not axis ticks, not legends. The one exception: the twelve month names under the year's chart are 15 px on phones, so they stand apart.
 - **Sentence case.** A capital only at the start of a sentence; no uppercase labels.
 
 ## Layout

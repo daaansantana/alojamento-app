@@ -149,7 +149,7 @@ export function FocusMonth({
             <span aria-hidden="true" className={cn(HOUSE, "size-4 ring-0")} />A
             sua casa
           </dt>
-          <dd className="text-[1.889rem] font-bold leading-tight tabular-nums">
+          <dd className="text-figure font-bold leading-tight tabular-nums">
             {month.house}
           </dd>
         </div>
@@ -161,7 +161,7 @@ export function FocusMonth({
             />
             Mercado{month.marketYear && ` (${month.marketYear})`}
           </dt>
-          <dd className="text-[1.889rem] font-bold leading-tight tabular-nums">
+          <dd className="text-figure font-bold leading-tight tabular-nums">
             {month.market}
           </dd>
         </div>

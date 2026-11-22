@@ -173,7 +173,7 @@ export default function Precos() {
           <p className="text-lead">{marketIntro(MARKET_SEGMENT)}</p>
           <p className="text-muted-foreground">{MARKET_NOTE}</p>
         </div>
-        <p className="text-[1.333rem] leading-snug font-bold text-balance">
+        <p className="text-statement leading-snug font-bold text-balance">
           {marketYear(market)}
         </p>
         <FocusMonth

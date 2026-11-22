@@ -10,14 +10,14 @@ export function YearSummary({
 }) {
   return (
     <section aria-label="O ano em números" className="flex flex-col gap-6">
-      <p className="text-[1.333rem] leading-snug font-bold text-balance">
+      <p className="text-statement leading-snug font-bold text-balance">
         {sentence}
       </p>
       <dl className="flex flex-col divide-y border-y">
         {figures.map((figure) => (
           <div key={figure.label} className="flex flex-col py-4">
             <dt className="sr-only">{figure.label}</dt>
-            <dd className="text-[2rem] leading-tight font-bold tabular-nums">
+            <dd className="text-figure leading-tight font-bold tabular-nums">
               {figure.value}
             </dd>
             <dd className="text-muted-foreground">{figure.label}</dd>
