@@ -3,9 +3,14 @@
 import { invitationMailto, invitationText } from "../lib/email";
 import {
   buildPainel,
+  channelFlowSentence,
   directAnswer,
   showMoreGuests,
+  summerAnswer,
   winterAnswer,
+  winterDiscountAnswer,
+  winterRoomAnswer,
+  winterRoomPrompt,
   writtenOn,
   writtenProgress,
 } from "../lib/painel";
@@ -436,6 +441,110 @@ check(
     breakEvenDiscount: 0.15,
   }),
   `Mais 1413${_}€ por ano.`,
+);
+
+console.log("\npainel: what if the price changes");
+const pricing = (change: number) => ({
+  nightsSold: 299,
+  baseRevenue: 29465,
+  newRevenue: 29465 * (1 + change),
+  nightsForSameRevenue: 299 / (1 + change),
+});
+check(
+  "summerAnswer(10%)",
+  summerAnswer(pricing(0.1), 0.1),
+  `Com mais 10%, nas mesmas noites: mais 2947${_}€.`,
+);
+check(
+  "summerAnswer(0)",
+  summerAnswer(pricing(0), 0),
+  "Com o preço de sempre, fica tudo igual.",
+);
+const campaign = (discount: number) => ({
+  guests: 49,
+  extraStays: 10,
+  avgStayValue: 293.76,
+  extraRevenue: 10 * 293.76 * (1 - discount),
+  discountCost: 10 * 293.76 * discount,
+});
+check(
+  "winterDiscountAnswer(10%)",
+  winterDiscountAnswer(campaign(0.1), 0.1),
+  `Com 10% de desconto, cerca de 10 estadas: mais 2644${_}€.`,
+);
+check(
+  "winterDiscountAnswer(0)",
+  winterDiscountAnswer(campaign(0), 0),
+  `Sem desconto, cerca de 10 estadas: mais 2938${_}€.`,
+);
+check(
+  "winterRoomPrompt",
+  winterRoomPrompt("Quarto Duplo Vista Mar 2"),
+  "Alugar o Quarto Duplo Vista Mar 2 de novembro a fevereiro, a uma só pessoa",
+);
+check(
+  "winterRoomAnswer, room 3 at 900 € (SPEC)",
+  winterRoomAnswer({
+    roomId: 3,
+    months: 4,
+    winterNights: 26,
+    winterRevenue: 2730,
+    displacedStays: 11,
+    relocatableStays: 11,
+    lostRevenue: 0,
+    longStayRevenue: 3600,
+    netGain: 3600,
+  }),
+  {
+    gain: `Mais 3600${_}€ no inverno.`,
+    stays:
+      "As 11 estadas que este quarto teve no inverno cabem noutros quartos.",
+  },
+);
+check(
+  "winterRoomAnswer, room 7 at 900 € (SPEC)",
+  winterRoomAnswer({
+    roomId: 7,
+    months: 4,
+    winterNights: 43,
+    winterRevenue: 4730,
+    displacedStays: 13,
+    relocatableStays: 8,
+    lostRevenue: 2530,
+    longStayRevenue: 3600,
+    netGain: 1070,
+  }),
+  {
+    gain: `Mais 1070${_}€ no inverno.`,
+    stays: `Das 13 estadas que este quarto teve no inverno, 8 cabem noutros quartos; as outras valiam 2530${_}€.`,
+  },
+);
+check(
+  "together",
+  view.together,
+  `Verão e inverno juntos: o verão paga o desconto do inverno. Mais 5590${_}€ no ano.`,
+);
+
+console.log("\npainel: the year");
+check(
+  "months.levels",
+  view.months.levels,
+  "Mais procurados: julho e agosto. Menos procurados: de outubro a janeiro.",
+);
+check(
+  "channelFlowSentence (SPEC transitions)",
+  channelFlowSentence([
+    { from: "Booking", to: "Booking", stays: 26 },
+    { from: "Booking", to: "Airbnb", stays: 11 },
+    { from: "Booking", to: "Direto", stays: 13 },
+    { from: "Airbnb", to: "Booking", stays: 23 },
+    { from: "Airbnb", to: "Airbnb", stays: 8 },
+    { from: "Airbnb", to: "Direto", stays: 10 },
+    { from: "Direto", to: "Booking", stays: 16 },
+    { from: "Direto", to: "Airbnb", stays: 11 },
+    { from: "Direto", to: "Direto", stays: 10 },
+  ]),
+  "27 das 37 estadas de quem reservou direto voltaram pelas plataformas.",
 );
 
 console.log("\npainel: gain");

@@ -285,12 +285,40 @@ export interface PainelView {
   period: string;
   intro: string; // under the month's title: the KPI and «Comece por isto:»
   guestsIntro: string; // under «A quem escrever»
+  together: string; // summer +10% and the winter campaign, in one year
   summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
   contacts: PainelGuestList; // winterReturners, with the winter email
   directContacts: PainelGuestList; // contactFirst, with the direct-booking email
   gain: { likely: string; range: string; assumption: string };
-  months: { bars: PainelMonth[]; best: string; price: string };
+  months: { bars: PainelMonth[]; best: string; levels: string; price: string };
+}
+
+// Version 4: the market, month by month
+
+export interface MarketMonth {
+  period: string; // "2025-11", the month it stands for
+  adr: number; // € per occupied room: «proveito médio por quarto ocupado»
+  revpar: number; // € per available room: «rendimento médio por quarto disponível»
+  from: string; // the month the value is from; the year before when not yet published
+  url: string;
+  published: string; // "YYYY-MM-DD"
+}
+
+export interface MarketComparisonMonth {
+  period: string;
+  house: number; // the house's price per night (its adr)
+  market: number; // the market's adr
+  difference: number; // house − market, € per night
+  substitute: boolean; // the market value is from the same month a year before
+}
+
+export interface MarketComparison {
+  months: MarketComparisonMonth[]; // in the order of byMonth
+  below: number; // months where the house charges 1 € or more less
+  above: number; // months where it charges 1 € or more more
+  level: number; // months within 1 €
+  widest: MarketComparisonMonth; // the largest difference either way
 }
 
 // What the hooks return (SPEC section 6).

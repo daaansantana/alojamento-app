@@ -21,6 +21,7 @@ import {
 import type {
   AlertId,
   AlertWhen,
+  ChannelTransition,
   DirectBookingResult,
   DirectBookingScenario,
   GainScenario,
@@ -32,9 +33,12 @@ import type {
   PainelInput,
   PainelView,
   PeriodKpi,
+  PricingResult,
   PricingScenario,
   WinterCampaignResult,
   WinterCampaignScenario,
+  WinterRoomResult,
+  WinterRoomScenario,
 } from "@/types";
 
 /** The winter campaign the page proposes. */
@@ -54,6 +58,12 @@ export const PAINEL_DIRECT: DirectBookingScenario = {
 export const PAINEL_SUMMER: PricingScenario = {
   priceChange: 0.1,
   months: ["2026-07", "2026-08"],
+};
+
+// «Quarto ao mês»: the room in the proposal, at the rate the SPEC checks.
+export const PAINEL_WINTER_ROOM: WinterRoomScenario = {
+  roomId: 3,
+  monthlyRate: 900,
 };
 
 const WHEN: Record<AlertWhen, string> = {
@@ -182,6 +192,95 @@ export function winterAnswer(campaign: WinterCampaignResult): string {
   return `Cerca de ${stays}: mais ${eur(campaign.extraRevenue)}.`;
 }
 
+const listInWords = (words: string[]) =>
+  words.length <= 1
+    ? (words[0] ?? "")
+    : `${words.slice(0, -1).join(", ")} e ${words[words.length - 1]}`;
+
+/** Months in words, in the year's order; a run of 3 or more wraps as «de outubro a janeiro». */
+function monthsInWords(periods: string[], year: string[]): string {
+  const name = (i: number) => monthName(Number(year[i].slice(5)));
+  const at = periods.map((p) => year.indexOf(p)).sort((a, b) => a - b);
+  const n = year.length;
+  if (at.length >= 3)
+    for (const start of at)
+      if (at.every((_, k) => at.includes((start + k) % n)))
+        return `de ${name(start)} a ${name((start + at.length - 1) % n)}`;
+  return listInWords(at.map(name));
+}
+
+/** «Mais procurados: julho e agosto. Menos procurados: de outubro a janeiro.» */
+function levelsSentence(thermometer: PainelInput["thermometer"]): string {
+  const year = thermometer.map((m) => m.period);
+  const part = (level: MonthLevel, one: string, many: string) => {
+    const periods = thermometer
+      .filter((m) => m.level === level)
+      .map((m) => m.period);
+    if (periods.length === 0) return null;
+    return `${periods.length === 1 ? one : many}: ${monthsInWords(periods, year)}.`;
+  };
+  return [
+    part("hot", "Mais procurado", "Mais procurados"),
+    part("cold", "Menos procurado", "Menos procurados"),
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** «27 das 37 estadas de quem reservou direto voltaram pelas plataformas.» */
+export function channelFlowSentence(transitions: ChannelTransition[]): string {
+  const fromDirect = transitions.filter((t) => t.from === "Direto");
+  const total = fromDirect.reduce((sum, t) => sum + t.stays, 0);
+  const platforms = fromDirect
+    .filter((t) => t.to !== "Direto")
+    .reduce((sum, t) => sum + t.stays, 0);
+  return `${int(platforms)} das ${int(total)} estadas de quem reservou direto voltaram pelas plataformas.`;
+}
+
+/** «E se mudar o preço?», summer: what a price change in July and August brings. */
+export function summerAnswer(
+  pricing: PricingResult,
+  priceChange: number,
+): string {
+  if (priceChange === 0) return "Com o preço de sempre, fica tudo igual.";
+  return `Com mais ${pct(priceChange)}, nas mesmas noites: mais ${eur(pricing.newRevenue - pricing.baseRevenue)}.`;
+}
+
+/** «E se mudar o preço?», winter: the discount for the guests who come back. */
+export function winterDiscountAnswer(
+  campaign: WinterCampaignResult,
+  discount: number,
+): string {
+  const off =
+    discount === 0 ? "Sem desconto" : `Com ${pct(discount)} de desconto`;
+  const stays =
+    campaign.extraStays === 1
+      ? "1 estada"
+      : `${int(campaign.extraStays)} estadas`;
+  return `${off}, cerca de ${stays}: mais ${eur(campaign.extraRevenue)}.`;
+}
+
+/** «Quarto ao mês»: what she would do, with the room's own name. */
+export function winterRoomPrompt(roomName: string): string {
+  return `Alugar o ${roomName} de novembro a fevereiro, a uma só pessoa`;
+}
+
+/** «Quarto ao mês»: the gain, and whether the room's winter stays fit elsewhere. */
+export function winterRoomAnswer(result: WinterRoomResult): {
+  gain: string;
+  stays: string;
+} {
+  const gain =
+    result.netGain >= 0
+      ? `Mais ${eur(result.netGain)} no inverno.`
+      : `Menos ${eur(-result.netGain)} no inverno.`;
+  const stays =
+    result.relocatableStays === result.displacedStays
+      ? `As ${int(result.displacedStays)} estadas que este quarto teve no inverno cabem noutros quartos.`
+      : `Das ${int(result.displacedStays)} estadas que este quarto teve no inverno, ${int(result.relocatableStays)} cabem noutros quartos; as outras valiam ${eur(result.lostRevenue)}.`;
+  return { gain, stays };
+}
+
 /** The answer to «E se só alguns aceitarem?», for the direct-booking list. */
 export function directAnswer(direct: DirectBookingResult): string {
   return direct.yearlyGain > 0
@@ -215,6 +314,7 @@ export function buildPainel(input: PainelInput): PainelView {
     monthName: monthName(input.month),
     period: `De ${monthOfYear(byMonth[0].period)} a ${monthOfYear(byMonth[byMonth.length - 1].period)}`,
     intro: `Pode ganhar mais cerca de ${about(likely.total)} por ano. Comece por isto:`,
+    together: `Verão e inverno juntos: o verão paga o desconto do inverno. Mais ${eur(input.facts.summerGain + input.campaign.extraRevenue)} no ano.`,
     guestsIntro: `Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de ${about(likely.total)} por ano.`,
     summary: {
       sentence: `Este ano a casa rendeu ${eur(year.revenue)}. ${best}`,
@@ -258,6 +358,7 @@ export function buildPainel(input: PainelInput): PainelView {
         level: LEVEL[m.level],
       })),
       best,
+      levels: levelsSentence(thermometer),
       price: `O preço por noite quase não mudou: entre ${eur(Math.min(...adrs))} e ${eur(Math.max(...adrs))}.`,
     },
   };

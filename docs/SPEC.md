@@ -289,12 +289,13 @@ export interface PainelView {
   period: string;
   intro: string; // under the month's title: the KPI and «Comece por isto:»
   guestsIntro: string; // under «A quem escrever»
+  together: string; // summer +10% and the winter campaign, in one year
   summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
   contacts: PainelGuestList; // winterReturners, with the winter email
   directContacts: PainelGuestList; // contactFirst, with the direct-booking email
   gain: { likely: string; range: string; assumption: string };
-  months: { bars: PainelMonth[]; best: string; price: string };
+  months: { bars: PainelMonth[]; best: string; levels: string; price: string };
 }
 ```
 
@@ -604,6 +605,7 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | `monthName` | novembro |
 | `period` | De novembro de 2025 a outubro de 2026 |
 | `intro` | Pode ganhar mais cerca de 4350 € por ano. Comece por isto: |
+| `together` | Verão e inverno juntos: o verão paga o desconto do inverno. Mais 5590 € no ano. (2946,50 € of the summer +10% and 2643,84 € of the winter campaign) |
 | `guestsIntro` | Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de 4350 € por ano. |
 | `contacts.count` | 49 hóspedes |
 | `contacts.explain` | Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com 10% de desconto. Só tem de o enviar. |
@@ -615,6 +617,7 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | `gain.likely` | Cerca de 4350 € |
 | `gain.range` | Entre cerca de 2030 € e 8650 €, conforme quantos hóspedes aceitarem. |
 | `gain.assumption` | No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez. |
+| `months.levels` | Mais procurados: julho e agosto. Menos procurados: de outubro a janeiro. (a run of 3 or more months, counted round the year, is said «de … a …») |
 | `months.best` | Agosto foi o melhor mês: 65% das noites com hóspedes. |
 | `months.price` | O preço por noite quase não mudou: entre 96 € e 104 €. |
 
@@ -633,7 +636,7 @@ Order for month 11: winter Agora · commission Sempre · summer A preparar · or
 
 Each contact's `detail` is «4 estadas, 1810 € no total. A última foi pelo Airbnb.», or «A última foi direta.» when the last channel is Direto; `email` is the guest's email. `contacts.all` has one row per winter returner, in their order, so its first 3 rows are `contacts.first`. `contacts.total` = `winterReturners.length`. `directContacts` is built the same way from `contactFirst` (80 guests), with the `direct` email instead of the `winter` one; its first three are Helena Costa, Filipa Teixeira and Sofia Teixeira. Each list's `preview` is `invitationText(kind, first name of its first guest)`.
 
-The Hóspedes screen also uses, from `lib/painel.ts`: `writtenProgress(2, 49)` «Já escreveu a 2 de 49» (with 0, «Ainda não escreveu a nenhum dos 49»), `writtenOn("2026-11-21")` «Escreveu a 21 de novembro», `showMoreGuests(39)` «Mostrar mais 39 hóspedes», `winterAnswer(campaign)` «Cerca de 10 estadas: mais 2644 €.» and `directAnswer(direct)` «Mais 1413 € por ano.».
+The Hóspedes screen also uses, from `lib/painel.ts`: `writtenProgress(2, 49)` «Já escreveu a 2 de 49» (with 0, «Ainda não escreveu a nenhum dos 49»), `writtenOn("2026-11-21")` «Escreveu a 21 de novembro», `showMoreGuests(39)` «Mostrar mais 39 hóspedes», `winterAnswer(campaign)` «Cerca de 10 estadas: mais 2644 €.» and `directAnswer(direct)` «Mais 1413 € por ano.». O ano uses `channelFlowSentence(transitions)`: with the transitions above, «27 das 37 estadas de quem reservou direto voltaram pelas plataformas.».
 
 `months.bars` has 12 rows `{ period, label, percent, level }`: `label` is the short month without a dot («ago»), `percent` the occupancy («65%») and `level` «mais procurado» (hot), «normal» or «menos procurado» (cold).
 
