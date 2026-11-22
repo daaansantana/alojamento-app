@@ -2,6 +2,8 @@
 
 Uma página só, em português, para a dona de uma casa de hóspedes com 8 quartos. A partir das reservas do próprio negócio, diz-lhe como correu o ano, o que fazer este mês, a que hóspedes escrever e quanto ganha por ano se mudar alguma coisa. Projeto final, em equipa de três.
 
+A app está publicada em <https://alojamento-app.vercel.app/>.
+
 Os dados vêm de `alojamento.xlsx`, convertido uma vez num JSON por folha. Não há backend: o browser lê os ficheiros de `public/data/`. A data de referência vem dos dados (2 de novembro de 2026), nunca do dia de hoje.
 
 ## Como correr
