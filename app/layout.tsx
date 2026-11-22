@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Atkinson_Hyperlegible_Next } from "next/font/google";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Shell } from "./shell";
 import "./globals.css";
 
@@ -37,9 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>
-          <Shell>{children}</Shell>
-        </TooltipProvider>
+        <Shell>{children}</Shell>
       </body>
     </html>
   );

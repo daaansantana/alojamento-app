@@ -37,11 +37,6 @@ import {
 import { ScreenState } from "../screen-state";
 
 const QUESTIONS: PriceQuestion[] = ["verao", "inverno", "quarto"];
-const HASH: Record<string, PriceQuestion> = {
-  verao: "verao",
-  inverno: "inverno",
-  quarto: "quarto",
-};
 const SUMMER = [0, 5, 10, 15, 20];
 const DISCOUNT = [0, 5, 10, 15, 20];
 const RATES = [600, 750, 900, 1050];
@@ -89,8 +84,8 @@ export default function Precos() {
   useEffect(() => {
     if (!ready) return;
     const read = () => {
-      const next = HASH[window.location.hash.slice(1)];
-      if (!next) return;
+      const next = window.location.hash.slice(1) as PriceQuestion;
+      if (!QUESTIONS.includes(next)) return;
       setQuestion(next);
       requestAnimationFrame(() =>
         document.getElementById("e-se")?.scrollIntoView({ block: "start" }),
@@ -193,7 +188,7 @@ export default function Precos() {
       <div className="flex flex-col gap-6 lg:sticky lg:top-28">
         <PriceWhatIf
           question={question}
-          onQuestionChange={(q) => QUESTIONS.includes(q) && setQuestion(q)}
+          onQuestionChange={setQuestion}
           {...whatIf}
           together={view.together}
         />
