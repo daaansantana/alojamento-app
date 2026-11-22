@@ -18,6 +18,7 @@ import type {
   PainelInput,
   PainelView,
   PeriodKpi,
+  PricingScenario,
   WinterCampaignScenario,
 } from "@/types";
 
@@ -35,7 +36,10 @@ export const PAINEL_DIRECT: DirectBookingScenario = {
 };
 
 /** The summer price change behind AlertFacts.summerGain. */
-const SUMMER_PRICE_CHANGE = 0.1;
+export const PAINEL_SUMMER: PricingScenario = {
+  priceChange: 0.1,
+  months: ["2026-07", "2026-08"],
+};
 
 const WHEN: Record<AlertWhen, string> = {
   now: "Agora",
@@ -101,7 +105,7 @@ function action(
         ...base,
         title: "Suba um pouco o preço em julho e agosto",
         text: `Julho e agosto tiveram ${pct(facts.julyOccupancy)} e ${pct(facts.augustOccupancy)} das noites com hóspedes, com o preço de sempre.`,
-        worth: `Com mais ${pct(SUMMER_PRICE_CHANGE)}, nas mesmas noites: mais ${eur(facts.summerGain)}.`,
+        worth: `Com mais ${pct(PAINEL_SUMMER.priceChange)}, nas mesmas noites: mais ${eur(facts.summerGain)}.`,
         cta: "Simular o verão",
         target: "#simular",
       };
@@ -143,6 +147,7 @@ export function buildPainel(input: PainelInput): PainelView {
   const optimistic = scenario(gains, "optimistic");
 
   const adrs = thermometer.map((m) => m.adr);
+  const contacts = input.winterReturners.map(contact);
 
   return {
     month: input.month,
@@ -161,7 +166,8 @@ export function buildPainel(input: PainelInput): PainelView {
     },
     actions: input.alerts.map((a) => action(a.id, a.when, input)),
     contacts: {
-      first: input.winterReturners.slice(0, 3).map(contact),
+      first: contacts.slice(0, 3),
+      all: contacts,
       total: input.winterReturners.length,
     },
     gain: {

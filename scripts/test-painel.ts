@@ -279,6 +279,16 @@ check("contacts.first", view.contacts.first, [
   },
 ]);
 check("contacts.total", view.contacts.total, 3);
+check(
+  "contacts.all: one per winter returner",
+  view.contacts.all.length,
+  guests.length,
+);
+check(
+  "contacts.all: the first three are contacts.first",
+  view.contacts.all.slice(0, 3),
+  view.contacts.first,
+);
 
 console.log("\npainel: gain");
 check("gain", view.gain, {

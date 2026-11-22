@@ -49,6 +49,11 @@
 }
 
 :root {
+  /* Demand levels and the occupancy map: each 3:1 or more on white. */
+  --level-hot: #c2410c;
+  --level-normal: #64748b;
+  --level-cold: #0369a1;
+  --map: #0369a1;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -127,8 +132,17 @@
   html {
     @apply font-sans;
   }
-  :focus-visible {
-    outline: 2px solid var(--foreground);
-    outline-offset: 2px;
+  p {
+    text-wrap: pretty;
   }
+}
+
+/* Keyboard focus, the same on every control. Important on purpose: it beats
+   the faint `outline-ring/50` and `outline-none` that components/ui uses on
+   buttons, toggles, selects and triggers, without editing those files. */
+:focus-visible {
+  /* biome-ignore lint/complexity/noImportantStyles: must beat components/ui */
+  outline: 2px solid var(--foreground) !important;
+  /* biome-ignore lint/complexity/noImportantStyles: must beat components/ui */
+  outline-offset: 2px !important;
 }

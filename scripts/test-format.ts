@@ -23,6 +23,8 @@ check("int(1344)", int(1344), "1344");
 check("int(14626)", int(14626), `14${NBSP}626`);
 check("pct(0.4603)", pct(0.4603), "46%");
 check("pct(0.6452)", pct(0.6452), "65%");
+check("pct(0.155, 1)", pct(0.155, 1), "15,5%");
+check("pct(0.15, 1)", pct(0.15, 1), "15%");
 check("monthName(11)", monthName(11), "novembro");
 check('monthShort("2026-08")', monthShort("2026-08"), "ago");
 check("about(2034.10)", about(2034.1), `2030${NBSP}€`);
