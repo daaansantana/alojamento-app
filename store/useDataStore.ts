@@ -4,6 +4,7 @@ import {
   persist,
   type StateStorage,
 } from "zustand/middleware";
+import { dayOf } from "@/lib/dates";
 import { fetchBookings, fetchRooms } from "@/services/data";
 import type { Booking, DataStatus, Room, TextSize } from "@/types";
 
@@ -16,9 +17,12 @@ interface DataState {
   selectedMonth: number | null;
   // remembered on this device
   textSize: TextSize;
+  contacted: Record<string, string>; // guest email → the day she wrote, "YYYY-MM-DD"
   load: () => Promise<void>;
   setSelectedMonth: (month: number | null) => void;
   setTextSize: (size: TextSize) => void;
+  markContacted: (email: string) => void;
+  unmarkContacted: (email: string) => void;
 }
 
 // Storage can be missing or refuse to work (private windows, blocked site
@@ -50,7 +54,7 @@ const safeStorage: StateStorage = {
 // Reads quartos.json and reservas.json once and shares them between pages.
 // The data is the same static files for everyone and is only loaded in the
 // browser, so one module-level store is enough. Only her choices are kept
-// in storage, never the data.
+// in storage: the text size and who she has written to.
 export const useDataStore = create<DataState>()(
   persist(
     (set, get) => ({
@@ -60,8 +64,18 @@ export const useDataStore = create<DataState>()(
       error: null,
       selectedMonth: null,
       textSize: "normal",
+      contacted: {},
       setSelectedMonth: (month) => set({ selectedMonth: month }),
       setTextSize: (textSize) => set({ textSize }),
+      markContacted: (email) =>
+        set((state) => ({
+          contacted: { ...state.contacted, [email]: dayOf(Date.now()) },
+        })),
+      unmarkContacted: (email) =>
+        set((state) => {
+          const { [email]: _, ...rest } = state.contacted;
+          return { contacted: rest };
+        }),
       load: async () => {
         const { status } = get();
         if (status === "loading" || status === "ready") return;
@@ -83,7 +97,10 @@ export const useDataStore = create<DataState>()(
     {
       name: "a-sua-casa",
       storage: createJSONStorage(() => safeStorage),
-      partialize: (state) => ({ textSize: state.textSize }),
+      partialize: (state) => ({
+        textSize: state.textSize,
+        contacted: state.contacted,
+      }),
       // Read after the first render, so the prerendered HTML and the first
       // client render match.
       skipHydration: true,

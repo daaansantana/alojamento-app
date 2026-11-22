@@ -1,4 +1,13 @@
-import { about, eur, int, monthName, monthShort, pct } from "../lib/format";
+import { dayOf } from "../lib/dates";
+import {
+  about,
+  dayMonth,
+  eur,
+  int,
+  monthName,
+  monthShort,
+  pct,
+} from "../lib/format";
 
 let failures = 0;
 
@@ -28,6 +37,13 @@ check("pct(0.15, 1)", pct(0.15, 1), "15%");
 check("monthName(11)", monthName(11), "novembro");
 check('monthShort("2026-08")', monthShort("2026-08"), "ago");
 check("about(2034.10)", about(2034.1), `2030${NBSP}€`);
+check('dayMonth("2026-11-21")', dayMonth("2026-11-21"), "21 de novembro");
+check('dayMonth("2026-03-01")', dayMonth("2026-03-01"), "1 de março");
+check(
+  "dayOf(a local moment)",
+  dayOf(new Date(2026, 10, 21, 23, 30).getTime()),
+  "2026-11-21",
+);
 check("about(4350.85)", about(4350.85), `4350${NBSP}€`);
 check("about(8646.15)", about(8646.15), `8650${NBSP}€`);
 

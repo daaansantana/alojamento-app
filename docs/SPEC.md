@@ -711,6 +711,7 @@ useWinterCampaign(scenario: WinterCampaignScenario): WinterCampaignResult | null
 useMonthSelection(): { selectedMonth: number | null; setSelectedMonth: (month: number | null) => void }
 usePainel(): PainelView | null // version 3
 useTextSize(): { textSize: TextSize; setTextSize: (size: TextSize) => void }
+useContacted(): { contacted: Record<string, string>; mark: (email: string) => void; unmark: (email: string) => void }
 ```
 
 - `useData` loads `quartos.json` and `reservas.json` once, through a Zustand store and `services/data.ts`.
@@ -720,5 +721,6 @@ useTextSize(): { textSize: TextSize; setTextSize: (size: TextSize) => void }
 - `retry` loads the files again after an error, through the store's `load`. Pages pass it to the error state as `onRetry`, which shows a «Tentar de novo» button.
 - The store keeps `selectedMonth: number | null` and `setSelectedMonth(month)`. `null` means the month of the reference date, 11. `useAlerts` reads it and returns the month it used. Pages read and change it through `useMonthSelection`, never the store itself.
 - `usePainel` (version 3) passes `contactFirst` from `useReturningGuests` too, and joins `useDashboard`, `useReturningGuests`, `useAlerts`, `useWinterCampaign(PAINEL_WINTER_CAMPAIGN)`, `useDirectSimulation(PAINEL_DIRECT)` and `gainScenarios`, and passes them to `buildPainel`. It follows the selected month through `useAlerts`.
-- The store also keeps `textSize`, the «Letra maior» choice, and `setTextSize(size)`. It is the only thing kept on the device: the store's `persist` saves it in `localStorage`, under `a-sua-casa`, never the data. Reading and writing are guarded, so the page works without storage. The store reads it back after the first render (`skipHydration`), so the prerendered HTML matches. Pages read and change it through `useTextSize`. `TextSize` goes in `types/index.ts`.
+- The store also keeps `textSize`, the «Letra maior» choice, and `setTextSize(size)`. It is kept on the device: the store's `persist` saves it in `localStorage`, under `a-sua-casa`, never the data. Reading and writing are guarded, so the page works without storage. The store reads it back after the first render (`skipHydration`), so the prerendered HTML matches. Pages read and change it through `useTextSize`. `TextSize` goes in `types/index.ts`.
+- The store also keeps `contacted: Record<string, string>`, each guest's email with the day she marked «Já escrevi» («YYYY-MM-DD», from `Date.now()` through `dayOf` in `lib/dates.ts`), with `markContacted(email)` and `unmarkContacted(email)`. `persist` keeps it with `textSize`, guarded the same way. Pages read and change it through `useContacted`, which returns `contacted`, `mark` and `unmark`. `dayMonth` in `lib/format.ts` shows the day as «21 de novembro».
 - A type or a hook only changes through a reviewed PR, with `npm run verificar` passing.

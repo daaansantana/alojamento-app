@@ -131,3 +131,10 @@ export function soldNights(bookings: Booking[]): SoldNight[] {
   }
   return nights;
 }
+
+/** The local day of a moment in milliseconds, as "YYYY-MM-DD". */
+export function dayOf(ms: number): string {
+  const d = new Date(ms);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}

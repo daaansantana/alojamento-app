@@ -67,3 +67,9 @@ export function monthShort(period: string): string {
 export function about(value: number): string {
   return eur(Math.round(value / 10) * 10);
 }
+
+/** A "YYYY-MM-DD" day as she says it: "2026-11-21" → "21 de novembro". */
+export function dayMonth(date: string): string {
+  const [, month, day] = date.split("-").map(Number);
+  return `${day} de ${monthName(month)}`;
+}
