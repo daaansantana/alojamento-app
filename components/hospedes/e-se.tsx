@@ -25,11 +25,11 @@ export function StepWhatIf({
   answer: string;
 }) {
   const button =
-    "flex size-14 items-center justify-center rounded-xl border border-control bg-background hover:bg-muted aria-disabled:cursor-not-allowed aria-disabled:opacity-40";
+    "flex size-12 shrink-0 items-center justify-center rounded-xl sm:size-14 border border-control bg-background hover:bg-muted aria-disabled:cursor-not-allowed aria-disabled:opacity-40";
   return (
     <section
       aria-labelledby="e-se-titulo"
-      className="flex flex-col gap-4 rounded-panel bg-muted p-5 sm:p-6"
+      className="flex flex-col gap-4 rounded-panel bg-muted p-4 sm:p-6"
     >
       <h2 id="e-se-titulo" className="text-h2 font-bold">
         {title}
@@ -37,7 +37,7 @@ export function StepWhatIf({
       <p id="e-se-pergunta" className="font-bold">
         {question}
       </p>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <button
           type="button"
           aria-label="Menos"
@@ -50,7 +50,7 @@ export function StepWhatIf({
         <output
           aria-live="polite"
           aria-labelledby="e-se-pergunta"
-          className="min-w-24 text-center text-kpi font-bold tabular-nums"
+          className="min-w-0 flex-1 text-center text-[2rem] font-bold tabular-nums sm:flex-none sm:min-w-24 sm:text-kpi"
         >
           {pct(value / 100)}
         </output>
