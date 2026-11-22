@@ -48,13 +48,14 @@ export function YearChart({
       >
         <ChartContainer
           config={config}
-          className="aspect-auto h-64 w-full text-base"
+          // Phones: 15 px month names, so the 12 stand apart.
+          className="aspect-auto h-64 w-full text-base max-sm:[&_.recharts-cartesian-axis-tick_text]:text-[15px]"
           aria-hidden="true"
         >
           <BarChart
             data={bars}
-            margin={{ top: 30, right: 12, bottom: 0, left: 12 }}
-            barCategoryGap="12%"
+            margin={{ top: 30, right: 4, bottom: 0, left: 4 }}
+            barCategoryGap="14%"
             accessibilityLayer={false}
           >
             <XAxis
