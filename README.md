@@ -60,7 +60,7 @@ Fluxo dos dados: `public/data/*.json` → `services/` → `store/` → `hooks/`,
 
 ## Documentos
 
-- [PRODUCT.md](PRODUCT.md): a persona, o propósito da app e os princípios do desenho.
+- [PRODUCT.md](PRODUCT.md): a persona, o propósito da app, a visão do produto e os princípios do desenho.
 - [DESIGN.md](DESIGN.md): o sistema visual e a marca nexo: o logo, as cores, a letra, a forma e os componentes.
 - [docs/SPEC.md](docs/SPEC.md): o contrato: regras dos dados, tipos, funções, valores esperados e hooks.
 - [docs/ANALISE.md](docs/ANALISE.md): a análise dos dados (exploração, hipóteses, conclusões, indicadores e KPI), com a fonte de cada número. Em inglês: [docs/ANALYSIS.en.md](docs/ANALYSIS.en.md).

@@ -323,3 +323,5 @@ Contexto da persona, em `PRODUCT.md`:
 ### Próximo passo
 
 Um agente que vigia os preços do mercado à volta da casa e avisa a dona quando vale a pena mudar o preço. Respondia ao limite dos preços da concorrência. Precisa de dados de fora e de um servidor que corra sozinho, e o enunciado não prevê nenhum dos dois: a app de hoje não tem servidor e só lê os ficheiros de `public/data/`.
+
+O resto da visão do produto (ser encontrada no Google, a página da casa, o cartão à saída e o calendário único) está em [PRODUCT.md](../PRODUCT.md), na secção «Product Vision».

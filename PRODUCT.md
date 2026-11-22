@@ -22,6 +22,9 @@ Where each trait comes from:
 - Runs it herself: 76% of local-accommodation owners manage alone (NOVA SBE for ALEP, 2023). Eight in ten registration holders have one property (RNAL, in the NOVA SBE study for ALEP, 2025).
 - The house matters to the family budget: for 39% of owners it is more than 60% of it (NOVA SBE for ALEP, 2023).
 - Not confident with digital tools: in Portugal, 27.6% of people aged 16 to 74 have below-basic digital skills and 10.6% do not use the internet (European Commission, Digital Skills Indicator 2.0, 2025). The team chose this trait for the persona.
+- Very good at hosting, basic online: 102 of the 312 guests came back, and they brought 52% of the revenue (the data). Online she does the basics, so guests who already know her often come back through the platforms: 3 in 4 returns paid a commission, and guests whose first stay was booked direct came back through a platform in 27 of 37 stays (the data).
+- A possible story, not a finding: a guest who wants to come back looks for the house, does not find a phone number and books on a platform. The data does not say why guests return through the platforms.
+- The platforms are not the enemy: they bring guests who do not know her yet. Being listed on an online travel agency also brings bookings through the hotel's own channels, the «billboard effect»: a listing on Expedia raised reservations through the hotels' own channels by 7.5% to 26% (Anderson, «The Billboard Effect: Online Travel Agent Impact on Non-OTA Reservation Volume», Cornell Center for Hospitality Research, 2009). nexo helps the guests who already know her come back through her.
 
 Her name is Isabel («Isabel, que não é nenhum hóspede da base»: no guest in the data has this name).
 
@@ -41,6 +44,30 @@ Four screens, each answering one of her questions, that turn the guest house's o
 | O ano (`/ano`) | «Como correu o ano?» | The summary, the months and, folded away, the numbers behind them |
 
 Success: she can say what to do this month after a few seconds on the first screen, and how much it is worth per year (the KPI).
+
+## Product Vision
+
+The MVP helps her decide. The next steps help her be found and then run the house with less effort. None of this is built: it is the direction, so the MVP's choices do not close it off.
+
+| Stage | What it solves | What |
+| --- | --- | --- |
+| Today (the MVP) | Deciding | The four screens: the action of the month, who to write to, her price next to the market's, and the year |
+| Next | Being found | A one-page site for the house, made from what she fills in (photos, rooms, phone, WhatsApp, map, a booking request), with the registration number. Her Google Business Profile, step by step. A card with a QR code to her page, handed to each guest at check-out. A review request after each stay |
+| Later | Running it with less effort | One calendar with the platforms, so direct bookings never overlap. An agent that fetches the INE values when they come out, watches the prices around the house and tells her when a change is worth it. The local-accommodation paperwork in one place |
+| Scale | Other owners like her | Owners with one house who run it themselves |
+
+Why the page and Google go together:
+- On Google, a guest house like hers is a hotel property (inns, hotels and bed and breakfasts are; vacation homes and short-term rentals are not), so she can verify a free Business Profile on Search and Maps.
+- Google's free booking links show a direct price next to the platforms at no cost to the property, but the link must take the guest to the property's own site, and only hotels that are bookable online can add rates. The page is what makes that possible.
+- Sources: Google Hotel Center Help, «Connect with more travelers using free booking links» and «How to add and manage rates and availability to your Google Business Profile»; Google, «Make your hotel stand out on Google»; innRoad, «The Benefits of Using Google Free Booking Links for Your Property».
+
+Rules the page and the card must follow:
+- Advertising, commercial documents and merchandising of a local-accommodation property must show its registration number in the RNAL (Decreto-Lei n.º 128/2014, the local-accommodation law; Turismo de Portugal). nexo would add the number on its own.
+- Only guests who gave their contact to the house are written to, with an opt-out in every message (Lei 41/2004, art. 13.º-A).
+
+Scale:
+- There were 120,002 local-accommodation registrations in Portugal in October 2026 (ALEP study, reported by RTP, 19 November 2026), and eight in ten registration holders have one property (RNAL, in the NOVA SBE study for ALEP, 2025).
+- Business model, a hypothesis to test: a monthly fee lower than the commissions nexo helps her save.
 
 ## Operating Context
 
