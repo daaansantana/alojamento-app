@@ -262,8 +262,18 @@ export interface PainelAction {
 
 export interface PainelContact {
   name: string;
-  detail: string; // "4 estadas · 1810 € · última pelo Airbnb"
+  email: string; // the key for «Já escrevi»
+  detail: string; // "4 estadas, 1810 € no total. A última foi pelo Airbnb."
   mailto: string;
+}
+
+export interface PainelGuestList {
+  first: PainelContact[]; // the first 3
+  all: PainelContact[]; // every guest, same order
+  total: number;
+  count: string; // "49 hóspedes"
+  explain: string; // what the list is and what the email offers
+  preview: { subject: string; body: string }; // the email, to the first guest
 }
 
 export interface PainelMonth {
@@ -278,18 +288,11 @@ export interface PainelView {
   monthName: string; // "novembro"
   period: string;
   intro: string; // under the month's title: the KPI and «Comece por isto:»
+  guestsIntro: string; // under «A quem escrever»
   summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
-  contacts: {
-    first: PainelContact[]; // the first 3 winterReturners
-    all: PainelContact[]; // every winterReturner, same order
-    total: number;
-  };
-  directContacts: {
-    first: PainelContact[]; // the first 3 of contactFirst, with the direct-booking email
-    all: PainelContact[]; // every guest in contactFirst, same order
-    total: number;
-  };
+  contacts: PainelGuestList; // winterReturners, with the winter email
+  directContacts: PainelGuestList; // contactFirst, with the direct-booking email
   gain: { likely: string; range: string; assumption: string };
   months: { bars: PainelMonth[]; best: string; price: string };
 }
@@ -601,6 +604,11 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | `monthName` | novembro |
 | `period` | De novembro de 2025 a outubro de 2026 |
 | `intro` | Pode ganhar mais cerca de 4350 € por ano. Comece por isto: |
+| `guestsIntro` | Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de 4350 € por ano. |
+| `contacts.count` | 49 hóspedes |
+| `contacts.explain` | Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com 10% de desconto. Só tem de o enviar. |
+| `directContacts.count` | 80 hóspedes |
+| `directContacts.explain` | Voltaram e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240 € de comissão. O email oferece 5% de desconto a quem reservar diretamente. Só tem de o enviar. |
 | `summary.sentence` | Este ano a casa rendeu 133 985 €. Agosto foi o melhor mês: 65% das noites com hóspedes. |
 | `summary.short` | Recebeu 133 985 € e teve hóspedes em 46% das noites. |
 | `summary.figures` | «133 985 €» recebeu no ano · «46%» das noites com hóspedes · «102» hóspedes voltaram e trouxeram 52% da receita (52% = `returningSpent ÷ spent`) |
@@ -623,7 +631,9 @@ The actions, with `when` as «Agora», «A preparar», «Sempre» or «Mais tard
 
 Order for month 11: winter Agora · commission Sempre · summer A preparar · orphans Mais tarde. For month 8: summer Agora · orphans Agora · commission Sempre · winter A preparar.
 
-Each contact's `detail` is «4 estadas · 1810 € · última pelo Airbnb», or «· última direta» when the last channel is Direto. `contacts.all` has one row per winter returner, in their order, so its first 3 rows are `contacts.first`. `contacts.total` = `winterReturners.length`. `directContacts` is built the same way from `contactFirst` (80 guests), with the `direct` email instead of the `winter` one; its first three are Helena Costa, Filipa Teixeira and Sofia Teixeira.
+Each contact's `detail` is «4 estadas, 1810 € no total. A última foi pelo Airbnb.», or «A última foi direta.» when the last channel is Direto; `email` is the guest's email. `contacts.all` has one row per winter returner, in their order, so its first 3 rows are `contacts.first`. `contacts.total` = `winterReturners.length`. `directContacts` is built the same way from `contactFirst` (80 guests), with the `direct` email instead of the `winter` one; its first three are Helena Costa, Filipa Teixeira and Sofia Teixeira. Each list's `preview` is `invitationText(kind, first name of its first guest)`.
+
+The Hóspedes screen also uses, from `lib/painel.ts`: `writtenProgress(2, 49)` «Já escreveu a 2 de 49» (with 0, «Ainda não escreveu a nenhum dos 49»), `writtenOn("2026-11-21")` «Escreveu a 21 de novembro», `showMoreGuests(39)` «Mostrar mais 39 hóspedes», `winterAnswer(campaign)` «Cerca de 10 estadas: mais 2644 €.» and `directAnswer(direct)` «Mais 1413 € por ano.».
 
 `months.bars` has 12 rows `{ period, label, percent, level }`: `label` is the short month without a dot («ago»), `percent` the occupancy («65%») and `level` «mais procurado» (hot), «normal» or «menos procurado» (cold).
 

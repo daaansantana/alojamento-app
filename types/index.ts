@@ -258,8 +258,18 @@ export interface PainelAction {
 
 export interface PainelContact {
   name: string;
-  detail: string; // "4 estadas · 1810 € · última pelo Airbnb"
+  email: string; // the key for «Já escrevi»
+  detail: string; // "4 estadas, 1810 € no total. A última foi pelo Airbnb."
   mailto: string;
+}
+
+export interface PainelGuestList {
+  first: PainelContact[]; // the first 3
+  all: PainelContact[]; // every guest, same order
+  total: number;
+  count: string; // "49 hóspedes"
+  explain: string; // what the list is and what the email offers
+  preview: { subject: string; body: string }; // the email, to the first guest
 }
 
 export interface PainelMonth {
@@ -274,18 +284,11 @@ export interface PainelView {
   monthName: string; // "novembro"
   period: string;
   intro: string; // under the month's title: the KPI and «Comece por isto:»
+  guestsIntro: string; // under «A quem escrever»
   summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
-  contacts: {
-    first: PainelContact[]; // the first 3 winterReturners
-    all: PainelContact[]; // every winterReturner, same order
-    total: number;
-  };
-  directContacts: {
-    first: PainelContact[]; // the first 3 of contactFirst, with the direct-booking email
-    all: PainelContact[]; // every guest in contactFirst, same order
-    total: number;
-  };
+  contacts: PainelGuestList; // winterReturners, with the winter email
+  directContacts: PainelGuestList; // contactFirst, with the direct-booking email
   gain: { likely: string; range: string; assumption: string };
   months: { bars: PainelMonth[]; best: string; price: string };
 }

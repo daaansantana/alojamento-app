@@ -1,7 +1,14 @@
 // buildPainel with a fixed input made of the SPEC's expected values:
 // every text of the page, letter by letter, and the order of the actions.
-import { invitationMailto } from "../lib/email";
-import { buildPainel } from "../lib/painel";
+import { invitationMailto, invitationText } from "../lib/email";
+import {
+  buildPainel,
+  directAnswer,
+  showMoreGuests,
+  winterAnswer,
+  writtenOn,
+  writtenProgress,
+} from "../lib/painel";
 import type {
   Alert,
   GuestProfile,
@@ -292,17 +299,20 @@ console.log("\npainel: contacts");
 check("contacts.first", view.contacts.first, [
   {
     name: "Helena Costa",
-    detail: `4 estadas · 1810${_}€ · última pelo Airbnb`,
+    email: "helena.costa@correio.example",
+    detail: `4 estadas, 1810${_}€ no total. A última foi pelo Airbnb.`,
     mailto: invitationMailto(guests[0], "winter"),
   },
   {
     name: "Sofia Teixeira",
-    detail: `2 estadas · 1435${_}€ · última pelo Airbnb`,
+    email: "sofia.teixeira@correio.example",
+    detail: `2 estadas, 1435${_}€ no total. A última foi pelo Airbnb.`,
     mailto: invitationMailto(guests[1], "winter"),
   },
   {
     name: "Ricardo Carvalho",
-    detail: `3 estadas · 1335${_}€ · última direta`,
+    email: "ricardo.carvalho@correio.example",
+    detail: `3 estadas, 1335${_}€ no total. A última foi direta.`,
     mailto: invitationMailto(guests[2], "winter"),
   },
 ]);
@@ -322,17 +332,20 @@ console.log("\npainel: direct-booking contacts");
 check("directContacts.first", view.directContacts.first, [
   {
     name: "Helena Costa",
-    detail: `4 estadas · 1810${_}€ · última pelo Airbnb`,
+    email: "helena.costa@correio.example",
+    detail: `4 estadas, 1810${_}€ no total. A última foi pelo Airbnb.`,
     mailto: invitationMailto(platformGuests[0], "direct"),
   },
   {
     name: "Filipa Teixeira",
-    detail: `3 estadas · 1565${_}€ · última pelo Booking`,
+    email: "filipa.teixeira@correio.example",
+    detail: `3 estadas, 1565${_}€ no total. A última foi pelo Booking.`,
     mailto: invitationMailto(platformGuests[1], "direct"),
   },
   {
     name: "Sofia Teixeira",
-    detail: `2 estadas · 1435${_}€ · última pelo Airbnb`,
+    email: "sofia.teixeira@correio.example",
+    detail: `2 estadas, 1435${_}€ no total. A última foi pelo Airbnb.`,
     mailto: invitationMailto(platformGuests[2], "direct"),
   },
 ]);
@@ -348,6 +361,81 @@ check(
     c.mailto.includes("reserve%20diretamente"),
   ),
   true,
+);
+
+console.log("\npainel: the guest lists");
+check(
+  "guestsIntro",
+  view.guestsIntro,
+  `Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de 4350${_}€ por ano.`,
+);
+check("contacts.count", view.contacts.count, "3 hóspedes");
+check(
+  "contacts.explain",
+  view.contacts.explain,
+  "Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com 10% de desconto. Só tem de o enviar.",
+);
+check(
+  "contacts.preview: the email to the first guest",
+  view.contacts.preview,
+  invitationText("winter", "Helena"),
+);
+check("directContacts.count", view.directContacts.count, "3 hóspedes");
+check(
+  "directContacts.explain",
+  view.directContacts.explain,
+  `Voltaram e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240${_}€ de comissão. O email oferece 5% de desconto a quem reservar diretamente. Só tem de o enviar.`,
+);
+check(
+  "directContacts.preview",
+  view.directContacts.preview,
+  invitationText("direct", "Helena"),
+);
+check(
+  "writtenProgress(2, 49)",
+  writtenProgress(2, 49),
+  "Já escreveu a 2 de 49",
+);
+check(
+  "writtenProgress(0, 49)",
+  writtenProgress(0, 49),
+  "Ainda não escreveu a nenhum dos 49",
+);
+check("writtenOn", writtenOn("2026-11-21"), "Escreveu a 21 de novembro");
+check("showMoreGuests(39)", showMoreGuests(39), "Mostrar mais 39 hóspedes");
+check("showMoreGuests(1)", showMoreGuests(1), "Mostrar mais 1 hóspede");
+check(
+  "winterAnswer",
+  winterAnswer({
+    guests: 49,
+    extraStays: 10,
+    avgStayValue: 293.76,
+    extraRevenue: 2643.84,
+    discountCost: 293.76,
+  }),
+  `Cerca de 10 estadas: mais 2644${_}€.`,
+);
+check(
+  "winterAnswer, nobody returns",
+  winterAnswer({
+    guests: 49,
+    extraStays: 0,
+    avgStayValue: 293.76,
+    extraRevenue: 0,
+    discountCost: 0,
+  }),
+  "Nenhuma estada a mais.",
+);
+check(
+  "directAnswer",
+  directAnswer({
+    baseStays: 95,
+    baseRevenue: 28265,
+    commissionToday: 4239.75,
+    yearlyGain: 1413.25,
+    breakEvenDiscount: 0.15,
+  }),
+  `Mais 1413${_}€ por ano.`,
 );
 
 console.log("\npainel: gain");

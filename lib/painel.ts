@@ -3,11 +3,25 @@
 // Pure: no fetch, no store, no React.
 
 import { BOOKING_COMMISSION } from "@/lib/benchmarks";
-import { type InvitationKind, invitationMailto } from "@/lib/email";
-import { about, eur, int, monthName, monthShort, pct } from "@/lib/format";
+import {
+  firstName,
+  type InvitationKind,
+  invitationMailto,
+  invitationText,
+} from "@/lib/email";
+import {
+  about,
+  dayMonth,
+  eur,
+  int,
+  monthName,
+  monthShort,
+  pct,
+} from "@/lib/format";
 import type {
   AlertId,
   AlertWhen,
+  DirectBookingResult,
   DirectBookingScenario,
   GainScenario,
   GainScenarioId,
@@ -19,6 +33,7 @@ import type {
   PainelView,
   PeriodKpi,
   PricingScenario,
+  WinterCampaignResult,
   WinterCampaignScenario,
 } from "@/types";
 
@@ -128,11 +143,50 @@ function action(
 function contact(guest: GuestProfile, kind: InvitationKind): PainelContact {
   const last =
     guest.lastChannel === "Direto" ? "direta" : `pelo ${guest.lastChannel}`;
+  const stays = guest.stays === 1 ? "1 estada" : `${int(guest.stays)} estadas`;
   return {
     name: guest.name,
-    detail: `${int(guest.stays)} estadas · ${eur(guest.spent)} · última ${last}`,
+    email: guest.email,
+    detail: `${stays}, ${eur(guest.spent)} no total. A última foi ${last}.`,
     mailto: invitationMailto(guest, kind),
   };
+}
+
+const guestsWord = (n: number) =>
+  n === 1 ? "1 hóspede" : `${int(n)} hóspedes`;
+
+/** «Já escreveu a 2 de 49»: how many of a list she has written to. */
+export function writtenProgress(done: number, total: number): string {
+  return done === 0
+    ? `Ainda não escreveu a nenhum dos ${int(total)}`
+    : `Já escreveu a ${int(done)} de ${int(total)}`;
+}
+
+/** «Escreveu a 21 de novembro», from the day she marked it, "YYYY-MM-DD". */
+export function writtenOn(day: string): string {
+  return `Escreveu a ${dayMonth(day)}`;
+}
+
+/** «Mostrar mais 39 hóspedes». */
+export function showMoreGuests(hidden: number): string {
+  return `Mostrar mais ${guestsWord(hidden)}`;
+}
+
+/** The answer to «E se só alguns voltarem?», for the winter list. */
+export function winterAnswer(campaign: WinterCampaignResult): string {
+  if (campaign.extraStays === 0) return "Nenhuma estada a mais.";
+  const stays =
+    campaign.extraStays === 1
+      ? "1 estada"
+      : `${int(campaign.extraStays)} estadas`;
+  return `Cerca de ${stays}: mais ${eur(campaign.extraRevenue)}.`;
+}
+
+/** The answer to «E se só alguns aceitarem?», for the direct-booking list. */
+export function directAnswer(direct: DirectBookingResult): string {
+  return direct.yearlyGain > 0
+    ? `Mais ${eur(direct.yearlyGain)} por ano.`
+    : "Nada a mais por ano.";
 }
 
 function scenario(gains: GainScenario[], id: GainScenarioId): GainScenario {
@@ -153,12 +207,15 @@ export function buildPainel(input: PainelInput): PainelView {
   const adrs = thermometer.map((m) => m.adr);
   const contacts = input.winterReturners.map((g) => contact(g, "winter"));
   const directContacts = input.contactFirst.map((g) => contact(g, "direct"));
+  const preview = (kind: InvitationKind, list: GuestProfile[]) =>
+    invitationText(kind, list.length ? firstName(list[0].name) : "Helena");
 
   return {
     month: input.month,
     monthName: monthName(input.month),
     period: `De ${monthOfYear(byMonth[0].period)} a ${monthOfYear(byMonth[byMonth.length - 1].period)}`,
     intro: `Pode ganhar mais cerca de ${about(likely.total)} por ano. Comece por isto:`,
+    guestsIntro: `Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de ${about(likely.total)} por ano.`,
     summary: {
       sentence: `Este ano a casa rendeu ${eur(year.revenue)}. ${best}`,
       short: `Recebeu ${eur(year.revenue)} e teve hóspedes em ${pct(year.occupancy)} das noites.`,
@@ -176,11 +233,17 @@ export function buildPainel(input: PainelInput): PainelView {
       first: contacts.slice(0, 3),
       all: contacts,
       total: input.winterReturners.length,
+      count: guestsWord(input.winterReturners.length),
+      explain: `Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com ${pct(PAINEL_WINTER_CAMPAIGN.discount)} de desconto. Só tem de o enviar.`,
+      preview: preview("winter", input.winterReturners),
     },
     directContacts: {
       first: directContacts.slice(0, 3),
       all: directContacts,
       total: input.contactFirst.length,
+      count: guestsWord(input.contactFirst.length),
+      explain: `Voltaram e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou ${eur(input.facts.commissionToday)} de comissão. O email oferece ${pct(PAINEL_DIRECT.directDiscount)} de desconto a quem reservar diretamente. Só tem de o enviar.`,
+      preview: preview("direct", input.contactFirst),
     },
     gain: {
       likely: `Cerca de ${about(likely.total)}`,
