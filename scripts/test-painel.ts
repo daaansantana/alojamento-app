@@ -1,10 +1,20 @@
 // buildPainel with a fixed input made of the SPEC's expected values:
 // every text of the page, letter by letter, and the order of the actions.
+import { MARKET_BY_MONTH, MARKET_SEGMENT } from "../lib/benchmarks";
 import { invitationMailto, invitationText } from "../lib/email";
+import { marketComparison } from "../lib/market";
 import {
   buildPainel,
   channelFlowSentence,
   directAnswer,
+  MARKET_NOTE,
+  marketDifference,
+  marketGap,
+  marketIntro,
+  marketMonthLabel,
+  marketSentence,
+  marketStandIn,
+  marketYear,
   showMoreGuests,
   summerAnswer,
   winterAnswer,
@@ -545,6 +555,67 @@ check(
     { from: "Direto", to: "Direto", stays: 10 },
   ]),
   "27 das 37 estadas de quem reservou direto voltaram pelas plataformas.",
+);
+
+console.log("\npainel: the market");
+const market = marketComparison(byMonth, MARKET_BY_MONTH);
+const at = (period: string) => {
+  const found = market.months.find((m) => m.period === period);
+  if (!found) throw new Error(period);
+  return found;
+};
+check(
+  "marketIntro",
+  marketIntro(MARKET_SEGMENT),
+  "O preço médio por noite da sua casa, ao lado da média de todo o alojamento turístico em Portugal, hotéis incluídos, segundo o INE.",
+);
+check(
+  "MARKET_NOTE",
+  MARKET_NOTE,
+  "Os hotéis puxam a média para cima: serve de referência, não de alvo.",
+);
+check(
+  "marketYear",
+  marketYear(market),
+  "Em 7 dos 12 meses, cobra menos do que o mercado.",
+);
+check(
+  "marketGap, November",
+  marketGap(at("2025-11")),
+  `Está 6${_}€ acima do mercado.`,
+);
+check(
+  "marketGap, August",
+  marketGap(at("2026-08")),
+  `Está 63${_}€ abaixo do mercado.`,
+);
+check(
+  "marketGap, December (within 1 €)",
+  marketGap(at("2025-12")),
+  "Está ao nível do mercado.",
+);
+check(
+  "marketMonthLabel, August",
+  marketMonthLabel(at("2026-08")),
+  `Agosto: a sua casa 100${_}€, o mercado 163${_}€.`,
+);
+check(
+  "marketMonthLabel, October (2025 value)",
+  marketMonthLabel(at("2026-10")),
+  `Outubro: a sua casa 96${_}€, o mercado 123${_}€. O valor do mercado é de outubro de 2025.`,
+);
+check(
+  "marketStandIn",
+  marketStandIn(at("2026-10")),
+  "Valor de outubro de 2025: o deste ano ainda não foi publicado.",
+);
+check("marketDifference, November", marketDifference(at("2025-11")), `+6${_}€`);
+check("marketDifference, August", marketDifference(at("2026-08")), `−63${_}€`);
+check("marketDifference, December", marketDifference(at("2025-12")), `0${_}€`);
+check(
+  "marketSentence",
+  marketSentence(market),
+  `Em agosto, o mercado cobrou em média 163${_}€ por noite; a casa, 100${_}€.`,
 );
 
 console.log("\npainel: gain");

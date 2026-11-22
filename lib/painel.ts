@@ -27,6 +27,8 @@ import type {
   GainScenario,
   GainScenarioId,
   GuestProfile,
+  MarketComparison,
+  MarketComparisonMonth,
   MonthLevel,
   PainelAction,
   PainelContact,
@@ -235,6 +237,61 @@ export function channelFlowSentence(transitions: ChannelTransition[]): string {
     .filter((t) => t.to !== "Direto")
     .reduce((sum, t) => sum + t.stays, 0);
   return `${int(platforms)} das ${int(total)} estadas de quem reservou direto voltaram pelas plataformas.`;
+}
+
+/** Under «O seu preço e o do mercado»: what the market is. */
+export function marketIntro(segment: string): string {
+  return `O preço médio por noite da sua casa, ao lado ${segment}.`;
+}
+
+/** Right under the intro: how to read the market's average. */
+export const MARKET_NOTE =
+  "Os hotéis puxam a média para cima: serve de referência, não de alvo.";
+
+/** «Valor de outubro de 2025: o deste ano ainda não foi publicado.», for a stand-in month. */
+export function marketStandIn(month: MarketComparisonMonth): string {
+  const [year, m] = month.from.split("-").map(Number);
+  return `Valor de ${monthName(m)} de ${year}: o deste ano ainda não foi publicado.`;
+}
+
+/** «Em 7 dos 12 meses, cobra menos do que o mercado.», or «mais» when most months are above. */
+export function marketYear(comparison: MarketComparison): string {
+  const n = comparison.months.length;
+  return comparison.above > comparison.below
+    ? `Em ${int(comparison.above)} dos ${int(n)} meses, cobra mais do que o mercado.`
+    : `Em ${int(comparison.below)} dos ${int(n)} meses, cobra menos do que o mercado.`;
+}
+
+/** «Está 23 € abaixo do mercado.», «… acima …», or level within 1 €. */
+export function marketGap(month: MarketComparisonMonth): string {
+  if (Math.abs(month.difference) < 1) return "Está ao nível do mercado.";
+  const gap = eur(Math.abs(month.difference));
+  return month.difference < 0
+    ? `Está ${gap} abaixo do mercado.`
+    : `Está ${gap} acima do mercado.`;
+}
+
+/** One month in words, for screen readers: «Agosto: a sua casa 100 €, o mercado 172 €.» */
+export function marketMonthLabel(month: MarketComparisonMonth): string {
+  const name = monthName(Number(month.period.slice(5)));
+  const label = `${name.charAt(0).toUpperCase()}${name.slice(1)}: a sua casa ${eur(month.house)}, o mercado ${eur(month.market)}.`;
+  if (!month.substitute) return label;
+  const [year, m] = month.from.split("-").map(Number);
+  return `${label} O valor do mercado é de ${monthName(m)} de ${year}.`;
+}
+
+/** «+8 €», «−23 €» or «0 €»: the house minus the market, per night. */
+export function marketDifference(month: MarketComparisonMonth): string {
+  if (Math.abs(month.difference) < 1) return eur(0);
+  const sign = month.difference > 0 ? "+" : "−";
+  return `${sign}${eur(Math.abs(month.difference))}`;
+}
+
+/** O ano: the month where the house and the market differ most. */
+export function marketSentence(comparison: MarketComparison): string {
+  const { widest } = comparison;
+  const name = monthName(Number(widest.period.slice(5)));
+  return `Em ${name}, o mercado cobrou em média ${eur(widest.market)} por noite; a casa, ${eur(widest.house)}.`;
 }
 
 /** «E se mudar o preço?», summer: what a price change in July and August brings. */

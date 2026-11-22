@@ -310,6 +310,7 @@ export interface MarketComparisonMonth {
   house: number; // the house's price per night (its adr)
   market: number; // the market's adr
   difference: number; // house − market, € per night
+  from: string; // the month the market value is from
   substitute: boolean; // the market value is from the same month a year before
 }
 
