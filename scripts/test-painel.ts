@@ -195,6 +195,16 @@ check("month", view.month, 11);
 check("monthName", view.monthName, "novembro");
 check("period", view.period, "De novembro de 2025 a outubro de 2026");
 check(
+  "intro",
+  view.intro,
+  `Pode ganhar mais cerca de 4350${_}€ por ano. Comece por isto:`,
+);
+check(
+  "summary.short",
+  view.summary.short,
+  `Recebeu 133${_}985${_}€ e teve hóspedes em 46% das noites.`,
+);
+check(
   "summary.sentence",
   view.summary.sentence,
   `Este ano a casa rendeu 133${_}985${_}€. ${best}`,
@@ -213,6 +223,7 @@ check("winter", byId.winter, {
   title: "Convide quem já cá esteve no inverno",
   text: "Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano.",
   worth: `Com 10% de desconto, cerca de 10 estadas: mais 2644${_}€.`,
+  short: `Mais 2644${_}€ no inverno`,
   cta: "Ver os 49 hóspedes",
   target: "/hospedes#inverno",
 });
@@ -222,6 +233,7 @@ check("commission", byId.commission, {
   title: "Peça a quem volta que reserve diretamente",
   text: `Este ano pagou 4240${_}€ de comissão em 95 regressos pelo Booking e pelo Airbnb.`,
   worth: `Se metade passar a reservar diretamente, com 5% de desconto: mais 1413${_}€ por ano.`,
+  short: `Mais 1413${_}€ por ano`,
   cta: "Simular o desconto",
   target: "/hospedes#direto",
 });
@@ -231,6 +243,7 @@ check("summer", byId.summer, {
   title: "Suba um pouco o preço em julho e agosto",
   text: "Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre.",
   worth: `Com mais 10%, nas mesmas noites: mais 2947${_}€.`,
+  short: `Mais 2947${_}€ no verão`,
   cta: "Simular o verão",
   target: "/precos#verao",
 });
@@ -240,6 +253,7 @@ check("orphans", byId.orphans, {
   title: "Venda as noites soltas",
   text: "Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro.",
   worth: null,
+  short: "87 noites vazias entre duas estadas",
   cta: "Ver o mapa",
   target: "/ano#mapa",
 });
@@ -292,7 +306,7 @@ check(
 
 console.log("\npainel: gain");
 check("gain", view.gain, {
-  likely: `Cerca de 4350${_}€ por ano`,
+  likely: `Cerca de 4350${_}€`,
   range: `Entre cerca de 2030${_}€ e 8650${_}€, conforme quantos hóspedes aceitarem.`,
   assumption:
     "No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez.",

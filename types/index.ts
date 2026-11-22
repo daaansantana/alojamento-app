@@ -250,6 +250,7 @@ export interface PainelAction {
   title: string;
   text: string;
   worth: string | null; // what it is worth, when there is a number for it
+  short: string; // one line for the list of the other actions
   cta: string;
   target: string; // the screen and part it opens, e.g. "/hospedes#inverno"
 }
@@ -271,7 +272,8 @@ export interface PainelView {
   month: number;
   monthName: string; // "novembro"
   period: string;
-  summary: { sentence: string; figures: PainelFigure[] };
+  intro: string; // under the month's title: the KPI and «Comece por isto:»
+  summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
   contacts: {
     first: PainelContact[]; // the first 3 winterReturners

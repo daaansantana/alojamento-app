@@ -254,6 +254,7 @@ export interface PainelAction {
   title: string;
   text: string;
   worth: string | null; // what it is worth, when there is a number for it
+  short: string; // one line for the list of the other actions
   cta: string;
   target: string; // the screen and part it opens, e.g. "/hospedes#inverno"
 }
@@ -275,7 +276,8 @@ export interface PainelView {
   month: number;
   monthName: string; // "novembro"
   period: string;
-  summary: { sentence: string; figures: PainelFigure[] };
+  intro: string; // under the month's title: the KPI and «Comece por isto:»
+  summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
   contacts: {
     first: PainelContact[]; // the first 3 winterReturners
@@ -592,9 +594,11 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | --- | --- |
 | `monthName` | novembro |
 | `period` | De novembro de 2025 a outubro de 2026 |
+| `intro` | Pode ganhar mais cerca de 4350 € por ano. Comece por isto: |
 | `summary.sentence` | Este ano a casa rendeu 133 985 €. Agosto foi o melhor mês: 65% das noites com hóspedes. |
+| `summary.short` | Recebeu 133 985 € e teve hóspedes em 46% das noites. |
 | `summary.figures` | «133 985 €» recebeu no ano · «46%» das noites com hóspedes · «102» hóspedes voltaram e trouxeram 52% da receita (52% = `returningSpent ÷ spent`) |
-| `gain.likely` | Cerca de 4350 € por ano |
+| `gain.likely` | Cerca de 4350 € |
 | `gain.range` | Entre cerca de 2030 € e 8650 €, conforme quantos hóspedes aceitarem. |
 | `gain.assumption` | No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez. |
 | `months.best` | Agosto foi o melhor mês: 65% das noites com hóspedes. |
@@ -604,12 +608,12 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 
 The actions, with `when` as «Agora», «A preparar», «Sempre» or «Mais tarde»:
 
-| id | title | text | worth | cta → target |
-| --- | --- | --- | --- | --- |
-| winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Ver os 49 hóspedes → `/hospedes#inverno` |
-| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Simular o desconto → `/hospedes#direto` |
-| summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Simular o verão → `/precos#verao` |
-| orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | Ver o mapa → `/ano#mapa` |
+| id | title | text | worth | short | cta → target |
+| --- | --- | --- | --- | --- | --- |
+| winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Mais 2644 € no inverno | Ver os 49 hóspedes → `/hospedes#inverno` |
+| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Mais 1413 € por ano | Simular o desconto → `/hospedes#direto` |
+| summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Mais 2947 € no verão | Simular o verão → `/precos#verao` |
+| orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | 87 noites vazias entre duas estadas | Ver o mapa → `/ano#mapa` |
 
 Order for month 11: winter Agora · commission Sempre · summer A preparar · orphans Mais tarde. For month 8: summer Agora · orphans Agora · commission Sempre · winter A preparar.
 

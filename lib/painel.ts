@@ -88,6 +88,7 @@ function action(
         title: "Convide quem já cá esteve no inverno",
         text: `Ficaram ${int(facts.winterEmptyNights)} noites por vender de novembro a fevereiro. ${int(facts.winterReturners)} hóspedes que voltam já cá estiveram nesta altura do ano.`,
         worth: `Com ${pct(PAINEL_WINTER_CAMPAIGN.discount)} de desconto, cerca de ${int(campaign.extraStays)} estadas: mais ${eur(campaign.extraRevenue)}.`,
+        short: `Mais ${eur(campaign.extraRevenue)} no inverno`,
         cta: `Ver os ${int(facts.winterReturners)} hóspedes`,
         target: "/hospedes#inverno",
       };
@@ -97,6 +98,7 @@ function action(
         title: "Peça a quem volta que reserve diretamente",
         text: `Este ano pagou ${eur(facts.commissionToday)} de comissão em ${int(facts.platformReturnStays)} regressos pelo Booking e pelo Airbnb.`,
         worth: `Se ${shareInWords(PAINEL_DIRECT.conversionRate)} passar a reservar diretamente, com ${pct(PAINEL_DIRECT.directDiscount)} de desconto: mais ${eur(direct.yearlyGain)} por ano.`,
+        short: `Mais ${eur(direct.yearlyGain)} por ano`,
         cta: "Simular o desconto",
         target: "/hospedes#direto",
       };
@@ -106,6 +108,7 @@ function action(
         title: "Suba um pouco o preço em julho e agosto",
         text: `Julho e agosto tiveram ${pct(facts.julyOccupancy)} e ${pct(facts.augustOccupancy)} das noites com hóspedes, com o preço de sempre.`,
         worth: `Com mais ${pct(PAINEL_SUMMER.priceChange)}, nas mesmas noites: mais ${eur(facts.summerGain)}.`,
+        short: `Mais ${eur(facts.summerGain)} no verão`,
         cta: "Simular o verão",
         target: "/precos#verao",
       };
@@ -115,6 +118,7 @@ function action(
         title: "Venda as noites soltas",
         text: `Há ${int(facts.orphanNights)} noites vazias entre duas estadas no mesmo quarto, ${int(facts.summerOrphanNights)} delas de junho a setembro.`,
         worth: null,
+        short: `${int(facts.orphanNights)} noites vazias entre duas estadas`,
         cta: "Ver o mapa",
         target: "/ano#mapa",
       };
@@ -153,8 +157,10 @@ export function buildPainel(input: PainelInput): PainelView {
     month: input.month,
     monthName: monthName(input.month),
     period: `De ${monthOfYear(byMonth[0].period)} a ${monthOfYear(byMonth[byMonth.length - 1].period)}`,
+    intro: `Pode ganhar mais cerca de ${about(likely.total)} por ano. Comece por isto:`,
     summary: {
       sentence: `Este ano a casa rendeu ${eur(year.revenue)}. ${best}`,
+      short: `Recebeu ${eur(year.revenue)} e teve hóspedes em ${pct(year.occupancy)} das noites.`,
       figures: [
         { value: eur(year.revenue), label: "recebeu no ano" },
         { value: pct(year.occupancy), label: "das noites com hóspedes" },
@@ -171,7 +177,7 @@ export function buildPainel(input: PainelInput): PainelView {
       total: input.winterReturners.length,
     },
     gain: {
-      likely: `Cerca de ${about(likely.total)} por ano`,
+      likely: `Cerca de ${about(likely.total)}`,
       range: `Entre cerca de ${about(cautious.total)} e ${about(optimistic.total)}, conforme quantos hóspedes aceitarem.`,
       assumption: `No cenário mais provável, ${shareInWords(likely.conversionRate)} de quem volta pelas plataformas passa a reservar diretamente, com ${pct(likely.directDiscount)} de desconto, e 1 em cada ${Math.round(1 / likely.winterReturnRate)} hóspedes de inverno volta mais uma vez.`,
     },
