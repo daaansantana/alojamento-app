@@ -14,14 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Alojamento",
-  description: "Reservas, ocupação e hóspedes do alojamento.",
+  title: "A sua casa este ano",
+  description:
+    "Como correu o ano na sua casa, o que fazer este mês e quanto ganha se mudar alguma coisa.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="pt"
+      lang="pt-PT"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
