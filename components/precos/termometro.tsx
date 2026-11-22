@@ -46,9 +46,10 @@ function Ruler({
 }) {
   const from = Math.min(houseAt, marketAt);
   const to = Math.max(houseAt, marketAt);
-  const dot = size === "large" ? "size-7" : "size-5";
+  // The ring is a little larger, so a dot on top of it still shows both.
+  const dot = size === "large" ? "size-6" : "size-4";
   const ring =
-    size === "large" ? "size-7 border-[3px]" : "size-5 border-[2.5px]";
+    size === "large" ? "size-8 border-[3px]" : "size-6 border-[2.5px]";
   return (
     <div aria-hidden="true" className="relative h-8 w-full">
       <div className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 rounded-full bg-border" />
