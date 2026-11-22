@@ -57,12 +57,12 @@ The MVP helps her decide. The next steps help her be found and then run the hous
 | Scale | Other owners like her | Owners with one house who run it themselves |
 
 Why the page and Google go together:
-- On Google, a guest house like hers counts as a hotel property (inns, hotels, bed and breakfasts), not as a vacation rental, so she can have a free Business Profile on Search and Maps.
+- On Google, a guest house like hers is a hotel property (inns, hotels and bed and breakfasts are; vacation homes and short-term rentals are not), so she can verify a free Business Profile on Search and Maps.
 - Google's free booking links show a direct price next to the platforms at no cost to the property, but the link must take the guest to the property's own site, and only hotels that are bookable online can add rates. The page is what makes that possible.
-- Sources: Google Hotel Center Help, «Connect with more travelers using free booking links» and «How to add and manage rates and availability to your Google Business Profile»; Google, «Make your hotel stand out on Google».
+- Sources: Google Hotel Center Help, «Connect with more travelers using free booking links» and «How to add and manage rates and availability to your Google Business Profile»; Google, «Make your hotel stand out on Google»; innRoad, «The Benefits of Using Google Free Booking Links for Your Property».
 
 Rules the page and the card must follow:
-- Advertising, commercial documents and merchandising of a local-accommodation property must show its name or logo and its registration number (Decreto-Lei n.º 128/2014, art. 17.º, n.º 2). nexo would add the number on its own.
+- Advertising, commercial documents and merchandising of a local-accommodation property must show its registration number in the RNAL (Decreto-Lei n.º 128/2014, the local-accommodation law; Turismo de Portugal). nexo would add the number on its own.
 - Only guests who gave their contact to the house are written to, with an opt-out in every message (Lei 41/2004, art. 13.º-A).
 
 Scale:
