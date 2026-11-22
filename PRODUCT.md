@@ -23,11 +23,22 @@ Where each trait comes from:
 - The house matters to the family budget: for 39% of owners it is more than 60% of it (NOVA SBE for ALEP, 2023).
 - Not confident with digital tools: in Portugal, 27.6% of people aged 16 to 74 have below-basic digital skills and 10.6% do not use the internet (European Commission, Digital Skills Indicator 2.0, 2025). The team chose this trait for the persona.
 
-Open: her name (provisional «Isabel», which is not a guest in the data), her age, and a check of the persona in a conversation with a real guest house (aggregated numbers only, no guest data).
+Her name is Isabel («Isabel, que não é nenhum hóspede da base»: no guest in the data has this name).
+
+Open: her age, and a check of the persona in a conversation with a real guest house (aggregated numbers only, no guest data).
 
 ## Product Purpose
 
-A one-page dashboard that turns the guest house's own bookings into a few decisions: who to contact and when, what discount to give on direct bookings, what price to charge in each season. Success: she can say what to do this month after a few seconds on the page, and how much it is worth per year (the KPI).
+Four screens, each answering one of her questions, that turn the guest house's own bookings into a few decisions: who to contact and when, what discount to give on direct bookings, what price to charge in each season.
+
+| Screen | Her question | What it answers |
+| --- | --- | --- |
+| Início (`/`) | «O que faço este mês?» | The action of the month, with what it is worth, and the yearly gain (the KPI) |
+| Hóspedes (`/hospedes`) | «A quem escrevo?» | The two lists of guests to write to, the email already written and who she has written to |
+| Preços (`/precos`) | «O meu preço está bem?» | Her price per night next to the market's, month by month |
+| O ano (`/ano`) | «Como correu o ano?» | The summary, the months and, folded away, the numbers behind them |
+
+Success: she can say what to do this month after a few seconds on the first screen, and how much it is worth per year (the KPI).
 
 ## Operating Context
 
@@ -55,7 +66,9 @@ A one-page dashboard that turns the guest house's own bookings into a few decisi
 2. One action at a time, in plain words, with the money it is worth.
 3. Every number on screen is checked against the SPEC.
 4. Works on a phone first.
+5. Navigation always in view: the four screens are one tap away, with an icon and a word each, never behind a menu.
+6. One question per screen: each screen answers one of her questions, and finds each thing always in the same place.
 
 ## Accessibility & Inclusion
 
-Body text 16 px or more, touch targets of 44 px, WCAG 2.2 AA contrast, visible keyboard focus, nothing shown only in a tooltip or only by colour.
+Base text of 18 px (16 px at the smallest), with a «Letra maior» option at 20 px that she can keep on. Touch targets of 48 px or more. WCAG 2.2 AA contrast, visible keyboard focus, nothing shown only in a tooltip or only by colour, and nothing lost at 200% zoom.
