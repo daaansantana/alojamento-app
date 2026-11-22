@@ -251,7 +251,9 @@ function ChannelFlow({
 }
 
 function NetPerNight({ rows }: { rows: ChannelNet[] }) {
-  const max = Math.max(...rows.map((r) => r.netAdr), 1);
+  const gross = (r: ChannelNet) =>
+    r.nightsSold ? r.revenue / r.nightsSold : 0;
+  const max = Math.max(...rows.map(gross), 1);
   const lowest = rows.reduce<ChannelNet | null>(
     (low, r) => (low === null || r.netAdr < low.netAdr ? r : low),
     null,
@@ -269,22 +271,38 @@ function NetPerNight({ rows }: { rows: ChannelNet[] }) {
           pelo {lowest.channel}, depois da comissão.
         </p>
       )}
+      <p aria-hidden="true" className="flex flex-wrap gap-x-6 gap-y-1">
+        <span className="flex items-center gap-2">
+          <span className="size-4 rounded-sm bg-primary" />O que fica
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="size-4 rounded-sm bg-commission" />
+          Comissão
+        </span>
+      </p>
       <ul className="flex flex-col gap-3">
         {rows.map((row) => (
           <li key={row.channel} className="flex flex-col gap-1">
-            <div className="flex items-baseline justify-between gap-4">
-              <span className="font-medium">{row.channel}</span>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4">
+              <span className="font-bold">{row.channel}</span>
               <span className="tabular-nums">
-                {eur(row.netAdr, 2)}{" "}
+                fica com {eur(row.netAdr, 2)}{" "}
                 <span className="text-muted-foreground">
                   (comissão de {pct(row.commissionRate, 1)})
                 </span>
               </span>
             </div>
-            <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              aria-hidden="true"
+              className="flex h-3.5 w-full overflow-hidden rounded-full bg-muted"
+            >
               <div
-                className="h-full rounded-full bg-primary"
+                className="h-full bg-primary"
                 style={{ width: `${(row.netAdr / max) * 100}%` }}
+              />
+              <div
+                className="h-full bg-commission"
+                style={{ width: `${((gross(row) - row.netAdr) / max) * 100}%` }}
               />
             </div>
           </li>
