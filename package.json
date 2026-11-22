@@ -9,7 +9,7 @@
     "lint": "biome check",
     "format": "biome format --write",
     "test": "tsx scripts/test-data.ts && tsx scripts/test-format.ts && tsx scripts/test-email.ts && tsx scripts/test-painel.ts",
-    "verificar": "npm run lint && npm run test && npm run gabaritos && npm run requisitos && tsc --noEmit && next build",
+    "verificar": "npm run lint && npm run test && npm run gabaritos && npm run requisitos && next typegen && tsc --noEmit && next build",
     "gabaritos": "tsx scripts/golden.test.ts",
     "requisitos": "tsx scripts/requisitos.ts",
     "capturas": "tsx scripts/capturas.ts",
