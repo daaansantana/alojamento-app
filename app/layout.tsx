@@ -10,12 +10,12 @@ const atkinson = Atkinson_Hyperlegible_Next({
   display: "swap",
 });
 
-export const viewport: Viewport = { themeColor: "#1f4fa3" };
+export const viewport: Viewport = { themeColor: "#0F3D33" };
 
 export const metadata: Metadata = {
-  title: { default: "Início · A sua casa", template: "%s · A sua casa" },
+  title: { default: "nexo", template: "%s · nexo" },
   description:
-    "Como correu o ano na sua casa, o que fazer este mês e quanto ganha se mudar alguma coisa.",
+    "A sua casa, com nexo. Como correu o ano, o que fazer este mês e quanto ganha se mudar alguma coisa.",
 };
 
 // «Letra maior» before the first paint, so the page does not jump when the
