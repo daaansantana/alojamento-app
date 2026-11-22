@@ -19,9 +19,23 @@ export const metadata: Metadata = {
     "Como correu o ano na sua casa, o que fazer este mês e quanto ganha se mudar alguma coisa.",
 };
 
+// «Letra maior» before the first paint, so the page does not jump when the
+// store reads her choice back. Same key and shape as the store's `persist`.
+const LARGE_TEXT = `try{var c=JSON.parse(localStorage.getItem("a-sua-casa")||"{}");if(c.state&&c.state.textSize==="maior")document.documentElement.dataset.letra="maior"}catch(e){}`;
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-PT" className={`${atkinson.variable} h-full antialiased`}>
+    <html
+      lang="pt-PT"
+      className={`${atkinson.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: a fixed string of ours, no user input
+          dangerouslySetInnerHTML={{ __html: LARGE_TEXT }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <TooltipProvider>
           <Shell>{children}</Shell>
