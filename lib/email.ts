@@ -22,12 +22,25 @@ const TEXTS: Record<
   },
 };
 
+/** The first name, as the email greets the guest: "Helena Costa" → "Helena". */
+export function firstName(name: string): string {
+  return name.trim().split(/\s+/)[0];
+}
+
+/** The invitation as it will be sent: the subject and the whole body. */
+export function invitationText(
+  kind: InvitationKind,
+  name: string,
+): { subject: string; body: string } {
+  const { subject, body } = TEXTS[kind];
+  return { subject, body: body(name) + OPT_OUT };
+}
+
 /** A mailto: link to one guest, with the subject and the body filled in. */
 export function invitationMailto(
   guest: { name: string; email: string },
   kind: InvitationKind,
 ): string {
-  const firstName = guest.name.trim().split(/\s+/)[0];
-  const { subject, body } = TEXTS[kind];
-  return `mailto:${guest.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body(firstName) + OPT_OUT)}`;
+  const { subject, body } = invitationText(kind, firstName(guest.name));
+  return `mailto:${guest.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
