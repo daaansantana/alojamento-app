@@ -107,10 +107,7 @@
   --channel-booking: #b7791f;
   --channel-airbnb: #c2456b;
   --commission: #7a879d;
-  /* Demand levels and the occupancy map: each 3:1 or more on white. */
-  --level-hot: #c2410c;
-  --level-normal: #64748b;
-  --level-cold: #0369a1;
+  /* The occupancy map, lighter to darker. */
   --map: #1f4fa3;
   --radius: 12px;
   --sidebar: #f3f5f8;
