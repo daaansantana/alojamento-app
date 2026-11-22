@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Choices } from "@/components/comum/escolha";
 import { StepWhatIf } from "@/components/hospedes/e-se";
-import { Choices } from "@/components/hospedes/escolha";
 import { EmailPreview, GuestList, Progress } from "@/components/hospedes/lista";
 import { EmptyState } from "@/components/states/empty-state";
 import { useContacted } from "@/hooks/useContacted";
