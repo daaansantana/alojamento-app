@@ -299,6 +299,36 @@ export interface PainelView {
 }
 ```
 
+### Version 4: the market, month by month
+
+```ts
+interface MarketMonth {
+  period: string; // "2025-11", the month it stands for
+  adr: number; // € per occupied room
+  revpar: number; // € per available room
+  from: string; // the month the value is from; the year before when not yet published
+  url: string;
+  published: string; // "YYYY-MM-DD"
+}
+
+interface MarketComparisonMonth {
+  period: string;
+  house: number; // the house's adr that month
+  market: number; // the market's adr
+  difference: number; // house − market, € per night
+  from: string; // the month the market value is from
+  substitute: boolean; // from ≠ period
+}
+
+interface MarketComparison {
+  months: MarketComparisonMonth[]; // in the order of byMonth
+  below: number; // difference ≤ −1 €
+  above: number; // difference ≥ 1 €
+  level: number; // within 1 €
+  widest: MarketComparisonMonth; // the largest |difference|
+}
+```
+
 ## 3. Functions
 
 | File | Function | Returns |
@@ -326,6 +356,7 @@ export interface PainelView {
 | `lib/alerts.ts` | `alertFacts(bookings, rooms)` | `AlertFacts` |
 | `lib/alerts.ts` | `actionAlerts(facts, month)` | `Alert[]` in the order for `month` (1 to 12); an alert whose number is 0 is left out |
 | `lib/kpi.ts` | `gainScenarios(bookings)` | `GainScenario[]`, 3 rows: cautious, likely, optimistic (version 3) |
+| `lib/market.ts` | `marketComparison(byMonth, market)` | `MarketComparison`: the house's adr against `MARKET_BY_MONTH`, month by month (version 4) |
 | `lib/painel.ts` | `buildPainel(input)` | `PainelView`: every text of the single page (version 3) |
 | `lib/format.ts` | `eur`, `int`, `pct`, `monthName`, `monthShort`, `about` | display text in pt-PT (version 3) |
 | `lib/email.ts` | `invitationMailto(guest, kind)` | a `mailto:` link with the subject and body filled in, `kind` = `"winter"` or `"direct"` (version 3) |
@@ -672,6 +703,29 @@ Each link is `https://www.ine.pt/ngt_server/attachfileu.jsp?look_parentBoui=<id>
 
 `npm test` checks that it has the same 12 periods as `kpisByMonth`, positive values, and a link and a date for each.
 
+### Market comparison (version 4)
+
+`marketComparison(kpisByMonth(bookings, rooms), MARKET_BY_MONTH)`. `difference` = the house's adr ("By month") − the market's adr ("Market by month"):
+
+| period | house (€) | market (€) | difference (€) |
+| --- | --- | --- | --- |
+| 2025-11 | 103.80 | 97.8 | +6.00 |
+| 2025-12 | 98.92 | 99.7 | −0.78 |
+| 2026-01 | 97.66 | 92.1 | +5.56 |
+| 2026-02 | 99.78 | 89.6 | +10.18 |
+| 2026-03 | 98.29 | 98.6 | −0.31 |
+| 2026-04 | 104.12 | 118.0 | −13.88 |
+| 2026-05 | 98.41 | 130.9 | −32.49 |
+| 2026-06 | 101.64 | 140.8 | −39.16 |
+| 2026-07 | 96.94 | 154.9 | −57.96 |
+| 2026-08 | 99.94 | 163.2 | −63.26 |
+| 2026-09 | 100.48 | 147.3 | −46.82 |
+| 2026-10 | 96.07 | 122.6 (October 2025) | −26.53 |
+
+`below` 7 (April to October), `above` 3 (November, January, February), `level` 2 (December, March), `widest` 2026-08. Only 2026-10 is a stand-in.
+
+Texts, from `lib/painel.ts`: `marketYear` «Em 7 dos 12 meses, cobra menos do que o mercado.»; `marketGap` «Está 6 € acima do mercado.» (November), «Está 63 € abaixo do mercado.» (August), «Está ao nível do mercado.» (December); `marketSentence`, on O ano: «Em agosto, o mercado cobrou em média 163 € por noite; a casa, 100 €.»; `marketStandIn` «Valor de outubro de 2025: o deste ano ainda não foi publicado.»; and `MARKET_NOTE` «Os hotéis puxam a média para cima: serve de referência, não de alvo.»
+
 ## 5. Hypotheses: how each was computed, and the result
 
 These were registered in `HIPOTESES.md` before looking at the results. The criteria do not change.
@@ -747,6 +801,7 @@ useWinterCampaign(scenario: WinterCampaignScenario): WinterCampaignResult | null
 useMonthSelection(): { selectedMonth: number | null; setSelectedMonth: (month: number | null) => void }
 usePainel(): PainelView | null // version 3
 useTextSize(): { textSize: TextSize; setTextSize: (size: TextSize) => void }
+useMarket(): MarketComparison | null // version 4
 useContacted(): { contacted: Record<string, string>; mark: (email: string) => void; unmark: (email: string) => void }
 ```
 
@@ -759,4 +814,5 @@ useContacted(): { contacted: Record<string, string>; mark: (email: string) => vo
 - `usePainel` (version 3) passes `contactFirst` from `useReturningGuests` too, and joins `useDashboard`, `useReturningGuests`, `useAlerts`, `useWinterCampaign(PAINEL_WINTER_CAMPAIGN)`, `useDirectSimulation(PAINEL_DIRECT)` and `gainScenarios`, and passes them to `buildPainel`. It follows the selected month through `useAlerts`.
 - The store also keeps `textSize`, the «Letra maior» choice, and `setTextSize(size)`. It is kept on the device: the store's `persist` saves it in `localStorage`, under `a-sua-casa`, never the data. Reading and writing are guarded, so the page works without storage. The store reads it back after the first render (`skipHydration`), so the prerendered HTML matches. Pages read and change it through `useTextSize`. `TextSize` goes in `types/index.ts`.
 - The store also keeps `contacted: Record<string, string>`, each guest's email with the day she marked «Já escrevi» («YYYY-MM-DD», from `Date.now()` through `dayOf` in `lib/dates.ts`), with `markContacted(email)` and `unmarkContacted(email)`. `persist` keeps it with `textSize`, guarded the same way. Pages read and change it through `useContacted`, which returns `contacted`, `mark` and `unmark`. `dayMonth` in `lib/format.ts` shows the day as «21 de novembro».
+- `useMarket` passes `useDashboard().byMonth` and `MARKET_BY_MONTH` to `marketComparison`.
 - A type or a hook only changes through a reviewed PR, with `npm run verificar` passing.
