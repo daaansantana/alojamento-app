@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { actionAlerts, alertFacts } from "../lib/alerts";
+import { MARKET_BY_MONTH } from "../lib/benchmarks";
 import {
   channelTransitions,
   contactFirst,
@@ -15,6 +16,7 @@ import {
   winterReturners,
 } from "../lib/guests";
 import { gainScenarios } from "../lib/kpi";
+import { marketComparison } from "../lib/market";
 import {
   simulateDirectBookings,
   simulatePricing,
@@ -647,6 +649,48 @@ for (const [index, [id, direct, winter, sum]] of GAINS.entries()) {
     close(g.total, sum, "total");
   });
 }
+
+// Version 4
+
+console.log("\nmarketComparison");
+// House adr (revenue ÷ nights, SPEC "By month") minus the market's adr
+// (SPEC "Market by month"), € per night.
+const MARKET: [string, number][] = [
+  ["2025-11", 9550 / 92 - 97.8],
+  ["2025-12", 9595 / 97 - 99.7],
+  ["2026-01", 7715 / 79 - 92.1],
+  ["2026-02", 9180 / 92 - 89.6],
+  ["2026-03", 10615 / 108 - 98.6],
+  ["2026-04", 12390 / 119 - 118.0],
+  ["2026-05", 12105 / 123 - 130.9],
+  ["2026-06", 12400 / 122 - 140.8],
+  ["2026-07", 13475 / 139 - 154.9],
+  ["2026-08", 15990 / 160 - 163.2],
+  ["2026-09", 11555 / 115 - 147.3],
+  ["2026-10", 9415 / 98 - 122.6],
+];
+const market = () =>
+  marketComparison(kpisByMonth(bookings, rooms), MARKET_BY_MONTH);
+check("12 months: the house's price minus the market's", () => {
+  const c = market();
+  eq(c.months.length, 12, "months");
+  for (const [index, [period, difference]] of MARKET.entries()) {
+    eq(c.months[index].period, period, "period");
+    close(c.months[index].difference, difference, period);
+  }
+});
+check("7 months below, 3 above, 2 within 1 €; widest in August", () => {
+  const c = market();
+  eq(c.below, 7, "below");
+  eq(c.above, 3, "above");
+  eq(c.level, 2, "level");
+  eq(c.widest.period, "2026-08", "widest");
+  eq(
+    c.months.filter((m) => m.substitute).map((m) => m.period),
+    ["2026-10"],
+    "stand-in months",
+  );
+});
 
 const total = passed + failed.length;
 console.log(`\n${passed} of ${total} checks pass.`);

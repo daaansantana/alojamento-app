@@ -1,4 +1,4 @@
-import { invitationMailto } from "../lib/email";
+import { firstName, invitationMailto, invitationText } from "../lib/email";
 
 let failures = 0;
 
@@ -70,6 +70,24 @@ check("5% discount", d.body.includes("tem 5% de desconto."));
 check(
   "ends with the opt-out line",
   d.body.endsWith(`Até breve!\n\n${OPT_OUT}`),
+);
+
+console.log("\nemail: the text on its own");
+const text = invitationText("winter", "Helena");
+check(
+  "same subject as the link",
+  text.subject === w.subject,
+  JSON.stringify(text.subject),
+);
+check("same body as the link", text.body === w.body);
+check(
+  "direct: same body as the link",
+  invitationText("direct", "Helena").body === d.body,
+);
+check(
+  "firstName",
+  firstName("  Helena  Costa ") === "Helena",
+  JSON.stringify(firstName("  Helena  Costa ")),
 );
 
 if (failures > 0) {

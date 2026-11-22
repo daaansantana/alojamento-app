@@ -6,7 +6,7 @@ English version of [ANALISE.md](ANALISE.md), which is the reference. The numbers
 
 The persona is described in [PRODUCT.md](../PRODUCT.md). In short:
 
-- She owns a guest house with 8 rooms, which she runs herself.
+- She is Isabel, the owner of a guest house with 8 rooms, which she runs herself.
 - She is not used to data and is not very confident with digital tools. She knows the Booking and Airbnb extranets, email and her phone.
 - She opens the app between tasks, often on her phone, and wants to know what to do next, not to read charts.
 - Her questions: «Como correu o ano?» (how did the year go?), «O que devo fazer este mês?» (what should I do this month?), «Quanto ganho se mudar alguma coisa?» (how much do I gain if I change something?).

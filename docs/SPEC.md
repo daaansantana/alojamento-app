@@ -238,6 +238,7 @@ export interface PainelInput {
   alerts: Alert[]; // already in the order for `month`
   month: number; // 1 to 12
   winterReturners: GuestProfile[];
+  contactFirst: GuestProfile[]; // returning guests whose last stay came through a platform
   campaign: WinterCampaignResult; // with PAINEL_WINTER_CAMPAIGN
   direct: DirectBookingResult; // with PAINEL_DIRECT
   gains: GainScenario[]; // gainScenarios(bookings)
@@ -254,14 +255,25 @@ export interface PainelAction {
   title: string;
   text: string;
   worth: string | null; // what it is worth, when there is a number for it
+  short: string; // one line for the list of the other actions
   cta: string;
-  target: string; // "#contactos", "#simular" or "#detalhes"
+  target: string; // the screen and part it opens, e.g. "/hospedes#inverno"
 }
 
 export interface PainelContact {
   name: string;
-  detail: string; // "4 estadas · 1810 € · última pelo Airbnb"
+  email: string; // the key for «Já escrevi»
+  detail: string; // "4 estadas, 1810 € no total. A última foi pelo Airbnb."
   mailto: string;
+}
+
+export interface PainelGuestList {
+  first: PainelContact[]; // the first 3
+  all: PainelContact[]; // every guest, same order
+  total: number;
+  count: string; // "49 hóspedes"
+  explain: string; // what the list is and what the email offers
+  preview: { subject: string; body: string }; // the email, to the first guest
 }
 
 export interface PainelMonth {
@@ -275,15 +287,45 @@ export interface PainelView {
   month: number;
   monthName: string; // "novembro"
   period: string;
-  summary: { sentence: string; figures: PainelFigure[] };
+  intro: string; // under the month's title: the KPI and «Comece por isto:»
+  guestsIntro: string; // under «A quem escrever»
+  together: string; // summer +10% and the winter campaign, in one year
+  summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
-  contacts: {
-    first: PainelContact[]; // the first 3 winterReturners
-    all: PainelContact[]; // every winterReturner, same order
-    total: number;
-  };
+  contacts: PainelGuestList; // winterReturners, with the winter email
+  directContacts: PainelGuestList; // contactFirst, with the direct-booking email
   gain: { likely: string; range: string; assumption: string };
-  months: { bars: PainelMonth[]; best: string; price: string };
+  months: { bars: PainelMonth[]; best: string; levels: string; price: string };
+}
+```
+
+### Version 4: the market, month by month
+
+```ts
+interface MarketMonth {
+  period: string; // "2025-11", the month it stands for
+  adr: number; // € per occupied room
+  revpar: number; // € per available room
+  from: string; // the month the value is from; the year before when not yet published
+  url: string;
+  published: string; // "YYYY-MM-DD"
+}
+
+interface MarketComparisonMonth {
+  period: string;
+  house: number; // the house's adr that month
+  market: number; // the market's adr
+  difference: number; // house − market, € per night
+  from: string; // the month the market value is from
+  substitute: boolean; // from ≠ period
+}
+
+interface MarketComparison {
+  months: MarketComparisonMonth[]; // in the order of byMonth
+  below: number; // difference ≤ −1 €
+  above: number; // difference ≥ 1 €
+  level: number; // within 1 €
+  widest: MarketComparisonMonth; // the largest |difference|
 }
 ```
 
@@ -314,6 +356,7 @@ export interface PainelView {
 | `lib/alerts.ts` | `alertFacts(bookings, rooms)` | `AlertFacts` |
 | `lib/alerts.ts` | `actionAlerts(facts, month)` | `Alert[]` in the order for `month` (1 to 12); an alert whose number is 0 is left out |
 | `lib/kpi.ts` | `gainScenarios(bookings)` | `GainScenario[]`, 3 rows: cautious, likely, optimistic (version 3) |
+| `lib/market.ts` | `marketComparison(byMonth, market)` | `MarketComparison`: the house's adr against `MARKET_BY_MONTH`, month by month (version 4) |
 | `lib/painel.ts` | `buildPainel(input)` | `PainelView`: every text of the single page (version 3) |
 | `lib/format.ts` | `eur`, `int`, `pct`, `monthName`, `monthShort`, `about` | display text in pt-PT (version 3) |
 | `lib/email.ts` | `invitationMailto(guest, kind)` | a `mailto:` link with the subject and body filled in, `kind` = `"winter"` or `"direct"` (version 3) |
@@ -592,11 +635,20 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | --- | --- |
 | `monthName` | novembro |
 | `period` | De novembro de 2025 a outubro de 2026 |
+| `intro` | Pode ganhar mais cerca de 4350 € por ano. Comece por isto: |
+| `together` | Verão e inverno juntos: o verão paga o desconto do inverno. Mais 5590 € no ano. (2946,50 € of the summer +10% and 2643,84 € of the winter campaign) |
+| `guestsIntro` | Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de 4350 € por ano. |
+| `contacts.count` | 49 hóspedes |
+| `contacts.explain` | Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com 10% de desconto. Só tem de o enviar. |
+| `directContacts.count` | 80 hóspedes |
+| `directContacts.explain` | Voltaram e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240 € de comissão. O email oferece 5% de desconto a quem reservar diretamente. Só tem de o enviar. |
 | `summary.sentence` | Este ano a casa rendeu 133 985 €. Agosto foi o melhor mês: 65% das noites com hóspedes. |
+| `summary.short` | Recebeu 133 985 € e teve hóspedes em 46% das noites. |
 | `summary.figures` | «133 985 €» recebeu no ano · «46%» das noites com hóspedes · «102» hóspedes voltaram e trouxeram 52% da receita (52% = `returningSpent ÷ spent`) |
-| `gain.likely` | Cerca de 4350 € por ano |
+| `gain.likely` | Cerca de 4350 € |
 | `gain.range` | Entre cerca de 2030 € e 8650 €, conforme quantos hóspedes aceitarem. |
 | `gain.assumption` | No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez. |
+| `months.levels` | Mais procurados: julho e agosto. Menos procurados: de outubro a janeiro. (a run of 3 or more months, counted round the year, is said «de … a …») |
 | `months.best` | Agosto foi o melhor mês: 65% das noites com hóspedes. |
 | `months.price` | O preço por noite quase não mudou: entre 96 € e 104 €. |
 
@@ -604,16 +656,18 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 
 The actions, with `when` as «Agora», «A preparar», «Sempre» or «Mais tarde»:
 
-| id | title | text | worth | cta → target |
-| --- | --- | --- | --- | --- |
-| winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Ver os 49 hóspedes → `#contactos` |
-| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Simular o desconto → `#simular` |
-| summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Simular o verão → `#simular` |
-| orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | Ver o mapa → `#detalhes` |
+| id | title | text | worth | short | cta → target |
+| --- | --- | --- | --- | --- | --- |
+| winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Mais 2644 € no inverno | Ver os 49 hóspedes → `/hospedes#inverno` |
+| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Mais 1413 € por ano | Ver os 80 hóspedes → `/hospedes#direto` |
+| summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Mais 2947 € no verão | Simular o verão → `/precos#verao` |
+| orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | 87 noites vazias entre duas estadas | Ver o mapa → `/ano#mapa` |
 
 Order for month 11: winter Agora · commission Sempre · summer A preparar · orphans Mais tarde. For month 8: summer Agora · orphans Agora · commission Sempre · winter A preparar.
 
-Each contact's `detail` is «4 estadas · 1810 € · última pelo Airbnb», or «· última direta» when the last channel is Direto. `contacts.all` has one row per winter returner, in their order, so its first 3 rows are `contacts.first`. `contacts.total` = `winterReturners.length`.
+Each contact's `detail` is «4 estadas, 1810 € no total. A última foi pelo Airbnb.», or «A última foi direta.» when the last channel is Direto; `email` is the guest's email. `contacts.all` has one row per winter returner, in their order, so its first 3 rows are `contacts.first`. `contacts.total` = `winterReturners.length`. `directContacts` is built the same way from `contactFirst` (80 guests), with the `direct` email instead of the `winter` one; its first three are Helena Costa, Filipa Teixeira and Sofia Teixeira. Each list's `preview` is `invitationText(kind, first name of its first guest)`.
+
+The Hóspedes screen also uses, from `lib/painel.ts`: `writtenProgress(2, 49)` «Já escreveu a 2 de 49» (with 0, «Ainda não escreveu a nenhum dos 49»), `writtenOn("2026-11-21")` «Escreveu a 21 de novembro», `showMoreGuests(39)` «Mostrar mais 39 hóspedes», `winterAnswer(campaign)` «Cerca de 10 estadas: mais 2644 €.» and `directAnswer(direct)` «Mais 1413 € por ano.». O ano uses `channelFlowSentence(transitions)`: with the transitions above, «27 das 37 estadas de quem reservou direto voltaram pelas plataformas.».
 
 `months.bars` has 12 rows `{ period, label, percent, level }`: `label` is the short month without a dot («ago»), `percent` the occupancy («65%») and `level` «mais procurado» (hot), «normal» or «menos procurado» (cold).
 
@@ -625,6 +679,52 @@ The invitation emails (`lib/email.ts`), both in the guest's first name and both 
 | direct | Da próxima vez, reserve diretamente connosco | 5% |
 
 `npm test` checks these texts letter by letter (`scripts/test-format.ts`, `scripts/test-email.ts`, `scripts/test-painel.ts`).
+
+### Market by month (reference data, version 4)
+
+`MARKET_BY_MONTH` in `lib/benchmarks.ts`: INE's «rendimento médio por quarto ocupado» (ADR) and «rendimento médio por quarto disponível» (RevPAR), in euros, for **all tourist accommodation in Portugal** (hotels, local accommodation with 10 or more beds, and rural tourism). INE publishes local accommodation on its own only by quarter, so the monthly series is the total. Each value comes from that month's release «Atividade Turística – Estatísticas Rápidas», as first published (preliminary); later releases restate only the year-on-year change, not the level. October 2026 is published on 30 Nov 2026: until then October 2025 stands in for it (`from` = "2025-10").
+
+Each link is `https://www.ine.pt/ngt_server/attachfileu.jsp?look_parentBoui=<id>&att_display=n&att_download=y`.
+
+| period | from | ADR (€) | RevPAR (€) | INE release id | published |
+| --- | --- | --- | --- | --- | --- |
+| 2025-11 | 2025-11 | 97.8 | 47.1 | 769179168 | 2025-12-31 |
+| 2025-12 | 2025-12 | 99.7 | 38.9 | 774661220 | 2026-01-30 |
+| 2026-01 | 2026-01 | 92.1 | 33.8 | 779090002 | 2026-02-27 |
+| 2026-02 | 2026-02 | 89.6 | 39.7 | 784542481 | 2026-03-31 |
+| 2026-03 | 2026-03 | 98.6 | 49.7 | 790535834 | 2026-04-30 |
+| 2026-04 | 2026-04 | 118.0 | 69.8 | 795601140 | 2026-05-29 |
+| 2026-05 | 2026-05 | 130.9 | 84.0 | 801032080 | 2026-06-30 |
+| 2026-06 | 2026-06 | 140.8 | 90.5 | 806454204 | 2026-07-31 |
+| 2026-07 | 2026-07 | 154.9 | 104.3 | 810308232 | 2026-08-31 |
+| 2026-08 | 2026-08 | 163.2 | 119.1 | 817591985 | 2026-09-30 |
+| 2026-09 | 2026-09 | 147.3 | 102.0 | 825209253 | 2026-10-30 |
+| 2026-10 | 2025-10 | 122.6 | 77.5 | 763612793 | 2025-11-28 |
+
+`npm test` checks that it has the same 12 periods as `kpisByMonth`, positive values, and a link and a date for each.
+
+### Market comparison (version 4)
+
+`marketComparison(kpisByMonth(bookings, rooms), MARKET_BY_MONTH)`. `difference` = the house's adr ("By month") − the market's adr ("Market by month"):
+
+| period | house (€) | market (€) | difference (€) |
+| --- | --- | --- | --- |
+| 2025-11 | 103.80 | 97.8 | +6.00 |
+| 2025-12 | 98.92 | 99.7 | −0.78 |
+| 2026-01 | 97.66 | 92.1 | +5.56 |
+| 2026-02 | 99.78 | 89.6 | +10.18 |
+| 2026-03 | 98.29 | 98.6 | −0.31 |
+| 2026-04 | 104.12 | 118.0 | −13.88 |
+| 2026-05 | 98.41 | 130.9 | −32.49 |
+| 2026-06 | 101.64 | 140.8 | −39.16 |
+| 2026-07 | 96.94 | 154.9 | −57.96 |
+| 2026-08 | 99.94 | 163.2 | −63.26 |
+| 2026-09 | 100.48 | 147.3 | −46.82 |
+| 2026-10 | 96.07 | 122.6 (October 2025) | −26.53 |
+
+`below` 7 (April to October), `above` 3 (November, January, February), `level` 2 (December, March), `widest` 2026-08. Only 2026-10 is a stand-in.
+
+Texts, from `lib/painel.ts`: `marketYear` «Em 7 dos 12 meses, cobra menos do que o mercado.»; `marketGap` «Está 6 € acima do mercado.» (November), «Está 63 € abaixo do mercado.» (August), «Está ao nível do mercado.» (December); `marketSentence`, on O ano: «Em agosto, o mercado cobrou em média 163 € por noite; a casa, 100 €.»; `marketStandIn` «Valor de outubro de 2025: o deste ano ainda não foi publicado.»; and `MARKET_NOTE` «Os hotéis puxam a média para cima: serve de referência, não de alvo.»
 
 ## 5. Hypotheses: how each was computed, and the result
 
@@ -666,6 +766,7 @@ Pages call these hooks and pass the results to components as props. Components n
 
 ```ts
 type DataStatus = "idle" | "loading" | "ready" | "error";
+type TextSize = "normal" | "maior";
 
 interface DashboardData {
   year: PeriodKpi;
@@ -699,6 +800,9 @@ useAlerts(): { month: number; alerts: Alert[]; facts: AlertFacts } | null
 useWinterCampaign(scenario: WinterCampaignScenario): WinterCampaignResult | null
 useMonthSelection(): { selectedMonth: number | null; setSelectedMonth: (month: number | null) => void }
 usePainel(): PainelView | null // version 3
+useTextSize(): { textSize: TextSize; setTextSize: (size: TextSize) => void }
+useMarket(): MarketComparison | null // version 4
+useContacted(): { contacted: Record<string, string>; mark: (email: string) => void; unmark: (email: string) => void }
 ```
 
 - `useData` loads `quartos.json` and `reservas.json` once, through a Zustand store and `services/data.ts`.
@@ -707,5 +811,8 @@ usePainel(): PainelView | null // version 3
 - `DataStatus`, `DashboardData` and `ReturningData` go in `types/index.ts`.
 - `retry` loads the files again after an error, through the store's `load`. Pages pass it to the error state as `onRetry`, which shows a «Tentar de novo» button.
 - The store keeps `selectedMonth: number | null` and `setSelectedMonth(month)`. `null` means the month of the reference date, 11. `useAlerts` reads it and returns the month it used. Pages read and change it through `useMonthSelection`, never the store itself.
-- `usePainel` (version 3) joins `useDashboard`, `useReturningGuests`, `useAlerts`, `useWinterCampaign(PAINEL_WINTER_CAMPAIGN)`, `useDirectSimulation(PAINEL_DIRECT)` and `gainScenarios`, and passes them to `buildPainel`. It follows the selected month through `useAlerts`.
+- `usePainel` (version 3) passes `contactFirst` from `useReturningGuests` too, and joins `useDashboard`, `useReturningGuests`, `useAlerts`, `useWinterCampaign(PAINEL_WINTER_CAMPAIGN)`, `useDirectSimulation(PAINEL_DIRECT)` and `gainScenarios`, and passes them to `buildPainel`. It follows the selected month through `useAlerts`.
+- The store also keeps `textSize`, the «Letra maior» choice, and `setTextSize(size)`. It is kept on the device: the store's `persist` saves it in `localStorage`, under `a-sua-casa`, never the data. Reading and writing are guarded, so the page works without storage. The store reads it back after the first render (`skipHydration`), so the prerendered HTML matches. Pages read and change it through `useTextSize`. `TextSize` goes in `types/index.ts`.
+- The store also keeps `contacted: Record<string, string>`, each guest's email with the day she marked «Já escrevi» («YYYY-MM-DD», from `Date.now()` through `dayOf` in `lib/dates.ts`), with `markContacted(email)` and `unmarkContacted(email)`. `persist` keeps it with `textSize`, guarded the same way. Pages read and change it through `useContacted`, which returns `contacted`, `mark` and `unmark`. `dayMonth` in `lib/format.ts` shows the day as «21 de novembro».
+- `useMarket` passes `useDashboard().byMonth` and `MARKET_BY_MONTH` to `marketComparison`.
 - A type or a hook only changes through a reviewed PR, with `npm run verificar` passing.

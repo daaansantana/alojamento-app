@@ -1,7 +1,30 @@
 // buildPainel with a fixed input made of the SPEC's expected values:
 // every text of the page, letter by letter, and the order of the actions.
-import { invitationMailto } from "../lib/email";
-import { buildPainel } from "../lib/painel";
+import { MARKET_BY_MONTH, MARKET_SEGMENT } from "../lib/benchmarks";
+import { invitationMailto, invitationText } from "../lib/email";
+import { marketComparison } from "../lib/market";
+import {
+  buildPainel,
+  channelFlowSentence,
+  directAnswer,
+  MARKET_NOTE,
+  marketDifference,
+  marketGap,
+  marketIntro,
+  marketMonthLabel,
+  marketSentence,
+  marketSourceLine,
+  marketStandIn,
+  marketYear,
+  showMoreGuests,
+  summerAnswer,
+  winterAnswer,
+  winterDiscountAnswer,
+  winterRoomAnswer,
+  winterRoomPrompt,
+  writtenOn,
+  writtenProgress,
+} from "../lib/painel";
 import type {
   Alert,
   GuestProfile,
@@ -92,6 +115,19 @@ const guests = [
   ),
 ];
 
+// SPEC section 4, contactFirst: the first three.
+const platformGuests = [
+  guests[0],
+  guest(
+    "Filipa Teixeira",
+    "filipa.teixeira@correio.example",
+    3,
+    1565,
+    "Booking",
+  ),
+  guests[1],
+];
+
 // SPEC section 3, "The order of the action alerts".
 const ALERTS: Record<number, Alert[]> = {
   11: [
@@ -142,6 +178,7 @@ const input = (month: number): PainelInput => ({
   alerts: ALERTS[month],
   month,
   winterReturners: guests,
+  contactFirst: platformGuests,
   campaign: {
     guests: 49,
     extraStays: 10,
@@ -195,6 +232,16 @@ check("month", view.month, 11);
 check("monthName", view.monthName, "novembro");
 check("period", view.period, "De novembro de 2025 a outubro de 2026");
 check(
+  "intro",
+  view.intro,
+  `Pode ganhar mais cerca de 4350${_}€ por ano. Comece por isto:`,
+);
+check(
+  "summary.short",
+  view.summary.short,
+  `Recebeu 133${_}985${_}€ e teve hóspedes em 46% das noites.`,
+);
+check(
   "summary.sentence",
   view.summary.sentence,
   `Este ano a casa rendeu 133${_}985${_}€. ${best}`,
@@ -213,8 +260,9 @@ check("winter", byId.winter, {
   title: "Convide quem já cá esteve no inverno",
   text: "Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano.",
   worth: `Com 10% de desconto, cerca de 10 estadas: mais 2644${_}€.`,
+  short: `Mais 2644${_}€ no inverno`,
   cta: "Ver os 49 hóspedes",
-  target: "#contactos",
+  target: "/hospedes#inverno",
 });
 check("commission", byId.commission, {
   id: "commission",
@@ -222,8 +270,9 @@ check("commission", byId.commission, {
   title: "Peça a quem volta que reserve diretamente",
   text: `Este ano pagou 4240${_}€ de comissão em 95 regressos pelo Booking e pelo Airbnb.`,
   worth: `Se metade passar a reservar diretamente, com 5% de desconto: mais 1413${_}€ por ano.`,
-  cta: "Simular o desconto",
-  target: "#simular",
+  short: `Mais 1413${_}€ por ano`,
+  cta: "Ver os 3 hóspedes",
+  target: "/hospedes#direto",
 });
 check("summer", byId.summer, {
   id: "summer",
@@ -231,8 +280,9 @@ check("summer", byId.summer, {
   title: "Suba um pouco o preço em julho e agosto",
   text: "Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre.",
   worth: `Com mais 10%, nas mesmas noites: mais 2947${_}€.`,
+  short: `Mais 2947${_}€ no verão`,
   cta: "Simular o verão",
-  target: "#simular",
+  target: "/precos#verao",
 });
 check("orphans", byId.orphans, {
   id: "orphans",
@@ -240,8 +290,9 @@ check("orphans", byId.orphans, {
   title: "Venda as noites soltas",
   text: "Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro.",
   worth: null,
+  short: "87 noites vazias entre duas estadas",
   cta: "Ver o mapa",
-  target: "#detalhes",
+  target: "/ano#mapa",
 });
 check(
   "month 11: order and when",
@@ -264,17 +315,20 @@ console.log("\npainel: contacts");
 check("contacts.first", view.contacts.first, [
   {
     name: "Helena Costa",
-    detail: `4 estadas · 1810${_}€ · última pelo Airbnb`,
+    email: "helena.costa@correio.example",
+    detail: `4 estadas, 1810${_}€ no total. A última foi pelo Airbnb.`,
     mailto: invitationMailto(guests[0], "winter"),
   },
   {
     name: "Sofia Teixeira",
-    detail: `2 estadas · 1435${_}€ · última pelo Airbnb`,
+    email: "sofia.teixeira@correio.example",
+    detail: `2 estadas, 1435${_}€ no total. A última foi pelo Airbnb.`,
     mailto: invitationMailto(guests[1], "winter"),
   },
   {
     name: "Ricardo Carvalho",
-    detail: `3 estadas · 1335${_}€ · última direta`,
+    email: "ricardo.carvalho@correio.example",
+    detail: `3 estadas, 1335${_}€ no total. A última foi direta.`,
     mailto: invitationMailto(guests[2], "winter"),
   },
 ]);
@@ -290,9 +344,295 @@ check(
   view.contacts.first,
 );
 
+console.log("\npainel: direct-booking contacts");
+check("directContacts.first", view.directContacts.first, [
+  {
+    name: "Helena Costa",
+    email: "helena.costa@correio.example",
+    detail: `4 estadas, 1810${_}€ no total. A última foi pelo Airbnb.`,
+    mailto: invitationMailto(platformGuests[0], "direct"),
+  },
+  {
+    name: "Filipa Teixeira",
+    email: "filipa.teixeira@correio.example",
+    detail: `3 estadas, 1565${_}€ no total. A última foi pelo Booking.`,
+    mailto: invitationMailto(platformGuests[1], "direct"),
+  },
+  {
+    name: "Sofia Teixeira",
+    email: "sofia.teixeira@correio.example",
+    detail: `2 estadas, 1435${_}€ no total. A última foi pelo Airbnb.`,
+    mailto: invitationMailto(platformGuests[2], "direct"),
+  },
+]);
+check("directContacts.total", view.directContacts.total, 3);
+check(
+  "directContacts.all: one per guest in contactFirst",
+  view.directContacts.all.length,
+  platformGuests.length,
+);
+check(
+  "directContacts: the email is the direct-booking one",
+  view.directContacts.all.every((c) =>
+    c.mailto.includes("reserve%20diretamente"),
+  ),
+  true,
+);
+
+console.log("\npainel: the guest lists");
+check(
+  "guestsIntro",
+  view.guestsIntro,
+  `Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de 4350${_}€ por ano.`,
+);
+check("contacts.count", view.contacts.count, "3 hóspedes");
+check(
+  "contacts.explain",
+  view.contacts.explain,
+  "Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com 10% de desconto. Só tem de o enviar.",
+);
+check(
+  "contacts.preview: the email to the first guest",
+  view.contacts.preview,
+  invitationText("winter", "Helena"),
+);
+check("directContacts.count", view.directContacts.count, "3 hóspedes");
+check(
+  "directContacts.explain",
+  view.directContacts.explain,
+  `Voltaram e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240${_}€ de comissão. O email oferece 5% de desconto a quem reservar diretamente. Só tem de o enviar.`,
+);
+check(
+  "directContacts.preview",
+  view.directContacts.preview,
+  invitationText("direct", "Helena"),
+);
+check(
+  "writtenProgress(2, 49)",
+  writtenProgress(2, 49),
+  "Já escreveu a 2 de 49",
+);
+check(
+  "writtenProgress(0, 49)",
+  writtenProgress(0, 49),
+  "Ainda não escreveu a nenhum dos 49",
+);
+check("writtenOn", writtenOn("2026-11-21"), "Escreveu a 21 de novembro");
+check("showMoreGuests(39)", showMoreGuests(39), "Mostrar mais 39 hóspedes");
+check("showMoreGuests(1)", showMoreGuests(1), "Mostrar mais 1 hóspede");
+check(
+  "winterAnswer",
+  winterAnswer({
+    guests: 49,
+    extraStays: 10,
+    avgStayValue: 293.76,
+    extraRevenue: 2643.84,
+    discountCost: 293.76,
+  }),
+  `Cerca de 10 estadas: mais 2644${_}€.`,
+);
+check(
+  "winterAnswer, nobody returns",
+  winterAnswer({
+    guests: 49,
+    extraStays: 0,
+    avgStayValue: 293.76,
+    extraRevenue: 0,
+    discountCost: 0,
+  }),
+  "Nenhuma estada a mais.",
+);
+check(
+  "directAnswer",
+  directAnswer({
+    baseStays: 95,
+    baseRevenue: 28265,
+    commissionToday: 4239.75,
+    yearlyGain: 1413.25,
+    breakEvenDiscount: 0.15,
+  }),
+  `Mais 1413${_}€ por ano.`,
+);
+
+console.log("\npainel: what if the price changes");
+const pricing = (change: number) => ({
+  nightsSold: 299,
+  baseRevenue: 29465,
+  newRevenue: 29465 * (1 + change),
+  nightsForSameRevenue: 299 / (1 + change),
+});
+check(
+  "summerAnswer(10%)",
+  summerAnswer(pricing(0.1), 0.1),
+  `Com mais 10%, nas mesmas noites: mais 2947${_}€.`,
+);
+check(
+  "summerAnswer(0)",
+  summerAnswer(pricing(0), 0),
+  "Com o preço de sempre, fica tudo igual.",
+);
+const campaign = (discount: number) => ({
+  guests: 49,
+  extraStays: 10,
+  avgStayValue: 293.76,
+  extraRevenue: 10 * 293.76 * (1 - discount),
+  discountCost: 10 * 293.76 * discount,
+});
+check(
+  "winterDiscountAnswer(10%)",
+  winterDiscountAnswer(campaign(0.1), 0.1),
+  `Com 10% de desconto, cerca de 10 estadas: mais 2644${_}€.`,
+);
+check(
+  "winterDiscountAnswer(0)",
+  winterDiscountAnswer(campaign(0), 0),
+  `Sem desconto, cerca de 10 estadas: mais 2938${_}€.`,
+);
+check(
+  "winterRoomPrompt",
+  winterRoomPrompt("Quarto Duplo Vista Mar 2"),
+  "Alugar o Quarto Duplo Vista Mar 2 de novembro a fevereiro, a uma só pessoa",
+);
+check(
+  "winterRoomAnswer, room 3 at 900 € (SPEC)",
+  winterRoomAnswer({
+    roomId: 3,
+    months: 4,
+    winterNights: 26,
+    winterRevenue: 2730,
+    displacedStays: 11,
+    relocatableStays: 11,
+    lostRevenue: 0,
+    longStayRevenue: 3600,
+    netGain: 3600,
+  }),
+  {
+    gain: `Mais 3600${_}€ no inverno.`,
+    stays:
+      "As 11 estadas que este quarto teve no inverno cabem noutros quartos.",
+  },
+);
+check(
+  "winterRoomAnswer, room 7 at 900 € (SPEC)",
+  winterRoomAnswer({
+    roomId: 7,
+    months: 4,
+    winterNights: 43,
+    winterRevenue: 4730,
+    displacedStays: 13,
+    relocatableStays: 8,
+    lostRevenue: 2530,
+    longStayRevenue: 3600,
+    netGain: 1070,
+  }),
+  {
+    gain: `Mais 1070${_}€ no inverno.`,
+    stays: `Das 13 estadas que este quarto teve no inverno, 8 cabem noutros quartos; as outras valiam 2530${_}€.`,
+  },
+);
+check(
+  "together",
+  view.together,
+  `Verão e inverno juntos: o verão paga o desconto do inverno. Mais 5590${_}€ no ano.`,
+);
+
+console.log("\npainel: the year");
+check(
+  "months.levels",
+  view.months.levels,
+  "Mais procurados: julho e agosto. Menos procurados: de outubro a janeiro.",
+);
+check(
+  "channelFlowSentence (SPEC transitions)",
+  channelFlowSentence([
+    { from: "Booking", to: "Booking", stays: 26 },
+    { from: "Booking", to: "Airbnb", stays: 11 },
+    { from: "Booking", to: "Direto", stays: 13 },
+    { from: "Airbnb", to: "Booking", stays: 23 },
+    { from: "Airbnb", to: "Airbnb", stays: 8 },
+    { from: "Airbnb", to: "Direto", stays: 10 },
+    { from: "Direto", to: "Booking", stays: 16 },
+    { from: "Direto", to: "Airbnb", stays: 11 },
+    { from: "Direto", to: "Direto", stays: 10 },
+  ]),
+  "27 das 37 estadas de quem reservou direto voltaram pelas plataformas.",
+);
+
+console.log("\npainel: the market");
+const market = marketComparison(byMonth, MARKET_BY_MONTH);
+const at = (period: string) => {
+  const found = market.months.find((m) => m.period === period);
+  if (!found) throw new Error(period);
+  return found;
+};
+check(
+  "marketIntro",
+  marketIntro(MARKET_SEGMENT),
+  "O preço médio por noite da sua casa, ao lado da média de todo o alojamento turístico em Portugal, hotéis incluídos, segundo o INE.",
+);
+check(
+  "MARKET_NOTE",
+  MARKET_NOTE,
+  "Os hotéis puxam a média para cima: serve de referência, não de alvo.",
+);
+check(
+  "marketYear",
+  marketYear(market),
+  "Em 7 dos 12 meses, cobra menos do que o mercado.",
+);
+check(
+  "marketGap, November",
+  marketGap(at("2025-11")),
+  `Está 6${_}€ acima do mercado.`,
+);
+check(
+  "marketGap, August",
+  marketGap(at("2026-08")),
+  `Está 63${_}€ abaixo do mercado.`,
+);
+check(
+  "marketGap, December (within 1 €)",
+  marketGap(at("2025-12")),
+  "Está ao nível do mercado.",
+);
+check(
+  "marketMonthLabel, August",
+  marketMonthLabel(at("2026-08")),
+  `Agosto: a sua casa 100${_}€, o mercado 163${_}€.`,
+);
+check(
+  "marketMonthLabel, October (2025 value)",
+  marketMonthLabel(at("2026-10")),
+  `Outubro: a sua casa 96${_}€, o mercado 123${_}€. O valor do mercado é de outubro de 2025.`,
+);
+check(
+  "marketStandIn",
+  marketStandIn(at("2026-10")),
+  "Valor de outubro de 2025: o deste ano ainda não foi publicado.",
+);
+check("marketDifference, November", marketDifference(at("2025-11")), `+6${_}€`);
+check("marketDifference, August", marketDifference(at("2026-08")), `−63${_}€`);
+check("marketDifference, December", marketDifference(at("2025-12")), `0${_}€`);
+check(
+  "marketSentence",
+  marketSentence(market),
+  `Em agosto, o mercado cobrou em média 163${_}€ por noite; a casa, 100${_}€.`,
+);
+
+check(
+  "marketSourceLine, November",
+  marketSourceLine(MARKET_BY_MONTH[0]),
+  `novembro de 2025: 97,8${_}€, publicado a 31 de dezembro de 2025`,
+);
+check(
+  "marketSourceLine, October (stand-in)",
+  marketSourceLine(MARKET_BY_MONTH[11]),
+  `outubro de 2025 (em vez de outubro de 2026): 122,6${_}€, publicado a 28 de novembro de 2025`,
+);
+
 console.log("\npainel: gain");
 check("gain", view.gain, {
-  likely: `Cerca de 4350${_}€ por ano`,
+  likely: `Cerca de 4350${_}€`,
   range: `Entre cerca de 2030${_}€ e 8650${_}€, conforme quantos hóspedes aceitarem.`,
   assumption:
     "No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez.",

@@ -1,214 +1,68 @@
 "use client";
 
-import { HomeSmileIcon } from "@solar-icons/react/linear/home-smile";
-import { type ReactNode, useEffect, useState } from "react";
-import { Acoes } from "@/components/painel/acoes";
-import { Contactos } from "@/components/painel/contactos";
-import { type DetailPart, Detalhes } from "@/components/painel/detalhes";
-import { Ganho } from "@/components/painel/ganho";
-import { Meses } from "@/components/painel/meses";
-import { Resumo } from "@/components/painel/resumo";
 import {
-  type Question,
-  Simular,
-  type SliderRange,
-} from "@/components/painel/simular";
+  LeadAction,
+  MonthHeading,
+  NextActions,
+  OtherMonth,
+} from "@/components/inicio/acoes";
+import { YearCard, YearGain } from "@/components/inicio/ano";
 import { EmptyState } from "@/components/states/empty-state";
-import { ErrorState } from "@/components/states/error-state";
-import { LoadingState } from "@/components/states/loading-state";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useData } from "@/hooks/useData";
-import { useDirectSimulation } from "@/hooks/useDirectSimulation";
 import { useMonthSelection } from "@/hooks/useMonthSelection";
 import { usePainel } from "@/hooks/usePainel";
-import { usePricing } from "@/hooks/usePricing";
-import { useReturningGuests } from "@/hooks/useReturningGuests";
-import { useWinterCampaign } from "@/hooks/useWinterCampaign";
-import { SOURCES } from "@/lib/benchmarks";
 import { monthName } from "@/lib/format";
-import {
-  PAINEL_DIRECT,
-  PAINEL_SUMMER,
-  PAINEL_WINTER_CAMPAIGN,
-} from "@/lib/painel";
-import type { AlertId } from "@/types";
+import { ScreenState } from "./screen-state";
 
-const FOLDED = ["#simular", "#detalhes"];
+const capital = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+const around = (month: number, step: number) =>
+  ((month - 1 + step + 12) % 12) + 1;
 
-// «E se…?» starts from the scenarios behind the actions' worth.
-const INITIAL: Record<Question, number> = {
-  summer: Math.round(PAINEL_SUMMER.priceChange * 100),
-  winter: Math.round(PAINEL_WINTER_CAMPAIGN.returnRate * 100),
-  direct: Math.round(PAINEL_DIRECT.conversionRate * 100),
-};
-const RANGES: Record<Question, SliderRange> = {
-  summer: { min: 0, max: 20, step: 5 },
-  winter: { min: 0, max: 50, step: 5 },
-  direct: { min: 0, max: 100, step: 10 },
-};
-// The question or the part each action's link opens.
-const QUESTION_FOR: Partial<Record<AlertId, Question>> = {
-  summer: "summer",
-  commission: "direct",
-};
-const DETAIL_FOR: Partial<Record<AlertId, DetailPart>> = {
-  orphans: "mapa",
-};
-
-/** Opens the folded section a link points to and scrolls to it. */
-function openFolded(hash: string) {
-  if (!FOLDED.includes(hash)) return;
-  const target = document.querySelector<HTMLElement>(hash);
-  if (!target) return;
-  if (target instanceof HTMLDetailsElement) target.open = true;
-  target.scrollIntoView({ block: "start" });
-}
-
-function Shell({ children }: { children: ReactNode }) {
-  return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-12 px-4 pt-6 pb-16 text-base leading-relaxed sm:px-6 sm:pt-10">
-      {children}
-    </main>
-  );
-}
-
-export default function Home() {
+/** Início: «O que faço este mês?» */
+export default function Inicio() {
   const { status, retry } = useData();
   const view = usePainel();
   const dashboard = useDashboard();
   const { setSelectedMonth } = useMonthSelection();
-  const [listOpen, setListOpen] = useState(false);
-  const [question, setQuestion] = useState<Question>("summer");
-  const [values, setValues] = useState(INITIAL);
-  const [detailsOpen, setDetailsOpen] = useState<DetailPart[]>([]);
-  const returning = useReturningGuests();
-  const pricing = usePricing({
-    priceChange: values.summer / 100,
-    months: PAINEL_SUMMER.months,
-  });
-  const winter = useWinterCampaign({
-    returnRate: values.winter / 100,
-    discount: PAINEL_WINTER_CAMPAIGN.discount,
-  });
-  const direct = useDirectSimulation({
-    ...PAINEL_DIRECT,
-    conversionRate: values.direct / 100,
-  });
-  const ready = view !== null;
+  if (!view || !dashboard)
+    return <ScreenState failed={status === "error"} onRetry={retry} />;
 
-  useEffect(() => {
-    if (!ready) return;
-    openFolded(window.location.hash);
-    const onHashChange = () => openFolded(window.location.hash);
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, [ready]);
-
-  if (status === "error") {
-    return (
-      <Shell>
-        <ErrorState
-          message="Não foi possível carregar as reservas. Verifique a ligação à internet e tente de novo."
-          onRetry={retry}
-        />
-      </Shell>
-    );
-  }
-
-  if (!view) {
-    return (
-      <Shell>
-        <LoadingState />
-      </Shell>
-    );
-  }
-
-  const { summary, actions, contacts, gain, months } = view;
-  const monthBars = months.bars.flatMap((bar) => {
-    const month = dashboard?.thermometer.find((m) => m.period === bar.period);
-    return month
-      ? [{ ...bar, occupancy: month.occupancy, tone: month.level }]
-      : [];
-  });
-  const monthOptions = months.bars.map((bar) => {
-    const month = Number(bar.period.split("-")[1]);
-    return { value: month, label: monthName(month) };
-  });
+  const [lead, ...rest] = view.actions;
+  const previous = around(view.month, -1);
+  const next = around(view.month, 1);
+  const top = Math.max(...dashboard.thermometer.map((m) => m.occupancy));
+  const bars = dashboard.thermometer.map((m) => ({
+    period: m.period,
+    height: m.occupancy / top,
+    current: Number(m.period.slice(5)) === view.month,
+  }));
 
   return (
-    <Shell>
-      <header className="flex items-center gap-4">
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <HomeSmileIcon size={28} aria-hidden="true" />
-        </span>
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            A sua casa este ano
-          </h1>
-          <p className="text-muted-foreground">{view.period}</p>
-        </div>
-      </header>
-
-      <Resumo summary={summary} period={view.period} />
-
-      <Acoes
-        actions={actions}
-        month={view.month}
-        onMonthChange={setSelectedMonth}
-        monthOptions={monthOptions}
-        onAction={(action) => {
-          if (action.target === "#contactos") setListOpen(true);
-          const next = QUESTION_FOR[action.id];
-          if (action.target === "#simular" && next) setQuestion(next);
-          const part = DETAIL_FOR[action.id];
-          if (action.target === "#detalhes" && part)
-            setDetailsOpen((open) =>
-              open.includes(part) ? open : [...open, part],
-            );
-          openFolded(action.target);
-        }}
-        empty={<EmptyState message="Neste mês não há nenhuma sugestão." />}
-      />
-
-      <Contactos
-        contacts={contacts}
-        listOpen={listOpen}
-        onListOpenChange={setListOpen}
-      />
-
-      <Ganho gain={gain} />
-
-      <Meses months={months} bars={monthBars} />
-
-      <Simular
-        question={question}
-        onQuestionChange={setQuestion}
-        values={values}
-        onValueChange={(q, value) =>
-          setValues((current) => ({ ...current, [q]: value }))
-        }
-        ranges={RANGES}
-        onReset={() => setValues(INITIAL)}
-        discounts={{
-          winter: PAINEL_WINTER_CAMPAIGN.discount,
-          direct: PAINEL_DIRECT.directDiscount,
-        }}
-        pricing={pricing}
-        winter={winter}
-        direct={direct}
-      />
-
-      {dashboard && returning && (
-        <Detalhes
-          open={detailsOpen}
-          onOpenChange={setDetailsOpen}
-          netByChannel={dashboard.netByChannel}
-          roomMonth={dashboard.roomMonth}
-          rooms={dashboard.byRoom}
-          transitions={returning.transitions}
-          sources={SOURCES}
+    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
+      <div className="flex flex-col gap-8">
+        <MonthHeading
+          title={`O que fazer em ${view.monthName}`}
+          intro={view.intro}
         />
-      )}
-    </Shell>
+        {lead ? (
+          <>
+            <LeadAction action={lead} />
+            <NextActions actions={rest} />
+          </>
+        ) : (
+          <EmptyState message="Neste mês não há sugestões: veja outro mês." />
+        )}
+        <OtherMonth
+          previous={{ month: previous, label: capital(monthName(previous)) }}
+          next={{ month: next, label: capital(monthName(next)) }}
+          onChange={setSelectedMonth}
+        />
+      </div>
+      <div className="flex flex-col gap-8 lg:gap-6">
+        <YearGain gain={view.gain} />
+        <YearCard text={view.summary.short} bars={bars} />
+      </div>
+    </div>
   );
 }

@@ -1,7 +1,8 @@
-// Screenshots of the page on a phone (390 px) and a computer (1280 px), full
-// height, for the checks by hand. Uses the existing build: run `npm run build`
-// first. Chrome comes from CHROME, or the usual macOS path.
-// Run: npm run capturas  → .capturas/telemovel-390.png, .capturas/computador-1280.png
+// Screenshots of the four screens on a phone (390 px) and a computer
+// (1280 px), full height, for the checks by hand. Uses the existing build: run
+// `npm run build` first. Chrome comes from CHROME, or the usual macOS path.
+// Run: npm run capturas  → .capturas/<screen>-390.png and .capturas/<screen>-1280.png
+// It also lists the browser console's errors and warnings on each screen.
 import { type ChildProcess, spawn } from "node:child_process";
 import {
   existsSync,
@@ -16,14 +17,20 @@ import { join } from "node:path";
 const ROOT = process.cwd();
 const PORT = 3100;
 const DEBUG_PORT = 9223;
-const PAGE = `http://localhost:${PORT}/`;
+const SITE = `http://localhost:${PORT}`;
+const SCREENS = [
+  { name: "inicio", path: "/" },
+  { name: "hospedes", path: "/hospedes" },
+  { name: "precos", path: "/precos" },
+  { name: "ano", path: "/ano" },
+];
 const OUT = join(ROOT, ".capturas");
 const CHROME =
   process.env.CHROME ??
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const SIZES = [
-  { name: "telemovel-390", width: 390, height: 844, mobile: true },
-  { name: "computador-1280", width: 1280, height: 800, mobile: false },
+  { width: 390, height: 844, mobile: true },
+  { width: 1280, height: 800, mobile: false },
 ];
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -53,9 +60,12 @@ class Cdp {
     number,
     { resolve: (v: unknown) => void; reject: (e: Error) => void }
   >();
+  // biome-ignore lint/suspicious/noExplicitAny: CDP events are untyped JSON
+  onEvent: (method: string, params: any) => void = () => {};
   private constructor(private ws: WebSocket) {
     ws.addEventListener("message", (event) => {
       const msg = JSON.parse(String(event.data));
+      if (msg.method) this.onEvent(msg.method, msg.params);
       const waiting = this.pending.get(msg.id);
       if (!waiting) return;
       this.pending.delete(msg.id);
@@ -102,7 +112,7 @@ async function main() {
   let chrome: ChildProcess | undefined;
   try {
     await waitFor("the server", async () =>
-      (await fetch(PAGE)).ok ? true : undefined,
+      (await fetch(SITE)).ok ? true : undefined,
     );
 
     chrome = spawn(
@@ -127,46 +137,80 @@ async function main() {
     const cdp = await Cdp.open(target.webSocketDebuggerUrl);
     await cdp.send("Page.enable");
     await cdp.send("Runtime.enable");
+    await cdp.send("Log.enable");
+    const problems: string[] = [];
+    cdp.onEvent = (method, params) => {
+      if (method === "Runtime.exceptionThrown")
+        problems.push(
+          params.exceptionDetails.exception?.description ??
+            params.exceptionDetails.text,
+        );
+      if (
+        method === "Runtime.consoleAPICalled" &&
+        (params.type === "error" || params.type === "warning")
+      )
+        problems.push(
+          params.args
+            .map((a: { value?: unknown; description?: string }) =>
+              String(a.value ?? a.description),
+            )
+            .join(" "),
+        );
+      if (method === "Log.entryAdded" && params.entry.level === "error")
+        problems.push(params.entry.text);
+    };
 
-    for (const size of SIZES) {
-      await cdp.send("Emulation.setDeviceMetricsOverride", {
-        width: size.width,
-        height: size.height,
-        deviceScaleFactor: 2,
-        mobile: size.mobile,
-      });
-      await cdp.send("Page.navigate", { url: PAGE });
-      // The page is ready when the data has loaded: the title or the error.
-      await waitFor("the page", async () => {
+    for (const size of SIZES)
+      for (const screen of SCREENS) {
+        await cdp.send("Emulation.setDeviceMetricsOverride", {
+          width: size.width,
+          height: size.height,
+          deviceScaleFactor: 2,
+          mobile: size.mobile,
+        });
+        await cdp.send("Page.navigate", { url: SITE + screen.path });
+        // The page is ready when the data has loaded: the title or the error.
+        await waitFor("the page", async () => {
+          const { result } = await cdp.send("Runtime.evaluate", {
+            expression:
+              "document.readyState === 'complete' && !!document.querySelector('h1, [role=alert]')",
+            returnByValue: true,
+          });
+          return result.value === true ? true : undefined;
+        });
+        await sleep(300);
         const { result } = await cdp.send("Runtime.evaluate", {
           expression:
-            "document.readyState === 'complete' && !!document.querySelector('h1, [role=alert]')",
+            "JSON.stringify([document.documentElement.scrollWidth, document.documentElement.scrollHeight])",
           returnByValue: true,
         });
-        return result.value === true ? true : undefined;
-      });
-      await sleep(300);
-      const { result } = await cdp.send("Runtime.evaluate", {
-        expression:
-          "JSON.stringify([document.documentElement.scrollWidth, document.documentElement.scrollHeight])",
-        returnByValue: true,
-      });
-      const [width, height] = JSON.parse(result.value) as [number, number];
-      const shot = await cdp.send("Page.captureScreenshot", {
-        format: "png",
-        captureBeyondViewport: true,
-        clip: { x: 0, y: 0, width: size.width, height, scale: 1 },
-      });
-      const file = join(OUT, `${size.name}.png`);
-      writeFileSync(file, Buffer.from(shot.data, "base64"));
-      const sideways =
-        width > size.width
-          ? `, ${width - size.width} px of sideways scroll`
-          : "";
-      console.log(
-        `  ✓ ${size.width} px → .capturas/${size.name}.png (${height} px tall${sideways})`,
-      );
-    }
+        const [width, height] = JSON.parse(result.value) as [number, number];
+        // Grow the viewport to the whole page, so the fixed bar sits at its foot.
+        await cdp.send("Emulation.setDeviceMetricsOverride", {
+          width: size.width,
+          height,
+          deviceScaleFactor: 2,
+          mobile: size.mobile,
+        });
+        await sleep(300);
+        const shot = await cdp.send("Page.captureScreenshot", {
+          format: "png",
+          captureBeyondViewport: true,
+          clip: { x: 0, y: 0, width: size.width, height, scale: 1 },
+        });
+        const name = `${screen.name}-${size.width}.png`;
+        const file = join(OUT, name);
+        writeFileSync(file, Buffer.from(shot.data, "base64"));
+        const sideways =
+          width > size.width
+            ? `, ${width - size.width} px of sideways scroll`
+            : "";
+        console.log(
+          `  ✓ ${screen.path} at ${size.width} px → .capturas/${name} (${height} px tall${sideways})`,
+        );
+        for (const problem of problems.splice(0))
+          console.log(`    console: ${problem.slice(0, 300)}`);
+      }
     cdp.close();
   } finally {
     stop(chrome);

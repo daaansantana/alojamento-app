@@ -6,7 +6,7 @@ Os números deste documento vêm de três sítios, e cada tabela diz de onde: o 
 
 A persona está descrita em [PRODUCT.md](../PRODUCT.md). Em resumo:
 
-- É a dona de um alojamento com 8 quartos, que gere sozinha.
+- É a Isabel, a dona de um alojamento com 8 quartos, que gere sozinha.
 - Não está habituada a dados nem confia muito em ferramentas digitais. Conhece as extranets do Booking e do Airbnb, o email e o telemóvel.
 - Abre a app entre tarefas, muitas vezes no telemóvel, e quer saber o que fazer a seguir, não ler gráficos.
 - As perguntas dela: «Como correu o ano?», «O que devo fazer este mês?», «Quanto ganho se mudar alguma coisa?».

@@ -234,6 +234,7 @@ export interface PainelInput {
   alerts: Alert[]; // already in the order for `month`
   month: number; // 1 to 12
   winterReturners: GuestProfile[];
+  contactFirst: GuestProfile[]; // returning guests whose last stay came through a platform
   campaign: WinterCampaignResult; // with PAINEL_WINTER_CAMPAIGN
   direct: DirectBookingResult; // with PAINEL_DIRECT
   gains: GainScenario[]; // gainScenarios(bookings)
@@ -250,14 +251,25 @@ export interface PainelAction {
   title: string;
   text: string;
   worth: string | null; // what it is worth, when there is a number for it
+  short: string; // one line for the list of the other actions
   cta: string;
-  target: string; // "#contactos", "#simular" or "#detalhes"
+  target: string; // the screen and part it opens, e.g. "/hospedes#inverno"
 }
 
 export interface PainelContact {
   name: string;
-  detail: string; // "4 estadas · 1810 € · última pelo Airbnb"
+  email: string; // the key for «Já escrevi»
+  detail: string; // "4 estadas, 1810 € no total. A última foi pelo Airbnb."
   mailto: string;
+}
+
+export interface PainelGuestList {
+  first: PainelContact[]; // the first 3
+  all: PainelContact[]; // every guest, same order
+  total: number;
+  count: string; // "49 hóspedes"
+  explain: string; // what the list is and what the email offers
+  preview: { subject: string; body: string }; // the email, to the first guest
 }
 
 export interface PainelMonth {
@@ -271,20 +283,51 @@ export interface PainelView {
   month: number;
   monthName: string; // "novembro"
   period: string;
-  summary: { sentence: string; figures: PainelFigure[] };
+  intro: string; // under the month's title: the KPI and «Comece por isto:»
+  guestsIntro: string; // under «A quem escrever»
+  together: string; // summer +10% and the winter campaign, in one year
+  summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
-  contacts: {
-    first: PainelContact[]; // the first 3 winterReturners
-    all: PainelContact[]; // every winterReturner, same order
-    total: number;
-  };
+  contacts: PainelGuestList; // winterReturners, with the winter email
+  directContacts: PainelGuestList; // contactFirst, with the direct-booking email
   gain: { likely: string; range: string; assumption: string };
-  months: { bars: PainelMonth[]; best: string; price: string };
+  months: { bars: PainelMonth[]; best: string; levels: string; price: string };
+}
+
+// Version 4: the market, month by month
+
+export interface MarketMonth {
+  period: string; // "2025-11", the month it stands for
+  adr: number; // € per occupied room: «proveito médio por quarto ocupado»
+  revpar: number; // € per available room: «rendimento médio por quarto disponível»
+  from: string; // the month the value is from; the year before when not yet published
+  url: string;
+  published: string; // "YYYY-MM-DD"
+}
+
+export interface MarketComparisonMonth {
+  period: string;
+  house: number; // the house's price per night (its adr)
+  market: number; // the market's adr
+  difference: number; // house − market, € per night
+  from: string; // the month the market value is from
+  substitute: boolean; // the market value is from the same month a year before
+}
+
+export interface MarketComparison {
+  months: MarketComparisonMonth[]; // in the order of byMonth
+  below: number; // months where the house charges 1 € or more less
+  above: number; // months where it charges 1 € or more more
+  level: number; // months within 1 €
+  widest: MarketComparisonMonth; // the largest difference either way
 }
 
 // What the hooks return (SPEC section 6).
 
 export type DataStatus = "idle" | "loading" | "ready" | "error";
+
+/** «Letra maior»: the base text goes from 18 px to 20 px. */
+export type TextSize = "normal" | "maior";
 
 export interface DashboardData {
   year: PeriodKpi;
