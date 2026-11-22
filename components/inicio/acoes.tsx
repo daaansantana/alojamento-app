@@ -24,7 +24,7 @@ const ICON: Record<AlertId, Icon> = {
   orphans: BedIcon,
 };
 
-/** The action of the month: the one blue panel on the screen. */
+/** The action of the month: the one green panel on the screen. */
 export function LeadAction({ action }: { action: PainelAction }) {
   const Icon = ICON[action.id];
   return (

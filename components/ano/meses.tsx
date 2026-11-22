@@ -18,7 +18,7 @@ const config = {
   occupancy: { label: "Noites com hóspedes" },
 } satisfies ChartConfig;
 
-/** «O ano, mês a mês»: one colour, the best month in azulejo. */
+/** «O ano, mês a mês»: sage bars, the best month in nexo green. */
 export function YearChart({
   bars,
   summary,
