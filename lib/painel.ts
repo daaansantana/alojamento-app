@@ -247,13 +247,11 @@ export function marketIntro(segment: string): string {
 
 /** One line of the source: «novembro de 2025: 97,8 €, publicado a 31 de dezembro de 2025». */
 export function marketSourceLine(month: MarketMonth): string {
-  const [fy, fm] = month.from.split("-").map(Number);
-  const [py, pm, pd] = month.published.split("-").map(Number);
   const instead =
     month.from === month.period
       ? ""
-      : ` (em vez de ${monthName(Number(month.period.slice(5)))} de ${month.period.slice(0, 4)})`;
-  return `${monthName(fm)} de ${fy}${instead}: ${eur(month.adr, 1)}, publicado a ${pd} de ${monthName(pm)} de ${py}`;
+      : ` (em vez de ${monthOfYear(month.period)})`;
+  return `${monthOfYear(month.from)}${instead}: ${eur(month.adr, 1)}, publicado a ${dayMonth(month.published)} de ${month.published.slice(0, 4)}`;
 }
 
 /** Right under the intro: how to read the market's average. */
@@ -262,8 +260,7 @@ export const MARKET_NOTE =
 
 /** «Valor de outubro de 2025: o deste ano ainda não foi publicado.», for a stand-in month. */
 export function marketStandIn(month: MarketComparisonMonth): string {
-  const [year, m] = month.from.split("-").map(Number);
-  return `Valor de ${monthName(m)} de ${year}: o deste ano ainda não foi publicado.`;
+  return `Valor de ${monthOfYear(month.from)}: o deste ano ainda não foi publicado.`;
 }
 
 /** «Em 7 dos 12 meses, cobra menos do que o mercado.», or «mais» when most months are above. */
@@ -287,9 +284,9 @@ export function marketGap(month: MarketComparisonMonth): string {
 export function marketMonthLabel(month: MarketComparisonMonth): string {
   const name = monthName(Number(month.period.slice(5)));
   const label = `${name.charAt(0).toUpperCase()}${name.slice(1)}: a sua casa ${eur(month.house)}, o mercado ${eur(month.market)}.`;
-  if (!month.substitute) return label;
-  const [year, m] = month.from.split("-").map(Number);
-  return `${label} O valor do mercado é de ${monthName(m)} de ${year}.`;
+  return month.substitute
+    ? `${label} O valor do mercado é de ${monthOfYear(month.from)}.`
+    : label;
 }
 
 /** «+8 €», «−23 €» or «0 €»: the house minus the market, per night. */
