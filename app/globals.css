@@ -106,18 +106,20 @@
   /* Sage: icons, bars and type of 24 px or more only. Mint: backgrounds only. */
   --sage: #4e8b74;
   --mint: #b9d6c6;
-  --chart-bar: #6b8ac9;
-  --chart-1: #6b8ac9;
-  --chart-2: #1f4fa3;
+  /* Charts: the months in sage, the best month in nexo green. */
+  --chart-bar: #4e8b74;
+  --chart-1: #4e8b74;
+  --chart-2: #0f3d33;
   --chart-3: #b7791f;
   --chart-4: #c2456b;
-  --chart-5: #7a879d;
-  --channel-direct: #1f4fa3;
+  --chart-5: #7c8a84;
+  /* Channels: Direto and Booking sit close for red-green colour blindness, so the written labels stay. */
+  --channel-direct: #1f8a5f;
   --channel-booking: #b7791f;
   --channel-airbnb: #c2456b;
-  --commission: #7a879d;
-  /* The occupancy map, lighter to darker. */
-  --map: #1f4fa3;
+  --commission: #7c8a84;
+  /* The occupancy map, lighter to darker; dark text stays readable on its darkest cell. */
+  --map: #4e8b74;
   --radius: 12px;
   --sidebar: #f0f1ee;
   --sidebar-foreground: #1a2b25;
