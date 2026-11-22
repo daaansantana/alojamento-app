@@ -137,7 +137,7 @@ An arch with a dot: a doorway and the person in it. The files are used as they a
 | File | Use |
 | --- | --- |
 | `logo-horizontal.svg`, `logo-horizontal-branco.svg` | The header, linking to Início, with `aria-label="nexo"` |
-| `logo-vertical.svg`, `logo-vertical-branco.svg` | The error and «não encontrado» screens, when there is room |
+| `logo-vertical.svg`, `logo-vertical-branco.svg` | Not used in the app: the header already shows the logo on every screen, the error and «não encontrado» ones included |
 | `simbolo.svg`, `simbolo-branco.svg` | Small places |
 | `icone-app.svg` | The app icon: white symbol on nexo green, rounded corners |
 | `icone-app-menta.svg` | A variant; not used in the app |

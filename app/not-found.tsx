@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { LogoVertical } from "@/components/marca/logo-vertical";
 import { EmptyState } from "@/components/states/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,7 +7,6 @@ export default function NotFound() {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="sr-only">Página não encontrada</h1>
-      <LogoVertical />
       <EmptyState message="Esta página não existe." />
       <Link
         href="/"
