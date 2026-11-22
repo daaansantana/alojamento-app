@@ -214,7 +214,7 @@ check("winter", byId.winter, {
   text: "Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano.",
   worth: `Com 10% de desconto, cerca de 10 estadas: mais 2644${_}€.`,
   cta: "Ver os 49 hóspedes",
-  target: "#contactos",
+  target: "/hospedes#inverno",
 });
 check("commission", byId.commission, {
   id: "commission",
@@ -223,7 +223,7 @@ check("commission", byId.commission, {
   text: `Este ano pagou 4240${_}€ de comissão em 95 regressos pelo Booking e pelo Airbnb.`,
   worth: `Se metade passar a reservar diretamente, com 5% de desconto: mais 1413${_}€ por ano.`,
   cta: "Simular o desconto",
-  target: "#simular",
+  target: "/hospedes#direto",
 });
 check("summer", byId.summer, {
   id: "summer",
@@ -232,7 +232,7 @@ check("summer", byId.summer, {
   text: "Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre.",
   worth: `Com mais 10%, nas mesmas noites: mais 2947${_}€.`,
   cta: "Simular o verão",
-  target: "#simular",
+  target: "/precos#verao",
 });
 check("orphans", byId.orphans, {
   id: "orphans",
@@ -241,7 +241,7 @@ check("orphans", byId.orphans, {
   text: "Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro.",
   worth: null,
   cta: "Ver o mapa",
-  target: "#detalhes",
+  target: "/ano#mapa",
 });
 check(
   "month 11: order and when",

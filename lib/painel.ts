@@ -89,7 +89,7 @@ function action(
         text: `Ficaram ${int(facts.winterEmptyNights)} noites por vender de novembro a fevereiro. ${int(facts.winterReturners)} hóspedes que voltam já cá estiveram nesta altura do ano.`,
         worth: `Com ${pct(PAINEL_WINTER_CAMPAIGN.discount)} de desconto, cerca de ${int(campaign.extraStays)} estadas: mais ${eur(campaign.extraRevenue)}.`,
         cta: `Ver os ${int(facts.winterReturners)} hóspedes`,
-        target: "#contactos",
+        target: "/hospedes#inverno",
       };
     case "commission":
       return {
@@ -98,7 +98,7 @@ function action(
         text: `Este ano pagou ${eur(facts.commissionToday)} de comissão em ${int(facts.platformReturnStays)} regressos pelo Booking e pelo Airbnb.`,
         worth: `Se ${shareInWords(PAINEL_DIRECT.conversionRate)} passar a reservar diretamente, com ${pct(PAINEL_DIRECT.directDiscount)} de desconto: mais ${eur(direct.yearlyGain)} por ano.`,
         cta: "Simular o desconto",
-        target: "#simular",
+        target: "/hospedes#direto",
       };
     case "summer":
       return {
@@ -107,7 +107,7 @@ function action(
         text: `Julho e agosto tiveram ${pct(facts.julyOccupancy)} e ${pct(facts.augustOccupancy)} das noites com hóspedes, com o preço de sempre.`,
         worth: `Com mais ${pct(PAINEL_SUMMER.priceChange)}, nas mesmas noites: mais ${eur(facts.summerGain)}.`,
         cta: "Simular o verão",
-        target: "#simular",
+        target: "/precos#verao",
       };
     case "orphans":
       return {
@@ -116,7 +116,7 @@ function action(
         text: `Há ${int(facts.orphanNights)} noites vazias entre duas estadas no mesmo quarto, ${int(facts.summerOrphanNights)} delas de junho a setembro.`,
         worth: null,
         cta: "Ver o mapa",
-        target: "#detalhes",
+        target: "/ano#mapa",
       };
   }
 }

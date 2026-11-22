@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export default function NotFound() {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 pt-6 pb-16 text-base leading-relaxed sm:px-6 sm:pt-10">
+    <div className="flex flex-col gap-4">
       <EmptyState message="Esta página não existe." />
       <Link
         href="/"
@@ -16,6 +16,6 @@ export default function NotFound() {
       >
         Voltar à página inicial
       </Link>
-    </main>
+    </div>
   );
 }

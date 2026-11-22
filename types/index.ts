@@ -251,7 +251,7 @@ export interface PainelAction {
   text: string;
   worth: string | null; // what it is worth, when there is a number for it
   cta: string;
-  target: string; // "#contactos", "#simular" or "#detalhes"
+  target: string; // the screen and part it opens, e.g. "/hospedes#inverno"
 }
 
 export interface PainelContact {

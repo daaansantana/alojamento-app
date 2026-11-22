@@ -255,7 +255,7 @@ export interface PainelAction {
   text: string;
   worth: string | null; // what it is worth, when there is a number for it
   cta: string;
-  target: string; // "#contactos", "#simular" or "#detalhes"
+  target: string; // the screen and part it opens, e.g. "/hospedes#inverno"
 }
 
 export interface PainelContact {
@@ -606,10 +606,10 @@ The actions, with `when` as «Agora», «A preparar», «Sempre» or «Mais tard
 
 | id | title | text | worth | cta → target |
 | --- | --- | --- | --- | --- |
-| winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Ver os 49 hóspedes → `#contactos` |
-| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Simular o desconto → `#simular` |
-| summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Simular o verão → `#simular` |
-| orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | Ver o mapa → `#detalhes` |
+| winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Ver os 49 hóspedes → `/hospedes#inverno` |
+| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Simular o desconto → `/hospedes#direto` |
+| summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Simular o verão → `/precos#verao` |
+| orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | Ver o mapa → `/ano#mapa` |
 
 Order for month 11: winter Agora · commission Sempre · summer A preparar · orphans Mais tarde. For month 8: summer Agora · orphans Agora · commission Sempre · winter A preparar.
 
