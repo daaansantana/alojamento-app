@@ -9,12 +9,12 @@ export function MarketSource({
   return (
     <section aria-label="Fonte do mercado" className="flex flex-col gap-2">
       <p>{intro}</p>
-      <ul className="flex flex-col gap-1">
+      <ul className="flex flex-col gap-1.5">
         {lines.map((line) => (
           <li key={line.url + line.text} className="first-letter:uppercase">
             <a
               href={line.url}
-              className="text-primary underline underline-offset-4"
+              className="inline-block py-1.5 text-primary underline underline-offset-4"
               target="_blank"
               rel="noreferrer"
             >
