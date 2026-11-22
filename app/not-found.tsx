@@ -14,7 +14,7 @@ export default function NotFound() {
         href="/"
         className={cn(
           buttonVariants({ variant: "outline" }),
-          "h-11 self-center px-4 text-base",
+          "h-11 self-center border-control px-4 text-base",
         )}
       >
         Voltar à página inicial
