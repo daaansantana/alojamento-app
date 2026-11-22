@@ -143,9 +143,9 @@ export function FocusMonth({
       <h2 id="mes-em-foco" className="text-h2 font-bold">
         Em {month.name}
       </h2>
-      <dl className="grid grid-cols-2 gap-4">
+      <dl className="grid grid-cols-2 gap-4 max-[359px]:grid-cols-1">
         <div className="flex flex-col">
-          <dt className="flex items-center gap-2 text-muted-foreground">
+          <dt className="flex items-center gap-2 whitespace-nowrap text-muted-foreground">
             <span aria-hidden="true" className={cn(HOUSE, "size-4 ring-0")} />A
             sua casa
           </dt>
@@ -154,7 +154,7 @@ export function FocusMonth({
           </dd>
         </div>
         <div className="flex flex-col">
-          <dt className="flex items-center gap-2 text-muted-foreground">
+          <dt className="flex items-center gap-2 whitespace-nowrap text-muted-foreground">
             <span
               aria-hidden="true"
               className={cn(MARKET, "size-4 border-[2.5px]")}
