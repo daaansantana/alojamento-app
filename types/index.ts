@@ -153,6 +153,64 @@ export interface PricingResult {
   nightsForSameRevenue: number; // nightsSold ÷ (1 + priceChange)
 }
 
+// Version 2
+
+export interface GuestTotals {
+  guests: number; // guests with at least one completed stay
+  stays: number; // completed stays
+  spent: number; // sum of the whole `total` of those stays, as in guestProfiles
+  returningGuests: number; // guests with 2 or more completed stays
+  returningStays: number;
+  returningSpent: number;
+}
+
+export type MonthLevel = "hot" | "normal" | "cold";
+
+export interface ThermometerThresholds {
+  hot: number; // occupancy at or above this is hot
+  cold: number; // occupancy at or below this is cold
+}
+
+export interface MonthTemperature {
+  period: string; // "2025-11"
+  occupancy: number;
+  adr: number;
+  level: MonthLevel;
+}
+
+export interface WinterCampaignScenario {
+  returnRate: number; // share of the winter returners who come back once, 0 to 1
+  discount: number; // campaign discount, 0 to 1
+}
+
+export interface WinterCampaignResult {
+  guests: number; // winterReturners(bookings).length
+  extraStays: number; // Math.round(guests × returnRate): whole stays
+  avgStayValue: number; // mean `total` of the completed stays that check in from 2025-11-01 to 2026-02-28
+  extraRevenue: number; // extraStays × avgStayValue × (1 − discount)
+  discountCost: number; // extraStays × avgStayValue × discount
+}
+
+export interface AlertFacts {
+  winterEmptyNights: number; // room-nights not sold from 2025-11-01 to 2026-02-28
+  winterReturners: number; // winterReturners(bookings).length
+  platformReturnStays: number; // return stays through Booking or Airbnb
+  commissionToday: number; // sum of the `total` of those stays × BOOKING_COMMISSION
+  julyOccupancy: number; // occupancy of 2026-07 in kpisByMonth
+  augustOccupancy: number; // occupancy of 2026-08 in kpisByMonth
+  summerGain: number; // simulatePricing with { priceChange: 0.1, months: ["2026-07", "2026-08"] }: newRevenue − baseRevenue
+  orphanNights: number; // orphanNights(bookings, rooms).length
+  summerOrphanNights: number; // the orphan nights from June to September
+}
+
+export type AlertId = "winter" | "commission" | "summer" | "orphans";
+export type AlertWhen = "now" | "prepare" | "always" | "later";
+
+export interface Alert {
+  id: AlertId;
+  when: AlertWhen;
+}
+
 // What the hooks return (SPEC section 6).
 
 export type DataStatus = "idle" | "loading" | "ready" | "error";
@@ -167,6 +225,7 @@ export interface DashboardData {
   orphanNights: OrphanNight[];
   cancellationsByChannel: CancellationRate[];
   cancellationsByCountry: CancellationRate[];
+  thermometer: MonthTemperature[]; // with THERMOMETER
 }
 
 export interface ReturningData {
@@ -175,4 +234,5 @@ export interface ReturningData {
   winterReturners: GuestProfile[];
   transitions: ChannelTransition[];
   returnStays: Booking[];
+  totals: GuestTotals;
 }

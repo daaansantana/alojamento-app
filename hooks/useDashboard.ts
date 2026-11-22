@@ -12,6 +12,8 @@ import {
   kpisForYear,
   occupancyByRoomMonth,
   orphanNights,
+  priceThermometer,
+  THERMOMETER,
 } from "@/lib/stats";
 import type { CommissionRates, DashboardData } from "@/types";
 
@@ -27,9 +29,10 @@ export function useDashboard(): DashboardData | null {
 
   return useMemo(() => {
     if (status !== "ready") return null;
+    const byMonth = kpisByMonth(bookings, rooms);
     return {
       year: kpisForYear(bookings, rooms),
-      byMonth: kpisByMonth(bookings, rooms),
+      byMonth,
       byRoom: kpisByRoom(bookings, rooms),
       channels: channelMix(bookings),
       netByChannel: channelNet(bookings, TYPICAL_RATES),
@@ -37,6 +40,7 @@ export function useDashboard(): DashboardData | null {
       orphanNights: orphanNights(bookings, rooms),
       cancellationsByChannel: cancellationRates(bookings, "channel"),
       cancellationsByCountry: cancellationRates(bookings, "country"),
+      thermometer: priceThermometer(byMonth, THERMOMETER),
     };
   }, [rooms, bookings, status]);
 }

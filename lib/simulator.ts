@@ -8,6 +8,8 @@ import type {
   PricingResult,
   PricingScenario,
   Room,
+  WinterCampaignResult,
+  WinterCampaignScenario,
   WinterRoomResult,
   WinterRoomScenario,
 } from "@/types";
@@ -58,5 +60,20 @@ export function simulatePricing(
     baseRevenue: 25000,
     newRevenue: 26000,
     nightsForSameRevenue: 240,
+  };
+}
+
+/** A winter campaign for the guests who already came in winter. */
+export function simulateWinterCampaign(
+  bookings: Booking[],
+  scenario: WinterCampaignScenario,
+): WinterCampaignResult {
+  // TODO: implement (SPEC section 4, "Winter campaign")
+  return {
+    guests: 40,
+    extraStays: 8,
+    avgStayValue: 280,
+    extraRevenue: 2016,
+    discountCost: 224,
   };
 }

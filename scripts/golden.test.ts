@@ -1,13 +1,15 @@
-// Golden tests: the expected values in docs/SPEC.md, computed independently from alojamento.xlsx.
+// Golden tests: the expected values in docs/SPEC.md, each computed twice, independently.
 // Run: npm run gabaritos
 // If a check fails, fix the function, never the expected value. If you think a value is wrong, stop and tell the team.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { actionAlerts, alertFacts } from "../lib/alerts";
 import {
   channelTransitions,
   contactFirst,
   guestProfiles,
+  guestTotals,
   returningGuests,
   returnStays,
   winterReturners,
@@ -15,6 +17,7 @@ import {
 import {
   simulateDirectBookings,
   simulatePricing,
+  simulateWinterCampaign,
   simulateWinterRoom,
 } from "../lib/simulator";
 import {
@@ -26,6 +29,8 @@ import {
   kpisForYear,
   occupancyByRoomMonth,
   orphanNights,
+  priceThermometer,
+  THERMOMETER,
 } from "../lib/stats";
 import type { Booking, Room } from "../types";
 
@@ -485,6 +490,141 @@ check("-10% from November to February", () => {
   eq(r.baseRevenue, 36040, "baseRevenue");
   close(r.newRevenue, 36040 * 0.9, "newRevenue");
   close(r.nightsForSameRevenue, 360 / 0.9, "nightsForSameRevenue");
+});
+
+// Version 2
+
+console.log("\nguestTotals");
+check("312 guests, 440 stays, €134,065; 102 of them come back", () => {
+  eq(
+    guestTotals(bookings),
+    {
+      guests: 312,
+      stays: 440,
+      spent: 134065,
+      returningGuests: 102,
+      returningStays: 230,
+      returningSpent: 69535,
+    },
+    "totals",
+  );
+});
+
+console.log("\npriceThermometer");
+check("hot in July and August, cold from October to January", () => {
+  eq(THERMOMETER, { hot: 0.55, cold: 0.4 }, "THERMOMETER");
+  const byMonth = MONTHS.map(
+    ([period, nightsSold, nightsAvailable, revenue]) => ({
+      period,
+      nightsSold,
+      nightsAvailable,
+      revenue,
+      occupancy: nightsSold / nightsAvailable,
+      adr: revenue / nightsSold,
+      revpar: revenue / nightsAvailable,
+    }),
+  );
+  const t = priceThermometer(byMonth, { hot: 0.55, cold: 0.4 });
+  eq(
+    t.map((m) => `${m.period} ${m.level}`),
+    [
+      "2025-11 cold",
+      "2025-12 cold",
+      "2026-01 cold",
+      "2026-02 normal",
+      "2026-03 normal",
+      "2026-04 normal",
+      "2026-05 normal",
+      "2026-06 normal",
+      "2026-07 hot",
+      "2026-08 hot",
+      "2026-09 normal",
+      "2026-10 cold",
+    ],
+    "levels",
+  );
+  const august = t.find((m) => m.period === "2026-08");
+  assert.ok(august, "no row for 2026-08");
+  close(august.occupancy, 160 / 248, "August occupancy");
+  close(august.adr, 15990 / 160, "August adr");
+});
+
+console.log("\nsimulateWinterCampaign");
+const CAMPAIGN: [number, number, number, number, number][] = [
+  // returnRate, discount, extraStays, extraRevenue, discountCost
+  [0.2, 0.1, 10, 2643.84, 293.76],
+  [0.1, 0, 5, 1468.8, 0],
+  [0.3, 0.05, 15, 4186.08, 220.32],
+];
+for (const [returnRate, discount, stays, revenue, cost] of CAMPAIGN) {
+  check(
+    `${Math.round(returnRate * 100)}% of the 49 come back with ${Math.round(discount * 100)}% off`,
+    () => {
+      const r = simulateWinterCampaign(bookings, { returnRate, discount });
+      eq(r.guests, 49, "guests");
+      eq(r.extraStays, stays, "extraStays");
+      close(r.avgStayValue, 36720 / 125, "avgStayValue");
+      close(r.extraRevenue, revenue, "extraRevenue");
+      close(r.discountCost, cost, "discountCost");
+    },
+  );
+}
+
+console.log("\nalertFacts");
+check("the numbers behind the four alerts", () => {
+  const f = alertFacts(bookings, rooms);
+  eq(
+    [
+      f.winterEmptyNights,
+      f.winterReturners,
+      f.platformReturnStays,
+      f.orphanNights,
+      f.summerOrphanNights,
+    ],
+    [600, 49, 95, 87, 46],
+    "counts",
+  );
+  close(f.commissionToday, 28265 * 0.15, "commissionToday");
+  close(f.julyOccupancy, 139 / 248, "julyOccupancy");
+  close(f.augustOccupancy, 160 / 248, "augustOccupancy");
+  close(f.summerGain, 29465 * 0.1, "summerGain");
+});
+
+console.log("\nactionAlerts");
+const FACTS = {
+  winterEmptyNights: 600,
+  winterReturners: 49,
+  platformReturnStays: 95,
+  commissionToday: 4239.75,
+  julyOccupancy: 139 / 248,
+  augustOccupancy: 160 / 248,
+  summerGain: 2946.5,
+  orphanNights: 87,
+  summerOrphanNights: 46,
+};
+const ORDER: [number, string][] = [
+  [11, "winter now, commission always, summer prepare, orphans later"],
+  [4, "summer prepare, commission always, orphans prepare, winter later"],
+  [8, "summer now, orphans now, commission always, winter prepare"],
+  [10, "winter prepare, commission always, orphans later, summer later"],
+];
+for (const [month, order] of ORDER) {
+  check(`month ${month}: ${order}`, () => {
+    eq(
+      actionAlerts(FACTS, month)
+        .map((a) => `${a.id} ${a.when}`)
+        .join(", "),
+      order,
+      "order",
+    );
+  });
+}
+check("an alert whose number is 0 is left out", () => {
+  eq(
+    actionAlerts({ ...FACTS, orphanNights: 0 }, 11).map((a) => a.id),
+    ["winter", "commission", "summer"],
+    "ids",
+  );
 });
 
 const total = passed + failed.length;
