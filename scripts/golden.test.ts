@@ -14,6 +14,7 @@ import {
   returnStays,
   winterReturners,
 } from "../lib/guests";
+import { gainScenarios } from "../lib/kpi";
 import {
   simulateDirectBookings,
   simulatePricing,
@@ -626,6 +627,26 @@ check("an alert whose number is 0 is left out", () => {
     "ids",
   );
 });
+
+// Version 3
+
+console.log("\ngainScenarios");
+const GAINS: [string, number, number, number][] = [
+  // id, directGain, winterGain, total
+  ["cautious", 565.3, 1468.8, 2034.1],
+  ["likely", 1413.25, 2937.6, 4350.85],
+  ["optimistic", 4239.75, 4406.4, 8646.15],
+];
+for (const [index, [id, direct, winter, sum]] of GAINS.entries()) {
+  check(`${id}: about €${Math.round(sum)} a year`, () => {
+    const g = gainScenarios(bookings)[index];
+    assert.ok(g, `no row ${index + 1}`);
+    eq(g.id, id, "id");
+    close(g.directGain, direct, "directGain");
+    close(g.winterGain, winter, "winterGain");
+    close(g.total, sum, "total");
+  });
+}
 
 const total = passed + failed.length;
 console.log(`\n${passed} of ${total} checks pass.`);

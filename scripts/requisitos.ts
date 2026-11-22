@@ -330,8 +330,12 @@ add(
   },
 );
 
+// A link built by lib/email.ts reaches the page as a `mailto` field.
+const PREFILLED_HREF = /\bhref=\{[\w.]*\bmailto\}/;
+
 add("deliverable", "D6", "Email links to the guests who come back", () =>
-  using([...APP, ...OWN_COMPONENTS], /mailto:/).length
+  using([...APP, ...OWN_COMPONENTS], /mailto:/).length ||
+  using([...APP, ...OWN_COMPONENTS], PREFILLED_HREF).length
     ? []
     : ["no mailto: link"],
 );
@@ -414,6 +418,54 @@ add("deliverable", "D13", "Interface marked as Portuguese (html lang)", () =>
     ? []
     : ['app/layout.tsx has no <html lang="pt-PT">'],
 );
+
+// Text the interface shows: string literals and JSX text, without comments.
+function screenText(file: string): string[] {
+  const text = code(file);
+  return [
+    ...text.matchAll(
+      /"((?:[^"\\\n]|\\.)*)"|'((?:[^'\\\n]|\\.)*)'|`((?:[^`\\]|\\.)*)`/g,
+    ),
+    ...text.matchAll(/[>}]([^<>{}]+)(?=[<{])/g),
+  ].map((m) => m.slice(1).find((g) => g !== undefined) ?? "");
+}
+
+add("deliverable", "D14", "No acronyms on screen", () => {
+  const problems: string[] = [];
+  for (const f of [...APP, ...OWN_COMPONENTS]) {
+    const found = new Set(
+      screenText(f).flatMap((t) =>
+        [...t.matchAll(/\b(RevPAR|ADR|OTA)\b/g)].map((m) => m[1]),
+      ),
+    );
+    if (found.size) problems.push(`${[...found].join(", ")} in ${f}`);
+  }
+  return problems;
+});
+
+add("deliverable", "D15", "Email links come prefilled", () => {
+  const file = "lib/email.ts";
+  if (!exists(file)) return [`${file} is missing`];
+  const problems: string[] = [];
+  const email = code(file);
+  for (const part of ["subject=", "body="])
+    if (!email.includes(part)) problems.push(`${file} builds no ${part}`);
+  const builders = importers(
+    [...LIB, ...HOOKS, ...APP],
+    (t) => t === "lib/email",
+  );
+  if (!builders.length) problems.push(`nothing imports ${file}`);
+  const pages = [...PAGES, ...OWN_COMPONENTS];
+  if (
+    !importers(pages, (t) => t === "lib/email").length &&
+    !using(pages, PREFILLED_HREF).length
+  )
+    problems.push("no page links to a prefilled email");
+  for (const f of using(pages, /["'`]mailto:[^"'`]*["'`]/))
+    if (!/subject=/.test(code(f)))
+      problems.push(`hand-written mailto: in ${f}`);
+  return problems;
+});
 
 // ---------------------------------------------------------------- recommended
 
