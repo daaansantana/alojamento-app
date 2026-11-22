@@ -234,6 +234,7 @@ export interface PainelInput {
   alerts: Alert[]; // already in the order for `month`
   month: number; // 1 to 12
   winterReturners: GuestProfile[];
+  contactFirst: GuestProfile[]; // returning guests whose last stay came through a platform
   campaign: WinterCampaignResult; // with PAINEL_WINTER_CAMPAIGN
   direct: DirectBookingResult; // with PAINEL_DIRECT
   gains: GainScenario[]; // gainScenarios(bookings)
@@ -278,6 +279,11 @@ export interface PainelView {
   contacts: {
     first: PainelContact[]; // the first 3 winterReturners
     all: PainelContact[]; // every winterReturner, same order
+    total: number;
+  };
+  directContacts: {
+    first: PainelContact[]; // the first 3 of contactFirst, with the direct-booking email
+    all: PainelContact[]; // every guest in contactFirst, same order
     total: number;
   };
   gain: { likely: string; range: string; assumption: string };

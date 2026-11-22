@@ -41,6 +41,7 @@ export function usePainel(): PainelView | null {
       alerts: alerts.alerts,
       month: alerts.month,
       winterReturners: returning.winterReturners,
+      contactFirst: returning.contactFirst,
       campaign,
       direct,
       gains,

@@ -3,7 +3,7 @@
 // Pure: no fetch, no store, no React.
 
 import { BOOKING_COMMISSION } from "@/lib/benchmarks";
-import { invitationMailto } from "@/lib/email";
+import { type InvitationKind, invitationMailto } from "@/lib/email";
 import { about, eur, int, monthName, monthShort, pct } from "@/lib/format";
 import type {
   AlertId,
@@ -99,7 +99,7 @@ function action(
         text: `Este ano pagou ${eur(facts.commissionToday)} de comissão em ${int(facts.platformReturnStays)} regressos pelo Booking e pelo Airbnb.`,
         worth: `Se ${shareInWords(PAINEL_DIRECT.conversionRate)} passar a reservar diretamente, com ${pct(PAINEL_DIRECT.directDiscount)} de desconto: mais ${eur(direct.yearlyGain)} por ano.`,
         short: `Mais ${eur(direct.yearlyGain)} por ano`,
-        cta: "Simular o desconto",
+        cta: `Ver os ${int(input.contactFirst.length)} hóspedes`,
         target: "/hospedes#direto",
       };
     case "summer":
@@ -125,13 +125,13 @@ function action(
   }
 }
 
-function contact(guest: GuestProfile): PainelContact {
+function contact(guest: GuestProfile, kind: InvitationKind): PainelContact {
   const last =
     guest.lastChannel === "Direto" ? "direta" : `pelo ${guest.lastChannel}`;
   return {
     name: guest.name,
     detail: `${int(guest.stays)} estadas · ${eur(guest.spent)} · última ${last}`,
-    mailto: invitationMailto(guest, "winter"),
+    mailto: invitationMailto(guest, kind),
   };
 }
 
@@ -151,7 +151,8 @@ export function buildPainel(input: PainelInput): PainelView {
   const optimistic = scenario(gains, "optimistic");
 
   const adrs = thermometer.map((m) => m.adr);
-  const contacts = input.winterReturners.map(contact);
+  const contacts = input.winterReturners.map((g) => contact(g, "winter"));
+  const directContacts = input.contactFirst.map((g) => contact(g, "direct"));
 
   return {
     month: input.month,
@@ -175,6 +176,11 @@ export function buildPainel(input: PainelInput): PainelView {
       first: contacts.slice(0, 3),
       all: contacts,
       total: input.winterReturners.length,
+    },
+    directContacts: {
+      first: directContacts.slice(0, 3),
+      all: directContacts,
+      total: input.contactFirst.length,
     },
     gain: {
       likely: `Cerca de ${about(likely.total)}`,

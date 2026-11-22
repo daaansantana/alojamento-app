@@ -238,6 +238,7 @@ export interface PainelInput {
   alerts: Alert[]; // already in the order for `month`
   month: number; // 1 to 12
   winterReturners: GuestProfile[];
+  contactFirst: GuestProfile[]; // returning guests whose last stay came through a platform
   campaign: WinterCampaignResult; // with PAINEL_WINTER_CAMPAIGN
   direct: DirectBookingResult; // with PAINEL_DIRECT
   gains: GainScenario[]; // gainScenarios(bookings)
@@ -282,6 +283,11 @@ export interface PainelView {
   contacts: {
     first: PainelContact[]; // the first 3 winterReturners
     all: PainelContact[]; // every winterReturner, same order
+    total: number;
+  };
+  directContacts: {
+    first: PainelContact[]; // the first 3 of contactFirst, with the direct-booking email
+    all: PainelContact[]; // every guest in contactFirst, same order
     total: number;
   };
   gain: { likely: string; range: string; assumption: string };
@@ -611,13 +617,13 @@ The actions, with `when` as «Agora», «A preparar», «Sempre» or «Mais tard
 | id | title | text | worth | short | cta → target |
 | --- | --- | --- | --- | --- | --- |
 | winter | Convide quem já cá esteve no inverno | Ficaram 600 noites por vender de novembro a fevereiro. 49 hóspedes que voltam já cá estiveram nesta altura do ano. | Com 10% de desconto, cerca de 10 estadas: mais 2644 €. | Mais 2644 € no inverno | Ver os 49 hóspedes → `/hospedes#inverno` |
-| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Mais 1413 € por ano | Simular o desconto → `/hospedes#direto` |
+| commission | Peça a quem volta que reserve diretamente | Este ano pagou 4240 € de comissão em 95 regressos pelo Booking e pelo Airbnb. | Se metade passar a reservar diretamente, com 5% de desconto: mais 1413 € por ano. | Mais 1413 € por ano | Ver os 80 hóspedes → `/hospedes#direto` |
 | summer | Suba um pouco o preço em julho e agosto | Julho e agosto tiveram 56% e 65% das noites com hóspedes, com o preço de sempre. | Com mais 10%, nas mesmas noites: mais 2947 €. | Mais 2947 € no verão | Simular o verão → `/precos#verao` |
 | orphans | Venda as noites soltas | Há 87 noites vazias entre duas estadas no mesmo quarto, 46 delas de junho a setembro. | `null` | 87 noites vazias entre duas estadas | Ver o mapa → `/ano#mapa` |
 
 Order for month 11: winter Agora · commission Sempre · summer A preparar · orphans Mais tarde. For month 8: summer Agora · orphans Agora · commission Sempre · winter A preparar.
 
-Each contact's `detail` is «4 estadas · 1810 € · última pelo Airbnb», or «· última direta» when the last channel is Direto. `contacts.all` has one row per winter returner, in their order, so its first 3 rows are `contacts.first`. `contacts.total` = `winterReturners.length`.
+Each contact's `detail` is «4 estadas · 1810 € · última pelo Airbnb», or «· última direta» when the last channel is Direto. `contacts.all` has one row per winter returner, in their order, so its first 3 rows are `contacts.first`. `contacts.total` = `winterReturners.length`. `directContacts` is built the same way from `contactFirst` (80 guests), with the `direct` email instead of the `winter` one; its first three are Helena Costa, Filipa Teixeira and Sofia Teixeira.
 
 `months.bars` has 12 rows `{ period, label, percent, level }`: `label` is the short month without a dot («ago»), `percent` the occupancy («65%») and `level` «mais procurado» (hot), «normal» or «menos procurado» (cold).
 
@@ -713,6 +719,6 @@ useTextSize(): { textSize: TextSize; setTextSize: (size: TextSize) => void }
 - `DataStatus`, `DashboardData` and `ReturningData` go in `types/index.ts`.
 - `retry` loads the files again after an error, through the store's `load`. Pages pass it to the error state as `onRetry`, which shows a «Tentar de novo» button.
 - The store keeps `selectedMonth: number | null` and `setSelectedMonth(month)`. `null` means the month of the reference date, 11. `useAlerts` reads it and returns the month it used. Pages read and change it through `useMonthSelection`, never the store itself.
-- `usePainel` (version 3) joins `useDashboard`, `useReturningGuests`, `useAlerts`, `useWinterCampaign(PAINEL_WINTER_CAMPAIGN)`, `useDirectSimulation(PAINEL_DIRECT)` and `gainScenarios`, and passes them to `buildPainel`. It follows the selected month through `useAlerts`.
+- `usePainel` (version 3) passes `contactFirst` from `useReturningGuests` too, and joins `useDashboard`, `useReturningGuests`, `useAlerts`, `useWinterCampaign(PAINEL_WINTER_CAMPAIGN)`, `useDirectSimulation(PAINEL_DIRECT)` and `gainScenarios`, and passes them to `buildPainel`. It follows the selected month through `useAlerts`.
 - The store also keeps `textSize`, the «Letra maior» choice, and `setTextSize(size)`. It is the only thing kept on the device: the store's `persist` saves it in `localStorage`, under `a-sua-casa`, never the data. Reading and writing are guarded, so the page works without storage. The store reads it back after the first render (`skipHydration`), so the prerendered HTML matches. Pages read and change it through `useTextSize`. `TextSize` goes in `types/index.ts`.
 - A type or a hook only changes through a reviewed PR, with `npm run verificar` passing.

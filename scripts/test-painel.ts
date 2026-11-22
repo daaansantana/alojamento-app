@@ -92,6 +92,19 @@ const guests = [
   ),
 ];
 
+// SPEC section 4, contactFirst: the first three.
+const platformGuests = [
+  guests[0],
+  guest(
+    "Filipa Teixeira",
+    "filipa.teixeira@correio.example",
+    3,
+    1565,
+    "Booking",
+  ),
+  guests[1],
+];
+
 // SPEC section 3, "The order of the action alerts".
 const ALERTS: Record<number, Alert[]> = {
   11: [
@@ -142,6 +155,7 @@ const input = (month: number): PainelInput => ({
   alerts: ALERTS[month],
   month,
   winterReturners: guests,
+  contactFirst: platformGuests,
   campaign: {
     guests: 49,
     extraStays: 10,
@@ -234,7 +248,7 @@ check("commission", byId.commission, {
   text: `Este ano pagou 4240${_}€ de comissão em 95 regressos pelo Booking e pelo Airbnb.`,
   worth: `Se metade passar a reservar diretamente, com 5% de desconto: mais 1413${_}€ por ano.`,
   short: `Mais 1413${_}€ por ano`,
-  cta: "Simular o desconto",
+  cta: "Ver os 3 hóspedes",
   target: "/hospedes#direto",
 });
 check("summer", byId.summer, {
@@ -302,6 +316,38 @@ check(
   "contacts.all: the first three are contacts.first",
   view.contacts.all.slice(0, 3),
   view.contacts.first,
+);
+
+console.log("\npainel: direct-booking contacts");
+check("directContacts.first", view.directContacts.first, [
+  {
+    name: "Helena Costa",
+    detail: `4 estadas · 1810${_}€ · última pelo Airbnb`,
+    mailto: invitationMailto(platformGuests[0], "direct"),
+  },
+  {
+    name: "Filipa Teixeira",
+    detail: `3 estadas · 1565${_}€ · última pelo Booking`,
+    mailto: invitationMailto(platformGuests[1], "direct"),
+  },
+  {
+    name: "Sofia Teixeira",
+    detail: `2 estadas · 1435${_}€ · última pelo Airbnb`,
+    mailto: invitationMailto(platformGuests[2], "direct"),
+  },
+]);
+check("directContacts.total", view.directContacts.total, 3);
+check(
+  "directContacts.all: one per guest in contactFirst",
+  view.directContacts.all.length,
+  platformGuests.length,
+);
+check(
+  "directContacts: the email is the direct-booking one",
+  view.directContacts.all.every((c) =>
+    c.mailto.includes("reserve%20diretamente"),
+  ),
+  true,
 );
 
 console.log("\npainel: gain");
