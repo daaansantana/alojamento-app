@@ -29,6 +29,8 @@ Open: her age, and a check of the persona in a conversation with a real guest ho
 
 ## Product Purpose
 
+The app is called **nexo**: «A sua casa, com nexo.» The brand is visual only (the logo, the name and the colours in `DESIGN.md`); the screens, the numbers and the texts stay as they are.
+
 Four screens, each answering one of her questions, that turn the guest house's own bookings into a few decisions: who to contact and when, what discount to give on direct bookings, what price to charge in each season.
 
 | Screen | Her question | What it answers |

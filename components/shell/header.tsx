@@ -1,10 +1,9 @@
-import { HomeAngleIcon } from "@solar-icons/react/linear/home-angle";
 import Link from "next/link";
 import { TopNav } from "./nav";
 
 export const CONTAINER = "mx-auto w-full max-w-[1200px] px-4 lg:px-10";
 
-/** The house's name, the four screens on a computer, and «Letra maior». */
+/** The nexo logo, the four screens on a computer, and «Letra maior». */
 export function Header({
   pathname,
   largeText,
@@ -21,12 +20,18 @@ export function Header({
       >
         <Link
           href="/"
-          className="flex min-h-12 items-center gap-3 rounded-xl font-bold text-lg"
+          aria-label="nexo"
+          className="flex min-h-12 shrink-0 items-center rounded-xl px-1.5"
         >
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <HomeAngleIcon size={24} aria-hidden={true} />
-          </span>
-          A sua casa
+          {/* The logo file as it is; the link carries the name. */}
+          {/* biome-ignore lint/performance/noImgElement: a static SVG, served as it is */}
+          <img
+            src="/marca/logo-horizontal.svg"
+            alt=""
+            width={143}
+            height={30}
+            className="h-[1.667rem] w-auto"
+          />
         </Link>
         <TopNav pathname={pathname} />
         <button

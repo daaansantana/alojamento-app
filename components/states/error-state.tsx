@@ -17,7 +17,7 @@ export function ErrorState({
         <Button
           variant="outline"
           onClick={onRetry}
-          className="h-11 px-4 text-base text-foreground"
+          className="h-11 border-control px-4 text-base text-foreground"
         >
           Tentar de novo
         </Button>

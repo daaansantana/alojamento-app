@@ -1,6 +1,6 @@
 # alojamento-app
 
-Uma app em português para a Isabel, a dona de uma casa de hóspedes com 8 quartos. A partir das reservas do próprio negócio, responde às perguntas dela em quatro ecrãs, com a navegação sempre à vista. Projeto final, em equipa de três.
+A **nexo** («A sua casa, com nexo.») é uma app em português para a Isabel, a dona de uma casa de hóspedes com 8 quartos. A partir das reservas do próprio negócio, responde às perguntas dela em quatro ecrãs, com a navegação sempre à vista. Projeto final, em equipa de três.
 
 A app está publicada em <https://alojamento-app.vercel.app/>.
 
@@ -61,7 +61,7 @@ Fluxo dos dados: `public/data/*.json` → `services/` → `store/` → `hooks/`,
 ## Documentos
 
 - [PRODUCT.md](PRODUCT.md): a persona, o propósito da app e os princípios do desenho.
-- [DESIGN.md](DESIGN.md): o sistema visual, «Casa caiada»: cores, letra, forma e componentes.
+- [DESIGN.md](DESIGN.md): o sistema visual e a marca nexo: o logo, as cores, a letra, a forma e os componentes.
 - [docs/SPEC.md](docs/SPEC.md): o contrato: regras dos dados, tipos, funções, valores esperados e hooks.
 - [docs/ANALISE.md](docs/ANALISE.md): a análise dos dados (exploração, hipóteses, conclusões, indicadores e KPI), com a fonte de cada número. Em inglês: [docs/ANALYSIS.en.md](docs/ANALYSIS.en.md).
 - [HIPOTESES.md](HIPOTESES.md): as seis hipóteses, o critério de cada uma e o resultado.

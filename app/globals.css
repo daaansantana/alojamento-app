@@ -43,6 +43,8 @@
   --color-control: var(--control);
   --color-nav-pill: var(--nav-pill);
   --color-success: var(--success);
+  --color-sage: var(--sage);
+  --color-mint: var(--mint);
   --color-chart-bar: var(--chart-bar);
   --color-channel-direct: var(--channel-direct);
   --color-channel-booking: var(--channel-booking);
@@ -78,50 +80,55 @@
 }
 
 :root {
-  /* Casa caiada: whitewash, ink and azulejo blue. Light theme only. */
-  --background: #ffffff;
-  --foreground: #172033;
+  /* nexo: warm white, dark green ink and one green. Light theme only. */
+  --background: #fafaf8;
+  --foreground: #1a2b25;
   --card: #ffffff;
-  --card-foreground: #172033;
+  --card-foreground: #1a2b25;
   --popover: #ffffff;
-  --popover-foreground: #172033;
-  --primary: #1f4fa3;
+  --popover-foreground: #1a2b25;
+  --primary: #0f3d33;
   --primary-foreground: #ffffff;
-  --primary-pressed: #173b7a;
-  --secondary: #f3f5f8;
-  --secondary-foreground: #172033;
-  --muted: #f3f5f8;
-  --muted-foreground: #4a5468;
-  --accent: #eef3fb;
-  --accent-foreground: #172033;
-  --nav-pill: #e8eef9;
+  --primary-pressed: #0a2e26;
+  --secondary: #f0f1ee;
+  --secondary-foreground: #1a2b25;
+  --muted: #f0f1ee;
+  --muted-foreground: #4b5a55;
+  --accent: #eaf3ee;
+  --accent-foreground: #1a2b25;
+  --nav-pill: #dcebe3;
   --destructive: #b42318;
   --success: #1e7a46;
-  --border: #e3e7ee;
-  --input: #7a879d;
-  --control: #7a879d;
-  --ring: #1f4fa3;
-  --chart-bar: #6b8ac9;
-  --chart-1: #6b8ac9;
-  --chart-2: #1f4fa3;
+  --border: #e1e3df;
+  --input: #7c8a84;
+  --control: #7c8a84;
+  --ring: #0f3d33;
+  /* Sage: icons, bars and type of 24 px or more only. Mint: backgrounds only. */
+  --sage: #4e8b74;
+  --mint: #b9d6c6;
+  /* Charts: the months in sage, the best month in nexo green. */
+  --chart-bar: #4e8b74;
+  --chart-1: #4e8b74;
+  --chart-2: #0f3d33;
   --chart-3: #b7791f;
   --chart-4: #c2456b;
-  --chart-5: #7a879d;
-  --channel-direct: #1f4fa3;
+  --chart-5: #7c8a84;
+  /* Channels: Direto and Booking sit close for red-green colour blindness, so the written labels stay. */
+  --channel-direct: #1f8a5f;
   --channel-booking: #b7791f;
   --channel-airbnb: #c2456b;
-  --commission: #7a879d;
-  /* The occupancy map, lighter to darker. */
-  --map: #1f4fa3;
+  --commission: #7c8a84;
+  /* The occupancy map, lighter to darker; dark text stays readable on its darkest cell. */
+  --map: #4e8b74;
   --radius: 12px;
-  --sidebar: #f3f5f8;
-  --sidebar-foreground: #172033;
-  --sidebar-primary: #1f4fa3;
+  --sidebar: #f0f1ee;
+  --sidebar-foreground: #1a2b25;
+  --sidebar-primary: #0f3d33;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eef3fb;
-  --sidebar-accent-foreground: #172033;
-  --sidebar-border: #e3e7ee;
-  --sidebar-ring: #1f4fa3;
+  --sidebar-accent: #eaf3ee;
+  --sidebar-accent-foreground: #1a2b25;
+  --sidebar-border: #e1e3df;
+  --sidebar-ring: #0f3d33;
 }
 
 @layer base {

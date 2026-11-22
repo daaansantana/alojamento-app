@@ -24,7 +24,7 @@ const ICON: Record<AlertId, Icon> = {
   orphans: BedIcon,
 };
 
-/** The action of the month: the one blue panel on the screen. */
+/** The action of the month: the one green panel on the screen. */
 export function LeadAction({ action }: { action: PainelAction }) {
   const Icon = ICON[action.id];
   return (
@@ -32,7 +32,7 @@ export function LeadAction({ action }: { action: PainelAction }) {
       aria-labelledby="acao-do-mes"
       className="flex flex-col gap-4 rounded-panel bg-accent p-5 sm:p-7"
     >
-      <span className="flex size-14 items-center justify-center rounded-full bg-background text-primary">
+      <span className="flex size-14 items-center justify-center rounded-full bg-card text-primary">
         <Icon size={28} aria-hidden={true} />
       </span>
       <h2 id="acao-do-mes" className="text-h2 font-bold text-balance">

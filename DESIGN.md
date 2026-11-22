@@ -1,24 +1,27 @@
 ---
-name: A sua casa
-description: Casa caiada. Whitewashed walls, azulejo blue and type that reads without glasses.
+name: nexo
+description: A sua casa, com nexo. Deep green, sage and mint on a warm white, and type that reads without glasses.
 colors:
-  wall: "#FFFFFF"
-  ink: "#172033"
-  ink-soft: "#4A5468"
-  divider: "#E3E7EE"
-  control-border: "#7A879D"
-  azulejo: "#1F4FA3"
-  azulejo-pressed: "#173B7A"
-  accent-panel: "#EEF3FB"
-  nav-pill: "#E8EEF9"
-  muted-panel: "#F3F5F8"
+  ground: "#FAFAF8"
+  card: "#FFFFFF"
+  ink: "#1A2B25"
+  ink-soft: "#4B5A55"
+  divider: "#E1E3DF"
+  control-border: "#7C8A84"
+  nexo: "#0F3D33"
+  nexo-pressed: "#0A2E26"
+  accent-panel: "#EAF3EE"
+  nav-pill: "#DCEBE3"
+  muted-panel: "#F0F1EE"
+  sage: "#4E8B74"
+  mint: "#B9D6C6"
   success: "#1E7A46"
   destructive: "#B42318"
-  chart-bar: "#6B8AC9"
-  channel-direct: "#1F4FA3"
+  chart-bar: "#4E8B74"
+  channel-direct: "#1F8A5F"
   channel-booking: "#B7791F"
   channel-airbnb: "#C2456B"
-  commission: "#7A879D"
+  commission: "#7C8A84"
 typography:
   h1:
     fontFamily: "Atkinson Hyperlegible Next, system-ui, sans-serif"
@@ -79,15 +82,15 @@ spacing:
   reading-max: "760px"
 components:
   button-primary:
-    backgroundColor: "{colors.azulejo}"
-    textColor: "{colors.wall}"
+    backgroundColor: "{colors.nexo}"
+    textColor: "{colors.card}"
     rounded: "{rounded.control}"
     height: "52px"
   button-primary-pressed:
-    backgroundColor: "{colors.azulejo-pressed}"
-    textColor: "{colors.wall}"
+    backgroundColor: "{colors.nexo-pressed}"
+    textColor: "{colors.card}"
   button-secondary:
-    backgroundColor: "{colors.wall}"
+    backgroundColor: "{colors.card}"
     textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     height: "48px"
@@ -103,55 +106,81 @@ components:
     padding: "20px"
   nav-item-active:
     backgroundColor: "{colors.nav-pill}"
-    textColor: "{colors.azulejo}"
+    textColor: "{colors.nexo}"
     rounded: "{rounded.pill}"
 ---
 
-# Design system: Casa caiada
+# Design system: nexo
 
 ## Overview
 
-A guest house by the sea: whitewashed walls, the blue of azulejo tiles, and type that reads without glasses. The app is a working tool for Isabel, who runs the house herself, opens it on her phone between tasks and is at the age when small print starts to cost. Four screens, one of her questions each, with the navigation always in view.
+nexo is the app's name and its look: «A sua casa, com nexo.» A deep green, a sage and a mint on a warm white, and type that reads without glasses. The app is a working tool for Isabel, who runs the house herself, opens it on her phone between tasks and is at the age when small print starts to cost. Four screens, one of her questions each, with the navigation always in view.
 
-The page is calm. Boldness is spent in one place only: the price thermometer on Preços, the one chart with strong colour. Everything else is white ground, dark ink and a single blue.
+The page is calm. Boldness is spent in one place only: the price thermometer on Preços, the one chart with strong contrast. Everything else is warm white ground, dark ink and a single green.
 
 - Mode: Operate. Scanability, consistency and the real scene (a phone, in a hurry, at arm's length) outrank expression.
 - Only a light theme.
 - Motion: none beyond opening and closing; `prefers-reduced-motion` turns even that off.
+- Out of scope: gradients, textures, background patterns, a dark theme, illustrations.
+
+## Brand
+
+### Name
+
+- **nexo**, always in lower case. The line is «A sua casa, com nexo.»
+- The name shows as the logo in the header and in the browser tab («Preços · nexo»). Screen titles (`h1`) stay as they are: they are her questions, not the brand.
+
+### Logo
+
+An arch with a dot: a doorway and the person in it. The files are used as they are, never redrawn; the wordmark is Poppins already turned into outlines, so the font is never loaded.
+
+| File | Use |
+| --- | --- |
+| `logo-horizontal.svg`, `logo-horizontal-branco.svg` | The header, linking to Início, with `aria-label="nexo"` |
+| `logo-vertical.svg`, `logo-vertical-branco.svg` | Not used in the app: the header already shows the logo on every screen, the error and «não encontrado» ones included |
+| `simbolo.svg`, `simbolo-branco.svg` | Small places |
+| `icone-app.svg` | The app icon: white symbol on nexo green, rounded corners |
+| `icone-app-menta.svg` | A variant; not used in the app |
+
+The white versions go on nexo green only.
+
+- **Clear space:** around the logo, at least the width of one leg of the arch (the arch's stroke). In the horizontal logo that is about 18% of its height: 5 px around a 28 px logo.
+- **Smallest sizes:** the icon reads at 16 px and the symbol at 16 px; the dot must stay visible.
 
 ## Colors
 
-Whitewash and ink, with azulejo blue as the one accent. Colours live as variables in `app/globals.css`, mapped onto the shadcn tokens (`background`, `foreground`, `primary`, `accent`, `muted`, `border`, `destructive`).
+Warm white and dark green ink, with nexo green as the one accent. Colours live as variables in `app/globals.css`, mapped onto the shadcn tokens (`background`, `card`, `popover`, `foreground`, `primary`, `ring`, `accent`, `muted`, `border`, `destructive`).
 
-### Primary
-
-- **Azulejo** `#1F4FA3` (7.8:1 on white): primary buttons, the active screen, links, the house's own marker in charts. Pressed: `#173B7A`.
-
-### Neutral
-
-- **Wall** `#FFFFFF`: page and cards.
-- **Ink** `#172033` (16.3:1): all text and chart labels.
-- **Soft ink** `#4A5468` (7.6:1): secondary text. Never lighter.
-- **Divider** `#E3E7EE`: list dividers and card edges. Decorative only.
-- **Control border** `#7A879D` (3.6:1): the edge of every button, toggle and field.
-- **Accent panel** `#EEF3FB`: the featured panel (one per screen). The navigation pill is `#E8EEF9`.
-- **Muted panel** `#F3F5F8`: the «E se…?» panels.
-
-### Status and data
-
-- **Success** `#1E7A46` (5.4:1): «Escreveu a …», always with the tick icon and the words.
-- **Destructive** `#B42318` (6.6:1): errors.
-- **Chart bar** `#6B8AC9` (3.4:1): bars of the year; the best month in azulejo.
-- **Channels:** Direto `#1F4FA3`, Booking `#B7791F`, Airbnb `#C2456B`; all three pass the colour-blindness check. Commission on the per-night chart: `#7A879D`.
+| Role | Value | Rule |
+| --- | --- | --- |
+| `background` | `#FAFAF8` | |
+| `card`, `popover` | `#FFFFFF` | |
+| `foreground` (ink) | `#1A2B25` | 14.2:1 |
+| `muted-foreground` (soft ink) | `#4B5A55` | 7.0:1; never lighter |
+| `primary` (nexo) | `#0F3D33`, `#0A2E26` when pressed | 12.1:1; text on it is `#FFFFFF` |
+| `ring` (focus) | `#0F3D33` | |
+| `accent` (the featured panel) | `#EAF3EE` | one per screen |
+| Navigation pill | `#DCEBE3` | |
+| `muted` (the «E se…?» panels) | `#F0F1EE` | |
+| `border` | `#E1E3DF` | decorative only |
+| Control border | `#7C8A84` | 3.5:1 |
+| Sage | `#4E8B74` | icons, bars and type of 24 px or more only; never body text (4.0:1) |
+| Mint | `#B9D6C6` | backgrounds only; never text (1.6:1) |
+| Month bars | `#4E8B74`; the best month `#0F3D33` | |
+| Channels | Direto `#1F8A5F`, Booking `#B7791F`, Airbnb `#C2456B` | they pass the colour-blindness check; Direto and Booking sit close for red-green colour blindness, so the written labels stay |
+| Thermometer | the house: filled circle `#0F3D33`; the market: ring `#1A2B25` | |
+| Success | `#1E7A46` | close to the brand, so always with the tick and the sentence |
+| `destructive` | `#B42318` | |
 
 ### Named Rules
 
-- **One blue panel.** At most one accent-panel surface per screen. It marks the one thing to do.
+- **One green panel.** At most one accent-panel surface per screen. It marks the one thing to do.
+- **Sage and mint are not for reading.** Sage carries icons, bars and large type; mint carries backgrounds; neither carries body text.
 - **Text never takes a series colour.** Chart labels use ink or soft ink; identity never rides on colour alone.
 
 ## Typography
 
-Atkinson Hyperlegible Next, from the Braille Institute, made for low vision, loaded through `next/font/google` (variable, `latin`, `display: swap`). One family for everything. Its slashed zero stays: it is how the face tells 0 from O.
+Atkinson Hyperlegible Next, from the Braille Institute, made for low vision, loaded through `next/font/google` (variable, `latin`, `display: swap`). One family for everything; Poppins lives only inside the logo, as outlines, and neither Poppins nor Inter is loaded. Its slashed zero stays: it is how the face tells 0 from O.
 
 - Base: `html { font-size: 112.5% }`, 18 px. «Letra maior» sets 125%, 20 px, and everything in `rem` grows with it, touch targets included.
 - Numbers use `tabular-nums`.
@@ -177,7 +206,7 @@ Atkinson Hyperlegible Next, from the Braille Institute, made for low vision, loa
 ## Layout
 
 - **Navigation always in view.** Below 1024 px, a bar fixed at the bottom with four destinations (icon and word), `env(safe-area-inset-bottom)` included, and bottom padding on the content so nothing hides behind it. From 1024 px, the same list at the top, sticky, beside the name «A sua casa».
-- **Header:** the house icon, «A sua casa», and the «Letra maior» toggle.
+- **Header:** the nexo logo, linking to Início, and the «Letra maior» toggle.
 - **Width:** content up to 1120 px. Gutters of 16 px on the phone and 40 px on the computer. Two columns on the computer, `1fr` and 400 px, the aside sticky where the screen says so. O ano is a single column of 760 px at most, on every width.
 - **Rhythm:** 28 to 32 px between sections.
 - **Lists:** straight rows with dividers, at least 72 px tall when the whole row is a link.
@@ -198,7 +227,7 @@ Flat. No shadows anywhere: edges are borders and dividers, and depth comes from 
 
 ### Buttons
 
-- **Primary:** azulejo fill, white text, 52 px tall, full width on the phone inside the featured panel. Pressed `#173B7A`.
+- **Primary:** nexo green fill, white text, 52 px tall, full width on the phone inside the featured panel. Pressed `#0A2E26`.
 - **Secondary:** white, control-border edge, ink text, 48 px tall.
 - Every button says what happens, with a Solar `linear` icon of 22 to 26 px when one helps. The same action has the same name everywhere. No «→» in labels.
 
@@ -217,14 +246,14 @@ Flat. No shadows anywhere: edges are borders and dividers, and depth comes from 
 
 - Four destinations: Início, Hóspedes, Preços, O ano. `aria-label="Principal"`, `aria-current="page"` on the active one.
 - Phone: the active item has a pill behind its icon and its word in bold.
-- Computer: the active item has a 3 px azulejo underline.
+- Computer: the active item has a 3 px nexo green underline.
 
 ### The price thermometer (signature)
 
 Her price per night beside the market's, month by month, drawn in HTML and CSS so each month is a button.
 
 - A ruler from 60 € to 180 €, axis marks on one line with the first and last flush to the ends.
-- The house: a filled azulejo circle. The market: a dark ring with a white centre. The stretch between them is thicker.
+- The house: a filled nexo green circle. The market: an ink ring with a white centre. The stretch between them is thicker.
 - The month in focus sits in the featured panel with both figures large; the twelve months below are `<button aria-pressed>` rows with a full `aria-label`.
 - A table view of the same values, one tap away.
 
@@ -244,7 +273,7 @@ Her price per night beside the market's, month by month, drawn in HTML and CSS s
 
 ### Don't:
 
-- Use shadows, gradients or more than one blue panel on a screen.
+- Use shadows, gradients, textures or more than one green panel on a screen.
 - Use sliders, hidden menus or tooltips as the only way to see something.
 - Separate data with «·», put «→» in buttons, or use acronyms on screen (INE is the one exception).
 - Repeat a number on the same screen.
