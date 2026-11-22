@@ -649,6 +649,29 @@ The invitation emails (`lib/email.ts`), both in the guest's first name and both 
 
 `npm test` checks these texts letter by letter (`scripts/test-format.ts`, `scripts/test-email.ts`, `scripts/test-painel.ts`).
 
+### Market by month (reference data, version 4)
+
+`MARKET_BY_MONTH` in `lib/benchmarks.ts`: INE's «rendimento médio por quarto ocupado» (ADR) and «rendimento médio por quarto disponível» (RevPAR), in euros, for **all tourist accommodation in Portugal** (hotels, local accommodation with 10 or more beds, and rural tourism). INE publishes local accommodation on its own only by quarter, so the monthly series is the total. Each value comes from that month's release «Atividade Turística – Estatísticas Rápidas», as first published (preliminary); later releases restate only the year-on-year change, not the level. October 2026 is published on 30 Nov 2026: until then October 2025 stands in for it (`from` = "2025-10").
+
+Each link is `https://www.ine.pt/ngt_server/attachfileu.jsp?look_parentBoui=<id>&att_display=n&att_download=y`.
+
+| period | from | ADR (€) | RevPAR (€) | INE release id | published |
+| --- | --- | --- | --- | --- | --- |
+| 2025-11 | 2025-11 | 97.8 | 47.1 | 769179168 | 2025-12-31 |
+| 2025-12 | 2025-12 | 99.7 | 38.9 | 774661220 | 2026-01-30 |
+| 2026-01 | 2026-01 | 92.1 | 33.8 | 779090002 | 2026-02-27 |
+| 2026-02 | 2026-02 | 89.6 | 39.7 | 784542481 | 2026-03-31 |
+| 2026-03 | 2026-03 | 98.6 | 49.7 | 790535834 | 2026-04-30 |
+| 2026-04 | 2026-04 | 118.0 | 69.8 | 795601140 | 2026-05-29 |
+| 2026-05 | 2026-05 | 130.9 | 84.0 | 801032080 | 2026-06-30 |
+| 2026-06 | 2026-06 | 140.8 | 90.5 | 806454204 | 2026-07-31 |
+| 2026-07 | 2026-07 | 154.9 | 104.3 | 810308232 | 2026-08-31 |
+| 2026-08 | 2026-08 | 163.2 | 119.1 | 817591985 | 2026-09-30 |
+| 2026-09 | 2026-09 | 147.3 | 102.0 | 825209253 | 2026-10-30 |
+| 2026-10 | 2025-10 | 122.6 | 77.5 | 763612793 | 2025-11-28 |
+
+`npm test` checks that it has the same 12 periods as `kpisByMonth`, positive values, and a link and a date for each.
+
 ## 5. Hypotheses: how each was computed, and the result
 
 These were registered in `HIPOTESES.md` before looking at the results. The criteria do not change.
