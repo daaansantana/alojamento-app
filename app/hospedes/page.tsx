@@ -94,25 +94,39 @@ export default function Hospedes() {
     <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <h1 className="text-h1 font-bold lg:text-h1-lg">A quem escrever</h1>
+          <h1 className="text-h1 font-bold lg:text-h1-lg">
+            Os hóspedes que voltam
+          </h1>
           <p className="text-lead">{view.guestsIntro}</p>
         </div>
         <Choices
-          label="Lista"
+          label="O que quer pedir"
           value={list}
           onChange={setList}
+          layout="stack"
           choices={[
-            { value: "inverno", label: "Inverno", detail: view.contacts.count },
+            {
+              value: "inverno",
+              label: view.contacts.action,
+              detail: view.contacts.count,
+              note: view.contacts.worth,
+            },
             {
               value: "direto",
-              label: "Reservar direto",
+              label: view.directContacts.action,
               detail: view.directContacts.count,
+              note: view.directContacts.worth,
             },
           ]}
         />
-        <p>
-          {guests.who} {guests.what}
-        </p>
+        <div className="flex flex-col gap-2">
+          <p>
+            <strong>Quem são:</strong> {guests.who}
+          </p>
+          <p>
+            <strong>O que acontece:</strong> {guests.what}
+          </p>
+        </div>
         <EmailPreview
           subject={guests.preview.subject}
           body={guests.preview.body}
