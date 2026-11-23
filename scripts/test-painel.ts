@@ -383,7 +383,7 @@ console.log("\npainel: the guest lists");
 check(
   "guestsIntro",
   view.guestsIntro,
-  "102 hóspedes voltaram e trouxeram 52% da receita. Escolha o que lhes quer pedir: o email já está escrito.",
+  "102 hóspedes voltaram e trouxeram 52% da receita. Escolha o que lhes quer pedir.",
 );
 check("contacts.count", view.contacts.count, "3 hóspedes");
 check("contacts.action", view.contacts.action, "Convidar para o inverno");
@@ -396,7 +396,7 @@ check(
 check(
   "contacts.what",
   view.contacts.what,
-  "Escreve-lhes com 10% de desconto para voltarem no inverno. Marque «Já escrevi» para saber a quem falta.",
+  "O email já está escrito e oferece 10% de desconto para voltarem no inverno. Depois de o enviar, marque «Já escrevi».",
 );
 check(
   "contacts.preview: the email to the first guest",
@@ -422,7 +422,7 @@ check(
 check(
   "directContacts.what",
   view.directContacts.what,
-  "Escreve-lhes com 5% de desconto para a próxima reserva feita diretamente consigo. Marque «Já escrevi» para saber a quem falta.",
+  "O email já está escrito e oferece 5% de desconto na próxima reserva feita diretamente consigo. Depois de o enviar, marque «Já escrevi».",
 );
 check(
   "directContacts.preview",

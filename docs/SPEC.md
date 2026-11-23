@@ -640,17 +640,17 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | `period` | De novembro de 2025 a outubro de 2026 |
 | `intro` | Pode ganhar mais cerca de 4350 € por ano. Comece por isto: |
 | `together` | Verão e inverno juntos: o verão paga o desconto do inverno. Mais 5590 € no ano. (2946,50 € of the summer +10% and 2643,84 € of the winter campaign) |
-| `guestsIntro` | 102 hóspedes voltaram e trouxeram 52% da receita. Escolha o que lhes quer pedir: o email já está escrito. |
+| `guestsIntro` | 102 hóspedes voltaram e trouxeram 52% da receita. Escolha o que lhes quer pedir. |
 | `contacts.count` | 49 hóspedes |
 | `contacts.action` | Convidar para o inverno |
 | `contacts.worth` | Mais 2644 € no inverno |
 | `contacts.who` | Já cá estiveram no inverno e voltaram mais de uma vez. |
-| `contacts.what` | Escreve-lhes com 10% de desconto para voltarem no inverno. Marque «Já escrevi» para saber a quem falta. |
+| `contacts.what` | O email já está escrito e oferece 10% de desconto para voltarem no inverno. Depois de o enviar, marque «Já escrevi». |
 | `directContacts.count` | 80 hóspedes |
 | `directContacts.action` | Pedir que reservem direto |
 | `directContacts.worth` | Mais 1413 € por ano |
 | `directContacts.who` | Voltaram, e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240 € de comissão. |
-| `directContacts.what` | Escreve-lhes com 5% de desconto para a próxima reserva feita diretamente consigo. Marque «Já escrevi» para saber a quem falta. |
+| `directContacts.what` | O email já está escrito e oferece 5% de desconto na próxima reserva feita diretamente consigo. Depois de o enviar, marque «Já escrevi». |
 | `summary.sentence` | Este ano a casa rendeu 133 985 €. Agosto foi o melhor mês: 65% das noites com hóspedes. |
 | `summary.short` | Recebeu 133 985 € e teve hóspedes em 46% das noites. |
 | `summary.figures` | «133 985 €» recebeu no ano · «46%» das noites com hóspedes · «102» hóspedes voltaram e trouxeram 52% da receita (52% = `returningSpent ÷ spent`) |

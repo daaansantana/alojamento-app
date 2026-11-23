@@ -381,7 +381,7 @@ export function buildPainel(input: PainelInput): PainelView {
     period: `De ${monthOfYear(byMonth[0].period)} a ${monthOfYear(byMonth[byMonth.length - 1].period)}`,
     intro: `Pode ganhar mais cerca de ${about(likely.total)} por ano. Comece por isto:`,
     together: `Verão e inverno juntos: o verão paga o desconto do inverno. Mais ${eur(input.facts.summerGain + input.campaign.extraRevenue)} no ano.`,
-    guestsIntro: `${int(totals.returningGuests)} hóspedes voltaram e trouxeram ${pct(totals.returningSpent / totals.spent)} da receita. Escolha o que lhes quer pedir: o email já está escrito.`,
+    guestsIntro: `${int(totals.returningGuests)} hóspedes voltaram e trouxeram ${pct(totals.returningSpent / totals.spent)} da receita. Escolha o que lhes quer pedir.`,
     summary: {
       sentence: `Este ano a casa rendeu ${eur(year.revenue)}. ${best}`,
       short: `Recebeu ${eur(year.revenue)} e teve hóspedes em ${pct(year.occupancy)} das noites.`,
@@ -403,7 +403,7 @@ export function buildPainel(input: PainelInput): PainelView {
       action: "Convidar para o inverno",
       worth: `Mais ${eur(input.campaign.extraRevenue)} no inverno`,
       who: "Já cá estiveram no inverno e voltaram mais de uma vez.",
-      what: `Escreve-lhes com ${pct(PAINEL_WINTER_CAMPAIGN.discount)} de desconto para voltarem no inverno. Marque «Já escrevi» para saber a quem falta.`,
+      what: `O email já está escrito e oferece ${pct(PAINEL_WINTER_CAMPAIGN.discount)} de desconto para voltarem no inverno. Depois de o enviar, marque «Já escrevi».`,
       preview: preview("winter", input.winterReturners),
     },
     directContacts: {
@@ -414,7 +414,7 @@ export function buildPainel(input: PainelInput): PainelView {
       action: "Pedir que reservem direto",
       worth: `Mais ${eur(input.direct.yearlyGain)} por ano`,
       who: `Voltaram, e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou ${eur(input.facts.commissionToday)} de comissão.`,
-      what: `Escreve-lhes com ${pct(PAINEL_DIRECT.directDiscount)} de desconto para a próxima reserva feita diretamente consigo. Marque «Já escrevi» para saber a quem falta.`,
+      what: `O email já está escrito e oferece ${pct(PAINEL_DIRECT.directDiscount)} de desconto na próxima reserva feita diretamente consigo. Depois de o enviar, marque «Já escrevi».`,
       preview: preview("direct", input.contactFirst),
     },
     gain: {
