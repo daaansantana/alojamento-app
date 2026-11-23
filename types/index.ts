@@ -268,7 +268,10 @@ export interface PainelGuestList {
   all: PainelContact[]; // every guest, same order
   total: number;
   count: string; // "49 hóspedes"
-  explain: string; // what the list is and what the email offers
+  action: string; // "Convidar para o inverno"
+  worth: string; // "Mais 2644 € no inverno"
+  who: string; // who the guests are
+  what: string; // what the email offers, and «Já escrevi»
   preview: { subject: string; body: string }; // the email, to the first guest
 }
 
@@ -284,13 +287,13 @@ export interface PainelView {
   monthName: string; // "novembro"
   period: string;
   intro: string; // under the month's title: the KPI and «Comece por isto:»
-  guestsIntro: string; // under «A quem escrever»
+  guestsIntro: string; // under the Hóspedes title: who came back, and «Escolha o que lhes quer pedir»
   together: string; // summer +10% and the winter campaign, in one year
   summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
   contacts: PainelGuestList; // winterReturners, with the winter email
   directContacts: PainelGuestList; // contactFirst, with the direct-booking email
-  gain: { likely: string; range: string; assumption: string };
+  gain: { likely: string; share: string; range: string; assumption: string };
   months: { bars: PainelMonth[]; best: string; levels: string; price: string };
 }
 

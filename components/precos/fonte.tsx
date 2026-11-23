@@ -1,17 +1,19 @@
 import { AltArrowDownIcon } from "@solar-icons/react/linear/alt-arrow-down";
 
-/** «De onde vêm os valores», folded: what INE measures, and each value's link and date. */
+/** A folded section: what the market is, what INE measures, and each value's link and date. */
 export function MarketSource({
-  intro,
+  title,
+  paragraphs,
   lines,
 }: {
-  intro: string;
+  title: string;
+  paragraphs: string[];
   lines: { text: string; url: string }[];
 }) {
   return (
     <details className="group border-y">
       <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-2 font-bold [&::-webkit-details-marker]:hidden">
-        De onde vêm os valores
+        {title}
         <AltArrowDownIcon
           size={24}
           aria-hidden={true}
@@ -19,7 +21,9 @@ export function MarketSource({
         />
       </summary>
       <div className="flex flex-col gap-2 pb-4">
-        <p>{intro}</p>
+        {paragraphs.map((text) => (
+          <p key={text}>{text}</p>
+        ))}
         <ul className="flex flex-col gap-1.5">
           {lines.map((line) => (
             <li key={line.url + line.text}>

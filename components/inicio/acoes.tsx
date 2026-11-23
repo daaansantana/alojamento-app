@@ -120,7 +120,7 @@ export function OtherMonth({
   const button =
     "inline-flex min-h-11 items-center gap-2 rounded-xl border border-control bg-background px-4 font-bold hover:bg-muted";
   return (
-    <fieldset className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <fieldset className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
       <legend className="float-left text-muted-foreground">
         Ver outro mês
       </legend>

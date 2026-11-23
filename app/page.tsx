@@ -41,10 +41,17 @@ export default function Inicio() {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
       <div className="flex flex-col gap-8">
-        <MonthHeading
-          title={`O que fazer em ${view.monthName}`}
-          intro={view.intro}
-        />
+        <div className="flex flex-col gap-4">
+          <MonthHeading
+            title={`O que fazer em ${view.monthName}`}
+            intro={view.intro}
+          />
+          <OtherMonth
+            previous={{ month: previous, label: capital(monthName(previous)) }}
+            next={{ month: next, label: capital(monthName(next)) }}
+            onChange={setSelectedMonth}
+          />
+        </div>
         {lead ? (
           <>
             <LeadAction action={lead} />
@@ -53,11 +60,6 @@ export default function Inicio() {
         ) : (
           <EmptyState message="Neste mês não há sugestões: veja outro mês." />
         )}
-        <OtherMonth
-          previous={{ month: previous, label: capital(monthName(previous)) }}
-          next={{ month: next, label: capital(monthName(next)) }}
-          onChange={setSelectedMonth}
-        />
       </div>
       <div className="flex flex-col gap-8 lg:gap-6">
         <YearGain gain={view.gain} />

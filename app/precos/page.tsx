@@ -161,16 +161,28 @@ export default function Precos() {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
       <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-h1 font-bold lg:text-h1-lg">
-            O seu preço e o do mercado
-          </h1>
-          <p className="text-lead">{marketIntro(MARKET_SEGMENT)}</p>
-          <p className="text-muted-foreground">{MARKET_NOTE}</p>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-h1 font-bold lg:text-h1-lg">
+              O seu preço e o do mercado
+            </h1>
+            <p className="text-statement leading-snug font-bold text-balance">
+              {marketYear(market)}
+            </p>
+          </div>
+          <MarketSource
+            title="Como comparamos"
+            paragraphs={[
+              marketIntro(MARKET_SEGMENT),
+              MARKET_NOTE,
+              "Mercado: INE, «rendimento médio por quarto ocupado» de todo o alojamento turístico em Portugal (hotéis, alojamento local com 10 ou mais camas e turismo rural), no comunicado «Atividade Turística» de cada mês. Os valores são preliminares, como foram publicados.",
+            ]}
+            lines={MARKET_BY_MONTH.map((m) => ({
+              url: m.url,
+              text: marketSourceLine(m),
+            }))}
+          />
         </div>
-        <p className="text-statement leading-snug font-bold text-balance">
-          {marketYear(market)}
-        </p>
         <FocusMonth
           month={months[index]}
           ticks={ticks}
@@ -185,19 +197,12 @@ export default function Precos() {
           substituteNote={substitutes[0] ? marketStandIn(substitutes[0]) : null}
         />
       </div>
-      <div className="flex flex-col gap-6 lg:sticky lg:top-28">
+      <div className="lg:sticky lg:top-28">
         <PriceWhatIf
           question={question}
           onQuestionChange={setQuestion}
           {...whatIf}
           together={view.together}
-        />
-        <MarketSource
-          intro="Mercado: INE, «rendimento médio por quarto ocupado» de todo o alojamento turístico em Portugal (hotéis, alojamento local com 10 ou mais camas e turismo rural), no comunicado «Atividade Turística» de cada mês. Os valores são preliminares, como foram publicados."
-          lines={MARKET_BY_MONTH.map((m) => ({
-            url: m.url,
-            text: marketSourceLine(m),
-          }))}
         />
       </div>
     </div>
