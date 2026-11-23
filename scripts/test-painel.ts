@@ -383,13 +383,20 @@ console.log("\npainel: the guest lists");
 check(
   "guestsIntro",
   view.guestsIntro,
-  `Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de 4350${_}€ por ano.`,
+  "102 hóspedes voltaram e trouxeram 52% da receita. Escolha o que lhes quer pedir: o email já está escrito.",
 );
 check("contacts.count", view.contacts.count, "3 hóspedes");
+check("contacts.action", view.contacts.action, "Convidar para o inverno");
+check("contacts.worth", view.contacts.worth, `Mais 2644${_}€ no inverno`);
 check(
-  "contacts.explain",
-  view.contacts.explain,
-  "Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com 10% de desconto. Só tem de o enviar.",
+  "contacts.who",
+  view.contacts.who,
+  "Já cá estiveram no inverno e voltaram mais de uma vez.",
+);
+check(
+  "contacts.what",
+  view.contacts.what,
+  "Escreve-lhes com 10% de desconto para voltarem no inverno. Marque «Já escrevi» para saber a quem falta.",
 );
 check(
   "contacts.preview: the email to the first guest",
@@ -398,9 +405,24 @@ check(
 );
 check("directContacts.count", view.directContacts.count, "3 hóspedes");
 check(
-  "directContacts.explain",
-  view.directContacts.explain,
-  `Voltaram e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240${_}€ de comissão. O email oferece 5% de desconto a quem reservar diretamente. Só tem de o enviar.`,
+  "directContacts.action",
+  view.directContacts.action,
+  "Pedir que reservem direto",
+);
+check(
+  "directContacts.worth",
+  view.directContacts.worth,
+  `Mais 1413${_}€ por ano`,
+);
+check(
+  "directContacts.who",
+  view.directContacts.who,
+  `Voltaram, e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240${_}€ de comissão.`,
+);
+check(
+  "directContacts.what",
+  view.directContacts.what,
+  "Escreve-lhes com 5% de desconto para a próxima reserva feita diretamente consigo. Marque «Já escrevi» para saber a quem falta.",
 );
 check(
   "directContacts.preview",
@@ -632,8 +654,9 @@ check(
 
 console.log("\npainel: gain");
 check("gain", view.gain, {
-  likely: `Cerca de 4350${_}€`,
-  range: `Entre cerca de 2030${_}€ e 8650${_}€, conforme quantos hóspedes aceitarem.`,
+  likely: `Mais cerca de 4350${_}€ por ano`,
+  share: `É mais 3,2% do que os 133${_}985${_}€ que recebeu este ano.`,
+  range: `Entre cerca de 2030${_}€ e 8650${_}€ a mais, conforme quantos hóspedes aceitarem.`,
   assumption:
     "No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez.",
 });

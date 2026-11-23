@@ -272,7 +272,10 @@ export interface PainelGuestList {
   all: PainelContact[]; // every guest, same order
   total: number;
   count: string; // "49 hóspedes"
-  explain: string; // what the list is and what the email offers
+  action: string; // "Convidar para o inverno"
+  worth: string; // "Mais 2644 € no inverno"
+  who: string; // who the guests are
+  what: string; // what the email offers, and «Já escrevi»
   preview: { subject: string; body: string }; // the email, to the first guest
 }
 
@@ -288,13 +291,13 @@ export interface PainelView {
   monthName: string; // "novembro"
   period: string;
   intro: string; // under the month's title: the KPI and «Comece por isto:»
-  guestsIntro: string; // under «A quem escrever»
+  guestsIntro: string; // under the Hóspedes title: who came back, and «Escolha o que lhes quer pedir»
   together: string; // summer +10% and the winter campaign, in one year
   summary: { sentence: string; short: string; figures: PainelFigure[] };
   actions: PainelAction[];
   contacts: PainelGuestList; // winterReturners, with the winter email
   directContacts: PainelGuestList; // contactFirst, with the direct-booking email
-  gain: { likely: string; range: string; assumption: string };
+  gain: { likely: string; share: string; range: string; assumption: string };
   months: { bars: PainelMonth[]; best: string; levels: string; price: string };
 }
 ```
@@ -637,16 +640,23 @@ With `THERMOMETER` and the rows of `kpisByMonth`:
 | `period` | De novembro de 2025 a outubro de 2026 |
 | `intro` | Pode ganhar mais cerca de 4350 € por ano. Comece por isto: |
 | `together` | Verão e inverno juntos: o verão paga o desconto do inverno. Mais 5590 € no ano. (2946,50 € of the summer +10% and 2643,84 € of the winter campaign) |
-| `guestsIntro` | Se estes hóspedes voltarem ou reservarem diretamente, pode ganhar mais cerca de 4350 € por ano. |
+| `guestsIntro` | 102 hóspedes voltaram e trouxeram 52% da receita. Escolha o que lhes quer pedir: o email já está escrito. |
 | `contacts.count` | 49 hóspedes |
-| `contacts.explain` | Já cá estiveram no inverno e voltaram mais de uma vez. O email convida a voltar, com 10% de desconto. Só tem de o enviar. |
+| `contacts.action` | Convidar para o inverno |
+| `contacts.worth` | Mais 2644 € no inverno |
+| `contacts.who` | Já cá estiveram no inverno e voltaram mais de uma vez. |
+| `contacts.what` | Escreve-lhes com 10% de desconto para voltarem no inverno. Marque «Já escrevi» para saber a quem falta. |
 | `directContacts.count` | 80 hóspedes |
-| `directContacts.explain` | Voltaram e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240 € de comissão. O email oferece 5% de desconto a quem reservar diretamente. Só tem de o enviar. |
+| `directContacts.action` | Pedir que reservem direto |
+| `directContacts.worth` | Mais 1413 € por ano |
+| `directContacts.who` | Voltaram, e a última reserva veio pelo Booking ou pelo Airbnb. Nesses regressos pagou 4240 € de comissão. |
+| `directContacts.what` | Escreve-lhes com 5% de desconto para a próxima reserva feita diretamente consigo. Marque «Já escrevi» para saber a quem falta. |
 | `summary.sentence` | Este ano a casa rendeu 133 985 €. Agosto foi o melhor mês: 65% das noites com hóspedes. |
 | `summary.short` | Recebeu 133 985 € e teve hóspedes em 46% das noites. |
 | `summary.figures` | «133 985 €» recebeu no ano · «46%» das noites com hóspedes · «102» hóspedes voltaram e trouxeram 52% da receita (52% = `returningSpent ÷ spent`) |
-| `gain.likely` | Cerca de 4350 € |
-| `gain.range` | Entre cerca de 2030 € e 8650 €, conforme quantos hóspedes aceitarem. |
+| `gain.likely` | Mais cerca de 4350 € por ano |
+| `gain.share` | É mais 3,2% do que os 133 985 € que recebeu este ano. (4350,85 € ÷ 133 985 €) |
+| `gain.range` | Entre cerca de 2030 € e 8650 € a mais, conforme quantos hóspedes aceitarem. |
 | `gain.assumption` | No cenário mais provável, metade de quem volta pelas plataformas passa a reservar diretamente, com 5% de desconto, e 1 em cada 5 hóspedes de inverno volta mais uma vez. |
 | `months.levels` | Mais procurados: julho e agosto. Menos procurados: de outubro a janeiro. (a run of 3 or more months, counted round the year, is said «de … a …») |
 | `months.best` | Agosto foi o melhor mês: 65% das noites com hóspedes. |

@@ -110,7 +110,9 @@ export default function Hospedes() {
             },
           ]}
         />
-        <p>{guests.explain}</p>
+        <p>
+          {guests.who} {guests.what}
+        </p>
         <EmailPreview
           subject={guests.preview.subject}
           body={guests.preview.body}
