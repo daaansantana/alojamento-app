@@ -119,6 +119,7 @@ nexo is the app's name and its look: «A sua casa, com nexo.» A deep green, a s
 The page is calm. Boldness is spent in one place only: the price thermometer on Preços, the one chart with strong contrast. Everything else is warm white ground, dark ink and a single green.
 
 - Mode: Operate. Scanability, consistency and the real scene (a phone, in a hurry, at arm's length) outrank expression.
+- Every screen follows the same order: the answer in one sentence, then the action, then the details folded under «Como …».
 - Only a light theme.
 - Motion: none beyond opening and closing; `prefers-reduced-motion` turns even that off.
 - Out of scope: gradients, textures, background patterns, a dark theme, illustrations.
