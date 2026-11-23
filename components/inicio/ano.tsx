@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { PainelView } from "@/types";
 
-/** «Quanto pode ganhar num ano»: the KPI, with how it was reached folded. */
+/** «Quanto pode ganhar a mais»: the KPI as an increase on the year, with how it was reached folded. */
 export function YearGain({ gain }: { gain: PainelView["gain"] }) {
   return (
     <section
@@ -12,10 +12,11 @@ export function YearGain({ gain }: { gain: PainelView["gain"] }) {
       className="flex flex-col gap-3 lg:rounded-xl lg:border lg:bg-card lg:p-6"
     >
       <h2 id="ganho" className="text-h2 font-bold">
-        Quanto pode ganhar num ano
+        Quanto pode ganhar a mais
       </h2>
       <p className="text-kpi font-bold tabular-nums">{gain.likely}</p>
-      <p>{gain.range}</p>
+      <p>{gain.share}</p>
+      <p className="text-muted-foreground">{gain.range}</p>
       <details className="group border-y">
         <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 py-2 font-bold [&::-webkit-details-marker]:hidden">
           Como chegámos a este valor
