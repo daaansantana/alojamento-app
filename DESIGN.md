@@ -120,6 +120,7 @@ The page is calm. Boldness is spent in one place only: the price thermometer on 
 
 - Mode: Operate. Scanability, consistency and the real scene (a phone, in a hurry, at arm's length) outrank expression.
 - Every screen follows the same order: the answer in one sentence, then the action, then the details folded under «Como …».
+- Every page starts with the same header (title, one sentence, controls) across the full width; the columns start together below it, and nothing in the side column is larger than the page title.
 - Only a light theme.
 - Motion: none beyond opening and closing; `prefers-reduced-motion` turns even that off.
 - Out of scope: gradients, textures, background patterns, a dark theme, illustrations.
