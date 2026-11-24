@@ -12,8 +12,15 @@ import {
 import type {
   Booking,
   ChannelTransition,
+  GuestCard,
+  GuestLevel,
   GuestProfile,
+  GuestProfileId,
+  GuestRules,
   GuestTotals,
+  LanguageCode,
+  Season,
+  SegmentCounts,
 } from "@/types";
 
 /** Every guest with at least one completed stay. */
@@ -146,4 +153,154 @@ export function guestTotals(bookings: Booking[]): GuestTotals {
     returningStays: returning.reduce((sum, p) => sum + p.stays, 0),
     returningSpent: returning.reduce((sum, p) => sum + p.spent, 0),
   };
+}
+
+/**
+ * The label rules, by default. With 2 and 3 stays the base splits into 210
+ * «Novo», 81 «Voltou» and 21 «Habitual»; 840 € is where the top 10% of
+ * guests by spend start. Booking.com's Genius levels need 2, 5 and 15 stays
+ * in two years: too many for a small house, where one guest has 5 stays.
+ * The host can change them; these are the starting values.
+ */
+export const GUEST_RULES: GuestRules = {
+  returned: 2,
+  regular: 3,
+  bigSpender: 840,
+  longStay: 5,
+};
+
+/** The language to write in and the flag, by the country in the bookings. */
+export const COUNTRY_LANGUAGE: Record<
+  string,
+  { language: LanguageCode; flag: string }
+> = {
+  Portugal: { language: "pt-PT", flag: "pt" },
+  Brasil: { language: "pt-BR", flag: "br" },
+  Espanha: { language: "es", flag: "es" },
+  "Reino Unido": { language: "en", flag: "gb" },
+  Alemanha: { language: "de", flag: "de" },
+  França: { language: "fr", flag: "fr" },
+  "Países Baixos": { language: "nl", flag: "nl" },
+};
+
+/** Addresses the platforms give for one stay: not for offers afterwards. */
+const PLATFORM_ALIAS =
+  /@(guest\.booking\.com|guest\.airbnb\.com|[\w.-]*expediapartnercentral\.com)$/i;
+
+/** True for a Booking, Airbnb or Expedia relay address. */
+export function isPlatformAlias(email: string): boolean {
+  return PLATFORM_ALIAS.test(email.trim());
+}
+
+/** Winter from November to February, summer from June to September. */
+export function seasonOf(checkIn: string): Season {
+  const month = Number(checkIn.slice(5, 7));
+  if (month >= 11 || month <= 2) return "inverno";
+  if (month >= 6 && month <= 9) return "verao";
+  return "meia";
+}
+
+/** The level for a number of stays. */
+export function levelOf(stays: number, rules: GuestRules): GuestLevel {
+  if (stays >= rules.regular) return "habitual";
+  if (stays >= rules.returned) return "voltou";
+  return "novo";
+}
+
+/** «longas» when the average stay is long enough, otherwise the season. */
+export function profileOf(
+  avgNights: number,
+  season: Season,
+  rules: GuestRules,
+): GuestProfileId {
+  return avgNights >= rules.longStay ? "longas" : season;
+}
+
+/** One card per guest with a completed stay, in the order of guestProfiles. */
+export function guestCards(
+  bookings: Booking[],
+  rules: GuestRules = GUEST_RULES,
+): GuestCard[] {
+  const byGuest = new Map<string, Booking[]>();
+  for (const stay of bookings
+    .filter((booking) => booking.status === "Concluída")
+    .sort(compareStays)) {
+    const stays = byGuest.get(stay.guest_email);
+    if (stays) stays.push(stay);
+    else byGuest.set(stay.guest_email, [stay]);
+  }
+  return [...byGuest].map(([email, stays]) => {
+    const last = stays[stays.length - 1];
+    const spent = stays.reduce((sum, stay) => sum + stay.total, 0);
+    const avgNights =
+      stays.reduce((sum, stay) => sum + stay.nights, 0) / stays.length;
+    const bySeason = new Map<Season, number>();
+    for (const stay of stays) {
+      const season = seasonOf(stay.check_in);
+      bySeason.set(season, (bySeason.get(season) ?? 0) + 1);
+    }
+    const most = Math.max(...bySeason.values());
+    const tied = [...bySeason].filter(([, n]) => n === most).map(([s]) => s);
+    const season = tied.length === 1 ? tied[0] : seasonOf(last.check_in);
+    const place = COUNTRY_LANGUAGE[last.country];
+    return {
+      email,
+      name: stays[0].guest_name,
+      country: last.country,
+      countries: [...new Set(stays.map((stay) => stay.country))].sort((a, b) =>
+        a.localeCompare(b, "pt"),
+      ),
+      language: place?.language ?? "en",
+      flag: place?.flag ?? null,
+      stays: stays.length,
+      spent,
+      avgNights,
+      season,
+      level: levelOf(stays.length, rules),
+      profile: profileOf(avgNights, season, rules),
+      bigSpender: spent >= rules.bigSpender,
+      lastCheckIn: last.check_in,
+      lastChannel: last.channel,
+      history: stays.map((stay) => ({
+        checkIn: stay.check_in,
+        nights: stay.nights,
+        guests: stay.guests,
+        roomId: stay.room_id,
+        channel: stay.channel,
+        total: stay.total,
+      })),
+      platformAlias: isPlatformAlias(email),
+    };
+  });
+}
+
+/** How many guests in each level, profile and language. */
+export function segmentCounts(
+  cards: Pick<
+    GuestCard,
+    | "level"
+    | "profile"
+    | "language"
+    | "bigSpender"
+    | "countries"
+    | "platformAlias"
+  >[],
+): SegmentCounts {
+  const counts: SegmentCounts = {
+    levels: { novo: 0, voltou: 0, habitual: 0 },
+    profiles: { inverno: 0, verao: 0, meia: 0, longas: 0 },
+    languages: { "pt-PT": 0, "pt-BR": 0, es: 0, en: 0, de: 0, fr: 0, nl: 0 },
+    bigSpenders: 0,
+    multiCountry: 0,
+    platformAlias: 0,
+  };
+  for (const card of cards) {
+    counts.levels[card.level] += 1;
+    counts.profiles[card.profile] += 1;
+    counts.languages[card.language] += 1;
+    if (card.bigSpender) counts.bigSpenders += 1;
+    if (card.countries.length > 1) counts.multiCountry += 1;
+    if (card.platformAlias) counts.platformAlias += 1;
+  }
+  return counts;
 }

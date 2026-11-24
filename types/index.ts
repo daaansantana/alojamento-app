@@ -79,6 +79,58 @@ export interface GuestProfile {
   m: 1 | 2 | 3;
 }
 
+// Guest segments (SPEC §4, «Guest segments»): a level by how often they came,
+// a profile by when and how long, and the language to write in.
+export type GuestLevel = "novo" | "voltou" | "habitual";
+export type Season = "inverno" | "verao" | "meia";
+export type GuestProfileId = Season | "longas";
+export type LanguageCode = "pt-PT" | "pt-BR" | "es" | "en" | "de" | "fr" | "nl";
+
+export interface GuestRules {
+  returned: number; // stays from which a guest is «Voltou»
+  regular: number; // stays from which a guest is «Habitual»
+  bigSpender: number; // € spent from which a guest «Gasta mais»
+  longStay: number; // average nights from which the profile is «longas»
+}
+
+export interface GuestStay {
+  checkIn: string;
+  nights: number;
+  guests: number;
+  roomId: number;
+  channel: string;
+  total: number;
+}
+
+export interface GuestCard {
+  email: string;
+  name: string;
+  country: string; // of the latest stay
+  countries: string[]; // every country in the stays, sorted
+  language: LanguageCode;
+  flag: string | null; // file name in public/bandeiras, without .svg
+  stays: number;
+  spent: number;
+  avgNights: number;
+  season: Season; // of most stays, by check-in month; a tie goes to the latest stay
+  level: GuestLevel;
+  profile: GuestProfileId;
+  bigSpender: boolean;
+  lastCheckIn: string;
+  lastChannel: string;
+  history: GuestStay[];
+  platformAlias: boolean; // a Booking, Airbnb or Expedia address: for the stay only
+}
+
+export interface SegmentCounts {
+  levels: Record<GuestLevel, number>;
+  profiles: Record<GuestProfileId, number>;
+  languages: Record<LanguageCode, number>;
+  bigSpenders: number;
+  multiCountry: number;
+  platformAlias: number;
+}
+
 export interface DirectBookingScenario {
   commissionRate: number; // what the platforms charge
   conversionRate: number; // share of platform return stays that move to direct

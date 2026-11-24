@@ -9,10 +9,13 @@ import { MARKET_BY_MONTH } from "../lib/benchmarks";
 import {
   channelTransitions,
   contactFirst,
+  GUEST_RULES,
+  guestCards,
   guestProfiles,
   guestTotals,
   returningGuests,
   returnStays,
+  segmentCounts,
   winterReturners,
 } from "../lib/guests";
 import { gainScenarios } from "../lib/kpi";
@@ -690,6 +693,128 @@ check("7 months below, 3 above, 2 within 1 €; widest in August", () => {
     ["2026-10"],
     "stand-in months",
   );
+});
+
+// Version 5
+
+console.log("\nguestCards and segmentCounts");
+// Expected values from SPEC "Guest segments", with GUEST_RULES.
+const cards = guestCards(bookings);
+check(
+  "312 guests: 210 Novo, 81 Voltou, 21 Habitual; 34 spend 840 € or more",
+  () => {
+    const s = segmentCounts(cards);
+    eq(cards.length, 312, "guests");
+    eq(s.levels, { novo: 210, voltou: 81, habitual: 21 }, "levels");
+    eq(s.bigSpenders, 34, "bigSpenders");
+    // The same levels again, straight from the bookings.
+    const stays = count(
+      bookings.filter((b) => b.status === "Concluída"),
+      (b) => b.guest_email,
+    );
+    const byStays = count(Object.values(stays), (n) =>
+      n >= GUEST_RULES.regular
+        ? "habitual"
+        : n >= GUEST_RULES.returned
+          ? "voltou"
+          : "novo",
+    );
+    eq(byStays, { novo: 210, voltou: 81, habitual: 21 }, "levels, recounted");
+  },
+);
+check("profiles: 66 winter, 110 summer, 85 shoulder, 51 long stays", () => {
+  eq(
+    segmentCounts(cards).profiles,
+    { inverno: 66, verao: 110, meia: 85, longas: 51 },
+    "profiles",
+  );
+});
+check(
+  "languages from the latest stay's country; 82 guests with more than one country",
+  () => {
+    const s = segmentCounts(cards);
+    eq(
+      s.languages,
+      { "pt-PT": 103, "pt-BR": 32, es: 45, en: 46, de: 29, fr: 27, nl: 30 },
+      "languages",
+    );
+    eq(s.multiCountry, 82, "multiCountry");
+    eq(s.platformAlias, 0, "platformAlias");
+  },
+);
+check("three example cards", () => {
+  const card = (email: string) => {
+    const c = cards.find((x) => x.email === email);
+    if (!c) throw new Error(`no card for ${email}`);
+    return c;
+  };
+  const marta = card("marta.oliveira@correio.example");
+  eq(
+    [
+      marta.country,
+      marta.countries,
+      marta.stays,
+      marta.spent,
+      marta.level,
+      marta.profile,
+      marta.bigSpender,
+    ],
+    [
+      "Portugal",
+      ["Países Baixos", "Portugal"],
+      3,
+      1025,
+      "habitual",
+      "inverno",
+      true,
+    ],
+    "Marta",
+  );
+  close(marta.avgNights, 4, "Marta avgNights");
+  const mariana = card("mariana.teixeira@correio.example");
+  eq(
+    [
+      mariana.country,
+      mariana.countries,
+      mariana.stays,
+      mariana.spent,
+      mariana.level,
+      mariana.profile,
+      mariana.language,
+    ],
+    [
+      "Alemanha",
+      ["Alemanha", "Espanha", "França", "Portugal"],
+      4,
+      1005,
+      "habitual",
+      "verao",
+      "de",
+    ],
+    "Mariana",
+  );
+  close(mariana.avgNights, 2.5, "Mariana avgNights");
+  const filipa = card("filipa.teixeira@correio.example");
+  eq(
+    [
+      filipa.country,
+      filipa.countries,
+      filipa.stays,
+      filipa.spent,
+      filipa.level,
+      filipa.profile,
+    ],
+    [
+      "Portugal",
+      ["Espanha", "Portugal", "Reino Unido"],
+      3,
+      1565,
+      "habitual",
+      "longas",
+    ],
+    "Filipa",
+  );
+  close(filipa.avgNights, 17 / 3, "Filipa avgNights");
 });
 
 const total = passed + failed.length;

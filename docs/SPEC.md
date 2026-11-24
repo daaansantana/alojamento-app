@@ -343,6 +343,9 @@ interface MarketComparison {
 | `lib/stats.ts` | `cancellationRates(bookings, by)` | `CancellationRate[]`, `by` = `"channel"` or `"country"`, highest rate first |
 | `lib/guests.ts` | `guestProfiles(bookings)` | `GuestProfile[]`, every guest with at least one completed stay |
 | `lib/guests.ts` | `returningGuests(profiles)` | the profiles with 2 or more stays |
+| `lib/guests.ts` | `guestCards(bookings, rules = GUEST_RULES)` | `GuestCard[]`, one per guest with a completed stay, in the order of `guestProfiles` |
+| `lib/guests.ts` | `segmentCounts(cards)` | `SegmentCounts`: guests by level, profile and language, big spenders, guests with more than one country, platform addresses |
+| `lib/messages.ts` | `messageFor(guest, templateId, channel, options)` | `{ subject, body }` in the guest's language, with the variables filled and the opt-out line at the end |
 | `lib/guests.ts` | `contactFirst(profiles)` | returning guests whose `lastChannel` is a platform, sorted by `spent` (high first), then `stays` (high first), `recencyDays` (low first), `email` |
 | `lib/guests.ts` | `returnStays(bookings)` | `Booking[]`: every completed stay after each guest's first |
 | `lib/simulator.ts` | `simulateDirectBookings(bookings, scenario)` | `DirectBookingResult` |
@@ -735,6 +738,28 @@ Each link is `https://www.ine.pt/ngt_server/attachfileu.jsp?look_parentBoui=<id>
 `below` 7 (April to October), `above` 3 (November, January, February), `level` 2 (December, March), `widest` 2026-08. Only 2026-10 is a stand-in.
 
 Texts, from `lib/painel.ts`: `marketYear` «Em 7 dos 12 meses, cobra menos do que o mercado.»; `marketGap` «Está 6 € acima do mercado.» (November), «Está 63 € abaixo do mercado.» (August), «Está ao nível do mercado.» (December); `marketSentence`, on O ano: «Em agosto, o mercado cobrou em média 163 € por noite; a casa, 100 €.»; `marketStandIn` «Valor de outubro de 2025: o deste ano ainda não foi publicado.»; and `MARKET_NOTE` «Os hotéis puxam a média para cima: serve de referência, não de alvo.»
+
+### Guest segments (version 5)
+
+`guestCards` with `GUEST_RULES` = `{ returned: 2, regular: 3, bigSpender: 840, longStay: 5 }`. Only completed stays count. The **country** is the one of the guest's latest stay (82 guests booked under more than one); the **language** comes from that country (Portugal pt-PT, Brasil pt-BR, Espanha es, Reino Unido en, Alemanha de, França fr, Países Baixos nl). The **level** is «novo» below 2 stays, «voltou» from 2, «habitual» from 3. The **season** of a stay is its check-in month: winter November to February, summer June to September, shoulder the rest; a guest's season is the one of most stays, and a tie goes to the latest stay. The **profile** is «longas» when the average stay is 5 nights or more, otherwise the season. **Big spender**: 840 € or more in all.
+
+| | Expected |
+| --- | --- |
+| Guests | 312 |
+| Levels | novo 210, voltou 81, habitual 21 |
+| Big spenders | 34 |
+| Profiles | inverno 66, verao 110, meia 85, longas 51 |
+| Languages | pt-PT 103, en 46, es 45, pt-BR 32, nl 30, de 29, fr 27 |
+| More than one country | 82 |
+| Platform addresses (`@guest.booking.com`, `@guest.airbnb.com`, Expedia) | 0 |
+
+| Email | Country | Countries | Stays | Spent | Avg nights | Level | Profile | Big spender |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| marta.oliveira@correio.example | Portugal | Países Baixos, Portugal | 3 | 1025 | 4 | habitual | inverno | yes |
+| mariana.teixeira@correio.example | Alemanha | Alemanha, Espanha, França, Portugal | 4 | 1005 | 2.5 | habitual | verao | yes |
+| filipa.teixeira@correio.example | Portugal | Espanha, Portugal, Reino Unido | 3 | 1565 | 17/3 | habitual | longas | yes |
+
+The host can change the four rules and any guest's level, profile and language; her changes are kept on her device and never touch `reservas.json`.
 
 ## 5. Hypotheses: how each was computed, and the result
 
