@@ -137,7 +137,7 @@ export function MarketAlerts({
                           <div className="overflow-x-auto">
                             <table className="w-full border-collapse text-left">
                               <thead>
-                                <tr className="border-b text-sm">
+                                <tr className="border-b text-sm whitespace-nowrap">
                                   <th scope="col" className="py-2 pr-3">
                                     Quarto
                                   </th>
