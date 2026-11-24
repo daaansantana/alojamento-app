@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Choices } from "@/components/comum/escolha";
 import { StepWhatIf } from "@/components/hospedes/e-se";
 import { EmailPreview, GuestList, Progress } from "@/components/hospedes/lista";
+import { COLUMNS, PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/states/empty-state";
 import { useContacted } from "@/hooks/useContacted";
 import { useData } from "@/hooks/useData";
@@ -91,66 +92,63 @@ export default function Hospedes() {
     );
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-h1 font-bold lg:text-h1-lg">
-            Os hóspedes que voltam
-          </h1>
-          <p className="text-lead">{view.guestsIntro}</p>
+    <div className="flex flex-col gap-8">
+      <PageHeader title="Os hóspedes que voltam" intro={view.guestsIntro} />
+      <div data-layout="colunas" className={COLUMNS}>
+        <div className="flex flex-col gap-6">
+          <Choices
+            label="O que quer pedir"
+            value={list}
+            onChange={setList}
+            layout="stack"
+            choices={[
+              {
+                value: "inverno",
+                label: view.contacts.action,
+                detail: view.contacts.count,
+                note: view.contacts.worth,
+              },
+              {
+                value: "direto",
+                label: view.directContacts.action,
+                detail: view.directContacts.count,
+                note: view.directContacts.worth,
+              },
+            ]}
+          />
+          <div className="flex flex-col gap-2">
+            <p>
+              <strong>Quem são:</strong> {guests.who}
+            </p>
+            <p>
+              <strong>O que acontece:</strong> {guests.what}
+            </p>
+          </div>
+          <EmailPreview
+            subject={guests.preview.subject}
+            body={guests.preview.body}
+          />
+          {rows.length === 0 ? (
+            <EmptyState message="Nesta lista ainda não há ninguém: veja a outra lista." />
+          ) : (
+            <>
+              <Progress
+                text={writtenProgress(done, guests.total)}
+                done={done}
+                total={guests.total}
+              />
+              <GuestList
+                key={list}
+                rows={rows}
+                moreLabel={showMoreGuests(rows.length - 10)}
+                onMark={mark}
+                onUnmark={unmark}
+              />
+            </>
+          )}
         </div>
-        <Choices
-          label="O que quer pedir"
-          value={list}
-          onChange={setList}
-          layout="stack"
-          choices={[
-            {
-              value: "inverno",
-              label: view.contacts.action,
-              detail: view.contacts.count,
-              note: view.contacts.worth,
-            },
-            {
-              value: "direto",
-              label: view.directContacts.action,
-              detail: view.directContacts.count,
-              note: view.directContacts.worth,
-            },
-          ]}
-        />
-        <div className="flex flex-col gap-2">
-          <p>
-            <strong>Quem são:</strong> {guests.who}
-          </p>
-          <p>
-            <strong>O que acontece:</strong> {guests.what}
-          </p>
-        </div>
-        <EmailPreview
-          subject={guests.preview.subject}
-          body={guests.preview.body}
-        />
-        {rows.length === 0 ? (
-          <EmptyState message="Nesta lista ainda não há ninguém: veja a outra lista." />
-        ) : (
-          <>
-            <Progress
-              text={writtenProgress(done, guests.total)}
-              done={done}
-              total={guests.total}
-            />
-            <GuestList
-              key={list}
-              rows={rows}
-              moreLabel={showMoreGuests(rows.length - 10)}
-              onMark={mark}
-              onUnmark={unmark}
-            />
-          </>
-        )}
+        <div className="lg:sticky lg:top-28">{whatIf}</div>
       </div>
-      <div className="lg:sticky lg:top-28">{whatIf}</div>
     </div>
   );
 }

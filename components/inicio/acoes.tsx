@@ -6,7 +6,7 @@ import { SnowflakeIcon } from "@solar-icons/react/linear/snowflake";
 import { Sun2Icon } from "@solar-icons/react/linear/sun-2";
 import { UsersGroupRoundedIcon } from "@solar-icons/react/linear/users-group-rounded";
 import Link from "next/link";
-import type { ComponentType, ReactNode } from "react";
+import type { ComponentType } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { AlertId, PainelAction } from "@/types";
@@ -143,21 +143,5 @@ export function OtherMonth({
         </button>
       </div>
     </fieldset>
-  );
-}
-
-/** The title and the sentence that opens the screen. */
-export function MonthHeading({
-  title,
-  intro,
-}: {
-  title: string;
-  intro: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <h1 className="text-h1 font-bold lg:text-h1-lg">{title}</h1>
-      <p className="text-lead">{intro}</p>
-    </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   type ThermometerMonth,
   type Tick,
 } from "@/components/precos/termometro";
+import { COLUMNS, PageHeader } from "@/components/shell/page-header";
 import { useData } from "@/hooks/useData";
 import { useMarket } from "@/hooks/useMarket";
 import { usePainel } from "@/hooks/usePainel";
@@ -159,17 +160,14 @@ export default function Precos() {
   const substitutes = market.months.filter((m) => m.substitute);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-h1 font-bold lg:text-h1-lg">
-              O seu preço e o do mercado
-            </h1>
-            <p className="text-statement leading-snug font-bold text-balance">
-              {marketYear(market)}
-            </p>
-          </div>
+    <div className="flex flex-col gap-8">
+      <PageHeader
+        title="O seu preço e o do mercado"
+        intro={marketYear(market)}
+        emphasis
+      />
+      <div data-layout="colunas" className={COLUMNS}>
+        <div className="flex flex-col gap-8">
           <MarketSource
             title="Como comparamos"
             paragraphs={[
@@ -182,28 +180,30 @@ export default function Precos() {
               text: marketSourceLine(m),
             }))}
           />
+          <FocusMonth
+            month={months[index]}
+            ticks={ticks}
+            sentence={marketGap(market.months[index])}
+          />
+          <MonthByMonth
+            months={months}
+            selected={selected}
+            onSelect={setFocus}
+            ticks={ticks}
+            marketLegend="Mercado (INE)"
+            substituteNote={
+              substitutes[0] ? marketStandIn(substitutes[0]) : null
+            }
+          />
         </div>
-        <FocusMonth
-          month={months[index]}
-          ticks={ticks}
-          sentence={marketGap(market.months[index])}
-        />
-        <MonthByMonth
-          months={months}
-          selected={selected}
-          onSelect={setFocus}
-          ticks={ticks}
-          marketLegend="Mercado (INE)"
-          substituteNote={substitutes[0] ? marketStandIn(substitutes[0]) : null}
-        />
-      </div>
-      <div className="lg:sticky lg:top-28">
-        <PriceWhatIf
-          question={question}
-          onQuestionChange={setQuestion}
-          {...whatIf}
-          together={view.together}
-        />
+        <div className="lg:sticky lg:top-28">
+          <PriceWhatIf
+            question={question}
+            onQuestionChange={setQuestion}
+            {...whatIf}
+            together={view.together}
+          />
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { YearChart } from "@/components/ano/meses";
 import { Numbers, type NumbersPart } from "@/components/ano/numeros";
 import { YearSummary } from "@/components/ano/resumo";
+import { PageHeader } from "@/components/shell/page-header";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useData } from "@/hooks/useData";
 import { useMarket } from "@/hooks/useMarket";
@@ -60,11 +61,8 @@ export default function Ano() {
   });
 
   return (
-    <div className="mx-auto flex w-full max-w-[760px] flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-h1 font-bold lg:text-h1-lg">Como correu o ano</h1>
-        <p className="text-lead">{view.period}.</p>
-      </div>
+    <div className="flex w-full max-w-[760px] flex-col gap-8">
+      <PageHeader title="Como correu o ano" intro={`${view.period}.`} />
       <YearSummary
         sentence={view.summary.sentence}
         figures={view.summary.figures.slice(1)}
