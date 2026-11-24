@@ -14,7 +14,9 @@ export function YearGain({ gain }: { gain: PainelView["gain"] }) {
       <h2 id="ganho" className="text-h2 font-bold">
         Quanto pode ganhar a mais
       </h2>
-      <p className="text-kpi font-bold tabular-nums">{gain.likely}</p>
+      <p className="text-kpi font-bold tabular-nums lg:text-h1">
+        {gain.likely}
+      </p>
       <p>{gain.share}</p>
       <p className="text-muted-foreground">{gain.range}</p>
       <details className="group border-y">
