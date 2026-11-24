@@ -582,9 +582,10 @@ export default function Hospedes() {
             {visible.length === 1 ? "hóspede" : "hóspedes"}
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <span>
-              {int(selected.length)}{" "}
-              {selected.length === 1 ? "selecionado" : "selecionados"}
+            <span className={selected.length ? "" : "text-muted-foreground"}>
+              {selected.length === 0
+                ? "Selecione hóspedes na lista"
+                : `${int(selected.length)} ${selected.length === 1 ? "selecionado" : "selecionados"}`}
             </span>
             <button
               type="button"
