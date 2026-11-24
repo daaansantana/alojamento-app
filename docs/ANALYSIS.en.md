@@ -351,3 +351,15 @@ Persona context, in `PRODUCT.md`:
 ### Next step
 
 An agent that watches market prices around the house and tells the owner when it is worth changing the price. It would answer the competitor-prices limit. It needs outside data and a server that runs on its own, and the brief provides for neither: today's app has no server and only reads the files in `public/data/`.
+
+**Market alerts (prototype).** The prices page already shows how it would work, with simulated data: alerts with how much and when to change the price, the next 90 days by room, and where the data comes from.
+
+| What would be real | Why it is not connected | Source |
+| --- | --- | --- |
+| The official market | INE is free, but comes out once a month, late | INE |
+| The neighbours' prices, day by day | Only through paid services (PriceLabs, AirDNA). Copying Booking.com with a program is against its terms | Booking.com terms of service |
+| Updating on its own | On Vercel's free plan a scheduled job runs at most once a day | Vercel, Cron Jobs |
+
+So the data is simulated, anchored on INE (November to February, plus 2.4%, the ADR growth in Q2 2026) and on the house's real prices. AI would have one job only: write the explanation from the numbers. How much and when come from tested rules (SPEC, version 5), and the AI never makes up a number. nexo does not change prices on Booking.com or Airbnb either: it says how much and when, and the owner makes the change.
+
+Sources: [Booking.com terms of service](https://www.booking.com/content/terms.html); [Vercel, Cron Jobs](https://vercel.com/docs/cron-jobs/usage-and-pricing); [Portuguese Government, tourist accommodation in Q2 2026](https://portugal.gov.pt/gc25/comunicacao/noticias/alojamento-turistico-mantem-trajetoria-de-crescimento-no-segundo-trimestre-de-2026).
