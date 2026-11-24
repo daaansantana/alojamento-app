@@ -514,10 +514,15 @@ export default function Hospedes() {
         </div>
       </PageHeader>
 
-      <div data-layout="colunas" className={COLUMNS}>
-        <Suggestions items={suggestions} active={list} onPick={pickList} />
-        <div>{whatIf}</div>
-      </div>
+      <section aria-labelledby="sugestoes" className="flex flex-col gap-3">
+        <h2 id="sugestoes" className="text-h2 font-bold">
+          Sugestões
+        </h2>
+        <div data-layout="colunas" className={COLUMNS}>
+          <Suggestions items={suggestions} active={list} onPick={pickList} />
+          <div>{whatIf}</div>
+        </div>
+      </section>
 
       <GuestFilters
         profiles={profileOptions}

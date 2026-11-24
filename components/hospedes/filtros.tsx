@@ -24,32 +24,27 @@ export function Suggestions({
   onPick: (id: string) => void;
 }) {
   return (
-    <section aria-labelledby="sugestoes" className="flex flex-col gap-3">
-      <h2 id="sugestoes" className="text-h2 font-bold">
-        Sugestões
-      </h2>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-        {items.map((s) => (
-          <button
-            key={s.id}
-            id={s.id}
-            type="button"
-            aria-pressed={active === s.id}
-            onClick={() => onPick(s.id)}
-            className="flex scroll-mt-28 flex-col items-start gap-1 rounded-panel border border-control bg-background p-5 text-left hover:bg-muted aria-pressed:border-primary aria-pressed:bg-accent sm:p-6"
-          >
-            <span className="flex items-center gap-2 font-bold text-primary">
-              <LetterIcon size={22} aria-hidden={true} />
-              {s.action}
-            </span>
-            <span>
-              {s.count}. {s.worth}.
-            </span>
-            <span className="text-sm text-muted-foreground">{s.progress}</span>
-          </button>
-        ))}
-      </div>
-    </section>
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      {items.map((s) => (
+        <button
+          key={s.id}
+          id={s.id}
+          type="button"
+          aria-pressed={active === s.id}
+          onClick={() => onPick(s.id)}
+          className="flex scroll-mt-28 flex-col items-start gap-1 rounded-panel border border-control bg-background p-5 text-left hover:bg-muted aria-pressed:border-primary aria-pressed:bg-accent sm:p-6"
+        >
+          <span className="flex items-center gap-2 font-bold text-primary">
+            <LetterIcon size={22} aria-hidden={true} />
+            {s.action}
+          </span>
+          <span>
+            {s.count}. {s.worth}.
+          </span>
+          <span className="text-sm text-muted-foreground">{s.progress}</span>
+        </button>
+      ))}
+    </div>
   );
 }
 
