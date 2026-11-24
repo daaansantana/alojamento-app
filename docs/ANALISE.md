@@ -169,6 +169,34 @@ O mínimo da comissão usa o Booking a 15% e o Airbnb a 3% (taxa repartida); o m
 
 Leitura: quem volta gasta o mesmo por estada, mas vale mais do dobro no ano porque volta. Traz metade do que os hóspedes gastam, e 3 em cada 4 regressos chegam por uma plataforma, que cobra comissão por um hóspede que já é da casa.
 
+### Perfis, níveis e língua
+
+O professor pediu para não tratar os hóspedes como uma massa: perceber quem são e falar com cada grupo à sua maneira.
+
+**Níveis.** O Booking Genius sobe de nível com 2, 5 e 15 estadas em 2 anos. Aqui só 1 hóspede chega às 5, por isso a casa usa 2 e 3 estadas. 840 € é onde começam os 10% que mais gastaram. São valores por defeito: a dona pode mudá-los em «Regras das etiquetas».
+
+| Nível | Regra | Hóspedes | Fonte |
+| --- | --- | --- | --- |
+| Novo | 1 estada | 210 | SPEC §4, Guest segments |
+| Voltou | 2 estadas | 81 | SPEC §4, Guest segments |
+| Habitual | 3 ou mais | 21 | SPEC §4, Guest segments |
+| Gasta mais | 840 € ou mais no total | 34 | SPEC §4, Guest segments |
+
+**Perfis.** Testámos um agrupamento automático (k-means com 8 variáveis: estadas, gasto, noites, pessoas, inverno, verão, canal direto e dias desde a última estada). Os grupos separam-se pouco (silhueta 0,26) e saem os mesmos que uma regra simples dá. Ficou a regra, que a dona percebe: a altura do ano da maioria das estadas, ou «Estadas longas» com 5 noites ou mais em média.
+
+| Perfil | Hóspedes | Mensagem sugerida | Fonte |
+| --- | --- | --- | --- |
+| Inverno | 66 | Voltar no inverno, 10% | SPEC §4, Guest segments |
+| Verão | 110 | Maio ou outubro, 10% | SPEC §4, Guest segments |
+| Meia-estação | 85 | Reservar diretamente, 5% | SPEC §4, Guest segments |
+| Estadas longas | 51 | Uma semana, 10% | SPEC §4, Guest segments |
+
+**Língua.** 76% dos consumidores preferem informação na sua língua (CSA Research, 2020). O país vem de cada reserva; 82 hóspedes reservaram com mais de um país, por isso conta o da última estada. A bandeira mostra o país; a língua aparece pelo nome (Deutsch, Français), porque uma bandeira não é uma língua. As mensagens prontas estão em 7 línguas e são um rascunho a rever por quem fala cada uma.
+
+**Limites.** A Lei 41/2004 (art. 13.º-A) deixa escrever a quem já é cliente sobre serviços parecidos, se a recusa for fácil quando se recolhe o contacto e em cada mensagem: por isso a linha para deixar de receber vai sempre no fim. O Booking dá um email só para a estada e não deixa usá-lo para marketing depois da saída; a app marca esses emails e deixa-os fora das ofertas. A base não tem telefones: o WhatsApp e o SMS só funcionam com o telefone que a dona junta à mão.
+
+Fontes: [Booking.com Genius](https://www.booking.com/genius.html); [CSA Research, 2020](https://csa-research.com/blogs-events/csa-in-the-media/press-releases/consumers-prefer-their-own-language); [Lei 41/2004](https://diariodarepublica.pt/dr/detalhe/lei/41-2004-480710); [Hospitality Net, emails do Booking](https://www.hospitalitynet.org/opinion/4072000.html).
+
 ### As noites soltas
 
 | O quê | Valor | Fonte |
