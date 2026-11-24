@@ -169,6 +169,34 @@ The minimum commission uses Booking at 15% and Airbnb at 3% (split fee); the max
 
 Reading: returning guests spend the same per stay, but are worth more than twice as much in the year because they come back. They bring half of what guests spend, and 3 in 4 return stays arrive through a platform, which charges commission for a guest who already belongs to the house.
 
+### Profiles, levels and language
+
+The teacher asked us not to treat guests as one mass: to see who they are and talk to each group in its own way.
+
+**Levels.** Booking.com Genius moves up a level at 2, 5 and 15 stays in two years. Here only 1 guest reaches 5, so the house uses 2 and 3 stays. €840 is where the top 10% by spend start. These are starting values: the owner can change them under «Regras das etiquetas».
+
+| Level | Rule | Guests | Source |
+| --- | --- | --- | --- |
+| Novo (new) | 1 stay | 210 | SPEC §4, Guest segments |
+| Voltou (came back) | 2 stays | 81 | SPEC §4, Guest segments |
+| Habitual (regular) | 3 or more | 21 | SPEC §4, Guest segments |
+| Gasta mais (big spender) | €840 or more in all | 34 | SPEC §4, Guest segments |
+
+**Profiles.** We tried automatic clustering (k-means on 8 variables: stays, spend, nights, party size, winter, summer, direct channel and days since the last stay). The groups barely separate (silhouette 0.26) and come out the same as a simple rule. We kept the rule, which the owner understands: the season of most stays, or «Estadas longas» (long stays) at 5 nights or more on average.
+
+| Profile | Guests | Suggested message | Source |
+| --- | --- | --- | --- |
+| Winter | 66 | Come back in winter, 10% | SPEC §4, Guest segments |
+| Summer | 110 | May or October, 10% | SPEC §4, Guest segments |
+| Shoulder season | 85 | Book directly, 5% | SPEC §4, Guest segments |
+| Long stays | 51 | A week, 10% | SPEC §4, Guest segments |
+
+**Language.** 76% of consumers prefer information in their own language (CSA Research, 2020). The country comes with each booking; 82 guests booked under more than one country, so the latest stay counts. The flag shows the country; the language is shown by its own name (Deutsch, Français), because a flag is not a language. The ready messages exist in 7 languages and are drafts for a speaker of each to review.
+
+**Limits.** Portuguese Law 41/2004 (art. 13-A) allows writing to existing customers about similar services if opting out is easy when the contact is collected and in every message, so the opt-out line always goes at the end. Booking.com gives an address for the stay only and does not allow marketing to it after check-out; the app marks those addresses and leaves them out of offers. The data has no phone numbers: WhatsApp and SMS only work with a number the owner adds by hand.
+
+Sources: [Booking.com Genius](https://www.booking.com/genius.html); [CSA Research, 2020](https://csa-research.com/blogs-events/csa-in-the-media/press-releases/consumers-prefer-their-own-language); [Law 41/2004](https://diariodarepublica.pt/dr/detalhe/lei/41-2004-480710); [Hospitality Net, Booking.com addresses](https://www.hospitalitynet.org/opinion/4072000.html).
+
 ### Orphan nights
 
 | What | Value | Source |
