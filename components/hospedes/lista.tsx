@@ -28,7 +28,7 @@ export function EmailPreview({
           className="shrink-0 group-open:rotate-180"
         />
       </summary>
-      <div className="mb-4 flex flex-col gap-3 rounded-xl bg-muted p-4">
+      <div className="mb-4 flex flex-col gap-3 rounded-xl bg-muted p-5 sm:p-6">
         <p>
           <span className="text-muted-foreground">Assunto: </span>
           <span className="font-bold">{subject}</span>

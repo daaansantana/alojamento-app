@@ -1,12 +1,8 @@
 "use client";
 
-import {
-  LeadAction,
-  MonthHeading,
-  NextActions,
-  OtherMonth,
-} from "@/components/inicio/acoes";
+import { LeadAction, NextActions, OtherMonth } from "@/components/inicio/acoes";
 import { YearCard, YearGain } from "@/components/inicio/ano";
+import { COLUMNS, PageHeader } from "@/components/shell/page-header";
 import { EmptyState } from "@/components/states/empty-state";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useData } from "@/hooks/useData";
@@ -39,31 +35,29 @@ export default function Inicio() {
   }));
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col gap-4">
-          <MonthHeading
-            title={`O que fazer em ${view.monthName}`}
-            intro={view.intro}
-          />
-          <OtherMonth
-            previous={{ month: previous, label: capital(monthName(previous)) }}
-            next={{ month: next, label: capital(monthName(next)) }}
-            onChange={setSelectedMonth}
-          />
+    <div className="flex flex-col gap-8">
+      <PageHeader title={`O que fazer em ${view.monthName}`} intro={view.intro}>
+        <OtherMonth
+          previous={{ month: previous, label: capital(monthName(previous)) }}
+          next={{ month: next, label: capital(monthName(next)) }}
+          onChange={setSelectedMonth}
+        />
+      </PageHeader>
+      <div data-layout="colunas" className={COLUMNS}>
+        <div className="flex flex-col gap-8">
+          {lead ? (
+            <>
+              <LeadAction action={lead} />
+              <NextActions actions={rest} />
+            </>
+          ) : (
+            <EmptyState message="Neste mês não há sugestões: veja outro mês." />
+          )}
         </div>
-        {lead ? (
-          <>
-            <LeadAction action={lead} />
-            <NextActions actions={rest} />
-          </>
-        ) : (
-          <EmptyState message="Neste mês não há sugestões: veja outro mês." />
-        )}
-      </div>
-      <div className="flex flex-col gap-8 lg:gap-6">
-        <YearGain gain={view.gain} />
-        <YearCard text={view.summary.short} bars={bars} />
+        <div className="flex flex-col gap-8 lg:gap-6">
+          <YearGain gain={view.gain} />
+          <YearCard text={view.summary.short} bars={bars} />
+        </div>
       </div>
     </div>
   );

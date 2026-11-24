@@ -138,7 +138,7 @@ export function FocusMonth({
   return (
     <section
       aria-labelledby="mes-em-foco"
-      className="flex flex-col gap-4 rounded-panel bg-accent p-5 sm:p-7"
+      className="flex flex-col gap-4 rounded-panel bg-accent p-5 sm:p-6"
     >
       <h2 id="mes-em-foco" className="text-h2 font-bold">
         Em {month.name}

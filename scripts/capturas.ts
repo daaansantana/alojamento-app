@@ -33,6 +33,52 @@ const SIZES = [
   { width: 1280, height: 800, mobile: false },
 ];
 
+// With --alinhamento: no screenshots; the layout rules from DESIGN.md are
+// measured on every page at these widths, and any break fails the run.
+const ALIGN = process.argv.includes("--alinhamento");
+const ALIGN_SIZES = [
+  { width: 390, height: 844, mobile: true },
+  { width: 1024, height: 800, mobile: false },
+  { width: 1280, height: 800, mobile: false },
+  { width: 1440, height: 900, mobile: false },
+  { width: 1920, height: 1080, mobile: false },
+];
+
+// Runs in the page. Returns the gaps, in px, that the rules check.
+const MEASURE = `(() => {
+  const box = (e) => e.getBoundingClientRect();
+  const size = (e) => parseFloat(getComputedStyle(e).fontSize);
+  const hasText = (e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+  const firstTextLeft = (e) => {
+    const walker = document.createTreeWalker(e, NodeFilter.SHOW_TEXT, { acceptNode: (n) => n.textContent.trim() ? 1 : 3 });
+    const node = walker.nextNode();
+    if (!node) return null;
+    const range = document.createRange(); range.selectNodeContents(node);
+    return range.getBoundingClientRect().left;
+  };
+  const h1 = document.querySelector("main h1");
+  const logo = document.querySelector("header a");
+  const out = { scroll: document.documentElement.scrollWidth - innerWidth };
+  if (h1 && logo) out.left = Math.round(Math.abs(box(h1).left - box(logo).left));
+  const grid = document.querySelector('[data-layout="colunas"]');
+  if (grid && getComputedStyle(grid).gridTemplateColumns.split(" ").length > 1) {
+    const [main, side] = [...grid.children];
+    const top = (col) => box(col.firstElementChild || col).top;
+    out.tops = Math.round(Math.abs(top(main) - top(side)));
+    let biggest = 0;
+    for (const e of side.querySelectorAll("*")) if (hasText(e)) biggest = Math.max(biggest, size(e));
+    out.side = Math.round(biggest - size(h1));
+    const cards = [...side.querySelectorAll("*")].filter((e) => {
+      const s = getComputedStyle(e);
+      const framed = s.borderTopWidth !== "0px" || s.backgroundColor !== "rgba(0, 0, 0, 0)";
+      return framed && parseFloat(s.paddingLeft) >= 16 && box(e).width > 200 && !e.parentElement.closest("details");
+    }).filter((e, i, all) => !all.some((o) => o !== e && o.contains(e)));
+    const lefts = cards.map(firstTextLeft).filter((x) => x !== null);
+    out.cards = lefts.length > 1 ? Math.round(Math.max(...lefts) - Math.min(...lefts)) : 0;
+  }
+  return JSON.stringify(out);
+})()`;
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function waitFor<T>(
@@ -160,6 +206,16 @@ async function main() {
         problems.push(params.entry.text);
     };
 
+    if (ALIGN) {
+      const failures = await checkAlignment(cdp);
+      cdp.close();
+      if (failures > 0) {
+        console.log(`  ${failures} rule(s) broken`);
+        process.exitCode = 1;
+      } else console.log("  every rule holds on every page and width");
+      return;
+    }
+
     for (const size of SIZES)
       for (const screen of SCREENS) {
         await cdp.send("Emulation.setDeviceMetricsOverride", {
@@ -218,6 +274,93 @@ async function main() {
     await sleep(300);
     rmSync(profile, { recursive: true, force: true });
   }
+}
+
+async function openPage(
+  cdp: Cdp,
+  size: { width: number; height: number; mobile: boolean },
+  path: string,
+) {
+  await cdp.send("Emulation.setDeviceMetricsOverride", {
+    width: size.width,
+    height: size.height,
+    deviceScaleFactor: 1,
+    mobile: size.mobile,
+  });
+  await cdp.send("Page.navigate", { url: SITE + path });
+  await waitFor("the page", async () => {
+    const { result } = await cdp.send("Runtime.evaluate", {
+      expression:
+        "document.readyState === 'complete' && !!document.querySelector('h1, [role=alert]')",
+      returnByValue: true,
+    });
+    return result.value === true ? true : undefined;
+  });
+  await sleep(300);
+}
+
+/** Measures every page at every width; prints a table and counts what fails. */
+async function checkAlignment(cdp: Cdp): Promise<number> {
+  const RULES: {
+    key: "left" | "tops" | "side" | "cards" | "scroll";
+    name: string;
+    ok: (v: number) => boolean;
+    desktop: boolean;
+  }[] = [
+    {
+      key: "left",
+      name: "title starts under the logo (±1 px)",
+      ok: (v) => v <= 1,
+      desktop: true,
+    },
+    {
+      key: "tops",
+      name: "both columns start together (±2 px)",
+      ok: (v) => v <= 2,
+      desktop: true,
+    },
+    {
+      key: "side",
+      name: "no side text larger than the title",
+      ok: (v) => v <= 0,
+      desktop: true,
+    },
+    {
+      key: "cards",
+      name: "side cards' text starts at the same x (±1 px)",
+      ok: (v) => v <= 1,
+      desktop: true,
+    },
+    {
+      key: "scroll",
+      name: "no sideways scroll",
+      ok: (v) => v <= 0,
+      desktop: false,
+    },
+  ];
+  let failures = 0;
+  for (const size of ALIGN_SIZES)
+    for (const screen of SCREENS) {
+      await openPage(cdp, size, screen.path);
+      const { result } = await cdp.send("Runtime.evaluate", {
+        expression: MEASURE,
+        returnByValue: true,
+      });
+      const measured = JSON.parse(result.value) as Partial<
+        Record<(typeof RULES)[number]["key"], number>
+      >;
+      for (const rule of RULES) {
+        if (rule.desktop && size.mobile) continue;
+        const value = measured[rule.key];
+        if (value === undefined) continue;
+        const pass = rule.ok(value);
+        if (!pass) failures += 1;
+        console.log(
+          `  ${pass ? "✓" : "✗"} ${screen.path.padEnd(10)} ${String(size.width).padStart(4)} px  ${rule.name}: ${value} px`,
+        );
+      }
+    }
+  return failures;
 }
 
 main().catch((error) => {

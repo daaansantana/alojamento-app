@@ -14,7 +14,9 @@ export function YearGain({ gain }: { gain: PainelView["gain"] }) {
       <h2 id="ganho" className="text-h2 font-bold">
         Quanto pode ganhar a mais
       </h2>
-      <p className="text-kpi font-bold tabular-nums">{gain.likely}</p>
+      <p className="text-kpi font-bold tabular-nums lg:text-h1">
+        {gain.likely}
+      </p>
       <p>{gain.share}</p>
       <p className="text-muted-foreground">{gain.range}</p>
       <details className="group border-y">
@@ -43,7 +45,7 @@ export function YearCard({
   return (
     <Link
       href="/ano"
-      className="group flex flex-col gap-2 rounded-xl border bg-card p-5 hover:border-control"
+      className="group flex flex-col gap-2 rounded-xl border bg-card p-5 sm:p-6 hover:border-control"
     >
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-h2 font-bold group-hover:text-primary">

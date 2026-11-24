@@ -13,6 +13,7 @@
     "gabaritos": "tsx scripts/golden.test.ts",
     "requisitos": "tsx scripts/requisitos.ts",
     "capturas": "tsx scripts/capturas.ts",
+    "alinhamento": "tsx scripts/capturas.ts --alinhamento",
     "explorar": "tsx scripts/explorar.ts"
   },
   "dependencies": {

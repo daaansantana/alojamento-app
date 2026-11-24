@@ -29,7 +29,7 @@ export function StepWhatIf({
   return (
     <section
       aria-labelledby="e-se-titulo"
-      className="flex flex-col gap-4 rounded-panel bg-muted p-4 sm:p-6"
+      className="flex flex-col gap-4 rounded-panel bg-muted p-5 sm:p-6"
     >
       <h2 id="e-se-titulo" className="text-h2 font-bold">
         {title}
@@ -50,7 +50,7 @@ export function StepWhatIf({
         <output
           aria-live="polite"
           aria-labelledby="e-se-pergunta"
-          className="min-w-0 flex-1 text-center text-figure font-bold tabular-nums sm:flex-none sm:min-w-24 sm:text-kpi"
+          className="min-w-0 flex-1 text-center text-figure font-bold tabular-nums sm:flex-none sm:min-w-24 sm:text-kpi lg:text-h1"
         >
           {pct(value / 100)}
         </output>
