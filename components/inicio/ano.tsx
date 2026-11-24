@@ -43,7 +43,7 @@ export function YearCard({
   return (
     <Link
       href="/ano"
-      className="group flex flex-col gap-2 rounded-xl border bg-card p-5 hover:border-control"
+      className="group flex flex-col gap-2 rounded-xl border bg-card p-5 sm:p-6 hover:border-control"
     >
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-h2 font-bold group-hover:text-primary">

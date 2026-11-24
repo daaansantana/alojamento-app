@@ -29,7 +29,7 @@ export function StepWhatIf({
   return (
     <section
       aria-labelledby="e-se-titulo"
-      className="flex flex-col gap-4 rounded-panel bg-muted p-4 sm:p-6"
+      className="flex flex-col gap-4 rounded-panel bg-muted p-5 sm:p-6"
     >
       <h2 id="e-se-titulo" className="text-h2 font-bold">
         {title}

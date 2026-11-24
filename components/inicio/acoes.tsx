@@ -30,7 +30,7 @@ export function LeadAction({ action }: { action: PainelAction }) {
   return (
     <section
       aria-labelledby="acao-do-mes"
-      className="flex flex-col gap-4 rounded-panel bg-accent p-5 sm:p-7"
+      className="flex flex-col gap-4 rounded-panel bg-accent p-5 sm:p-6"
     >
       <span className="flex size-14 items-center justify-center rounded-full bg-card text-primary">
         <Icon size={28} aria-hidden={true} />
