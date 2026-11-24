@@ -1,0 +1,215 @@
+{
+  "variaveis": [
+    {
+      "nome": "{NOME}",
+      "diz": "o primeiro nome do hóspede"
+    },
+    {
+      "nome": "{DESCONTO}",
+      "diz": "o desconto, escrito como na língua da mensagem (10% em português, 10 % em alemão)"
+    },
+    {
+      "nome": "{ASSINATURA}",
+      "diz": "o nome de quem assina, por defeito «Isabel»"
+    }
+  ],
+  "linguas": {
+    "pt-PT": {
+      "nome": "Português (PT)",
+      "sair": "Se preferir não receber mais mensagens nossas, responda com «Não» e retiramos o seu contacto.",
+      "sairCurto": "Para não receber mais, responda NÃO."
+    },
+    "pt-BR": {
+      "nome": "Português (BR)",
+      "sair": "Se preferir não receber mais mensagens nossas, responda “Não” e retiramos seu contato.",
+      "sairCurto": "Para não receber mais, responda NÃO."
+    },
+    "es": {
+      "nome": "Español",
+      "sair": "Si prefiere no recibir más mensajes nuestros, responda «No» y eliminaremos su contacto.",
+      "sairCurto": "Para no recibir más, responda NO."
+    },
+    "en": {
+      "nome": "English",
+      "sair": "If you'd rather not hear from us again, reply “No” and we'll remove your details.",
+      "sairCurto": "To stop these messages, reply NO."
+    },
+    "de": {
+      "nome": "Deutsch",
+      "sair": "Wenn Sie keine Nachrichten mehr von uns erhalten möchten, antworten Sie mit „Nein“ und wir löschen Ihre Kontaktdaten.",
+      "sairCurto": "Keine Nachrichten mehr? Antworten Sie NEIN."
+    },
+    "fr": {
+      "nome": "Français",
+      "sair": "Si vous préférez ne plus recevoir de messages de notre part, répondez « Non » et nous supprimerons vos coordonnées.",
+      "sairCurto": "Pour ne plus recevoir de messages, répondez NON."
+    },
+    "nl": {
+      "nome": "Nederlands",
+      "sair": "Wilt u geen berichten meer van ons ontvangen? Antwoord dan met ‘Nee’ en we verwijderen uw gegevens.",
+      "sairCurto": "Geen berichten meer? Antwoord NEE."
+    }
+  },
+  "modelos": {
+    "inverno": {
+      "nome": "Voltar no inverno",
+      "perfil": "inverno",
+      "desconto": 0.1,
+      "assunto": {
+        "pt-PT": "Volte este inverno, com {DESCONTO} de desconto",
+        "pt-BR": "Volte para Portugal neste inverno, com {DESCONTO} de desconto",
+        "es": "Vuelva este invierno con un {DESCONTO} de descuento",
+        "en": "Come back this winter, with {DESCONTO} off",
+        "de": "Kommen Sie diesen Winter wieder, mit {DESCONTO} Rabatt",
+        "fr": "Revenez cet hiver avec {DESCONTO} de réduction",
+        "nl": "Kom deze winter terug, met {DESCONTO} korting"
+      },
+      "email": {
+        "pt-PT": "Olá {NOME},\n\nObrigada por ter ficado connosco. Este inverno temos quartos livres e seria um gosto voltar a receber a sua visita. Se reservar diretamente connosco, tem {DESCONTO} de desconto.\n\nPara reservar, basta responder com as datas que prefere.\n\nAté breve!\n{ASSINATURA}",
+        "pt-BR": "Olá, {NOME}!\n\nObrigada por ter se hospedado com a gente. Neste inverno europeu, de novembro a fevereiro, temos quartos disponíveis e vai ser um prazer receber você de novo. Reservando direto com a gente, você tem {DESCONTO} de desconto.\n\nPara reservar, é só responder com as datas que preferir.\n\nAté breve!\n{ASSINATURA}",
+        "es": "Hola, {NOME}:\n\nGracias por alojarse con nosotros. Este invierno tenemos habitaciones libres y nos encantaría volver a recibirle. Si reserva directamente con nosotros, tiene un {DESCONTO} de descuento.\n\nPara reservar, solo tiene que responder con las fechas que prefiera.\n\n¡Hasta pronto!\n{ASSINATURA}",
+        "en": "Hello {NOME},\n\nThank you for staying with us. This winter we have rooms available and we'd love to welcome you back. Book directly with us and you get {DESCONTO} off.\n\nTo book, just reply with the dates you'd like.\n\nSee you soon!\n{ASSINATURA}",
+        "de": "Hallo {NOME},\n\nvielen Dank für Ihren Aufenthalt bei uns. Diesen Winter haben wir noch Zimmer frei und würden uns freuen, Sie wieder begrüßen zu dürfen. Wenn Sie direkt bei uns buchen, erhalten Sie {DESCONTO} Rabatt.\n\nAntworten Sie zum Buchen einfach mit Ihren Wunschdaten.\n\nBis bald!\n{ASSINATURA}",
+        "fr": "Bonjour {NOME},\n\nMerci d'avoir séjourné chez nous. Cet hiver, nous avons des chambres disponibles et nous serions ravis de vous accueillir à nouveau. En réservant directement auprès de nous, vous bénéficiez de {DESCONTO} de réduction.\n\nPour réserver, il vous suffit de répondre en indiquant vos dates.\n\nÀ bientôt !\n{ASSINATURA}",
+        "nl": "Hallo {NOME},\n\nBedankt voor uw verblijf bij ons. Deze winter hebben we nog kamers vrij en we zouden u graag opnieuw verwelkomen. Als u rechtstreeks bij ons boekt, krijgt u {DESCONTO} korting.\n\nOm te boeken, antwoordt u gewoon met de data die u wilt.\n\nTot snel!\n{ASSINATURA}"
+      },
+      "curto": {
+        "pt-PT": "Olá {NOME}, Este inverno temos quartos livres e seria um gosto voltar a receber a sua visita. Se reservar diretamente connosco, tem {DESCONTO} de desconto. Para reservar, basta responder com as datas que prefere.",
+        "pt-BR": "Olá, {NOME}! Neste inverno europeu, de novembro a fevereiro, temos quartos disponíveis e vai ser um prazer receber você de novo. Reservando direto com a gente, você tem {DESCONTO} de desconto. Para reservar, é só responder com as datas que preferir.",
+        "es": "Hola, {NOME}: Este invierno tenemos habitaciones libres y nos encantaría volver a recibirle. Si reserva directamente con nosotros, tiene un {DESCONTO} de descuento. Para reservar, solo tiene que responder con las fechas que prefiera.",
+        "en": "Hello {NOME}, This winter we have rooms available and we'd love to welcome you back. Book directly with us and you get {DESCONTO} off. To book, just reply with the dates you'd like.",
+        "de": "Hallo {NOME}, Diesen Winter haben wir noch Zimmer frei und würden uns freuen, Sie wieder begrüßen zu dürfen. Wenn Sie direkt bei uns buchen, erhalten Sie {DESCONTO} Rabatt. Antworten Sie zum Buchen einfach mit Ihren Wunschdaten.",
+        "fr": "Bonjour {NOME}, Cet hiver, nous avons des chambres disponibles et nous serions ravis de vous accueillir à nouveau. En réservant directement auprès de nous, vous bénéficiez de {DESCONTO} de réduction. Pour réserver, il vous suffit de répondre en indiquant vos dates.",
+        "nl": "Hallo {NOME}, Deze winter hebben we nog kamers vrij en we zouden u graag opnieuw verwelkomen. Als u rechtstreeks bij ons boekt, krijgt u {DESCONTO} korting. Om te boeken, antwoordt u gewoon met de data die u wilt."
+      }
+    },
+    "maio-outubro": {
+      "nome": "Maio ou outubro",
+      "perfil": "verao",
+      "desconto": 0.1,
+      "assunto": {
+        "pt-PT": "Maio ou outubro, com {DESCONTO} de desconto",
+        "pt-BR": "Maio ou outubro, com {DESCONTO} de desconto",
+        "es": "Mayo u octubre, con un {DESCONTO} de descuento",
+        "en": "May or October, with {DESCONTO} off",
+        "de": "Mai oder Oktober, mit {DESCONTO} Rabatt",
+        "fr": "Mai ou octobre, avec {DESCONTO} de réduction",
+        "nl": "Mei of oktober, met {DESCONTO} korting"
+      },
+      "email": {
+        "pt-PT": "Olá {NOME},\n\nObrigada por ter ficado connosco. Em maio e em outubro há menos gente e mais quartos livres. Se reservar diretamente connosco para esses meses, tem {DESCONTO} de desconto.\n\nPara reservar, basta responder com as datas que prefere.\n\nAté breve!\n{ASSINATURA}",
+        "pt-BR": "Olá, {NOME}!\n\nObrigada por ter se hospedado com a gente. Em maio e em outubro tem menos movimento e mais quartos disponíveis. Reservando direto com a gente para esses meses, você tem {DESCONTO} de desconto.\n\nPara reservar, é só responder com as datas que preferir.\n\nAté breve!\n{ASSINATURA}",
+        "es": "Hola, {NOME}:\n\nGracias por alojarse con nosotros. En mayo y en octubre hay menos gente y más habitaciones libres. Si reserva directamente con nosotros para esos meses, tiene un {DESCONTO} de descuento.\n\nPara reservar, solo tiene que responder con las fechas que prefiera.\n\n¡Hasta pronto!\n{ASSINATURA}",
+        "en": "Hello {NOME},\n\nThank you for staying with us. May and October are quieter, with more rooms available. Book those months directly with us and you get {DESCONTO} off.\n\nTo book, just reply with the dates you'd like.\n\nSee you soon!\n{ASSINATURA}",
+        "de": "Hallo {NOME},\n\nvielen Dank für Ihren Aufenthalt bei uns. Im Mai und im Oktober ist es ruhiger und es gibt mehr freie Zimmer. Wenn Sie für diese Monate direkt bei uns buchen, erhalten Sie {DESCONTO} Rabatt.\n\nAntworten Sie zum Buchen einfach mit Ihren Wunschdaten.\n\nBis bald!\n{ASSINATURA}",
+        "fr": "Bonjour {NOME},\n\nMerci d'avoir séjourné chez nous. En mai et en octobre, c'est plus calme et il y a plus de chambres libres. En réservant directement auprès de nous pour ces mois-là, vous bénéficiez de {DESCONTO} de réduction.\n\nPour réserver, il vous suffit de répondre en indiquant vos dates.\n\nÀ bientôt !\n{ASSINATURA}",
+        "nl": "Hallo {NOME},\n\nBedankt voor uw verblijf bij ons. In mei en oktober is het rustiger en zijn er meer kamers vrij. Als u voor die maanden rechtstreeks bij ons boekt, krijgt u {DESCONTO} korting.\n\nOm te boeken, antwoordt u gewoon met de data die u wilt.\n\nTot snel!\n{ASSINATURA}"
+      },
+      "curto": {
+        "pt-PT": "Olá {NOME}, Em maio e em outubro há menos gente e mais quartos livres. Se reservar diretamente connosco para esses meses, tem {DESCONTO} de desconto. Para reservar, basta responder com as datas que prefere.",
+        "pt-BR": "Olá, {NOME}! Em maio e em outubro tem menos movimento e mais quartos disponíveis. Reservando direto com a gente para esses meses, você tem {DESCONTO} de desconto. Para reservar, é só responder com as datas que preferir.",
+        "es": "Hola, {NOME}: En mayo y en octubre hay menos gente y más habitaciones libres. Si reserva directamente con nosotros para esos meses, tiene un {DESCONTO} de descuento. Para reservar, solo tiene que responder con las fechas que prefiera.",
+        "en": "Hello {NOME}, May and October are quieter, with more rooms available. Book those months directly with us and you get {DESCONTO} off. To book, just reply with the dates you'd like.",
+        "de": "Hallo {NOME}, Im Mai und im Oktober ist es ruhiger und es gibt mehr freie Zimmer. Wenn Sie für diese Monate direkt bei uns buchen, erhalten Sie {DESCONTO} Rabatt. Antworten Sie zum Buchen einfach mit Ihren Wunschdaten.",
+        "fr": "Bonjour {NOME}, En mai et en octobre, c'est plus calme et il y a plus de chambres libres. En réservant directement auprès de nous pour ces mois-là, vous bénéficiez de {DESCONTO} de réduction. Pour réserver, il vous suffit de répondre en indiquant vos dates.",
+        "nl": "Hallo {NOME}, In mei en oktober is het rustiger en zijn er meer kamers vrij. Als u voor die maanden rechtstreeks bij ons boekt, krijgt u {DESCONTO} korting. Om te boeken, antwoordt u gewoon met de data die u wilt."
+      }
+    },
+    "direto": {
+      "nome": "Reservar diretamente",
+      "perfil": "meia",
+      "desconto": 0.05,
+      "assunto": {
+        "pt-PT": "Da próxima vez, reserve diretamente connosco",
+        "pt-BR": "Da próxima vez, reserve direto com a gente",
+        "es": "La próxima vez, reserve directamente con nosotros",
+        "en": "Next time, book directly with us",
+        "de": "Buchen Sie nächstes Mal direkt bei uns",
+        "fr": "La prochaine fois, réservez directement chez nous",
+        "nl": "Boek de volgende keer rechtstreeks bij ons"
+      },
+      "email": {
+        "pt-PT": "Olá {NOME},\n\nObrigada por ter ficado connosco. Da próxima vez, pode reservar diretamente connosco e tem {DESCONTO} de desconto.\n\nPara reservar, basta responder com as datas que prefere.\n\nAté breve!\n{ASSINATURA}",
+        "pt-BR": "Olá, {NOME}!\n\nObrigada por ter se hospedado com a gente. Da próxima vez, você pode reservar direto com a gente e ganha {DESCONTO} de desconto.\n\nPara reservar, é só responder com as datas que preferir.\n\nAté breve!\n{ASSINATURA}",
+        "es": "Hola, {NOME}:\n\nGracias por alojarse con nosotros. La próxima vez puede reservar directamente con nosotros y tendrá un {DESCONTO} de descuento.\n\nPara reservar, solo tiene que responder con las fechas que prefiera.\n\n¡Hasta pronto!\n{ASSINATURA}",
+        "en": "Hello {NOME},\n\nThank you for staying with us. Next time you can book directly with us and get {DESCONTO} off.\n\nTo book, just reply with the dates you'd like.\n\nSee you soon!\n{ASSINATURA}",
+        "de": "Hallo {NOME},\n\nvielen Dank für Ihren Aufenthalt bei uns. Beim nächsten Mal können Sie direkt bei uns buchen und erhalten {DESCONTO} Rabatt.\n\nAntworten Sie zum Buchen einfach mit Ihren Wunschdaten.\n\nBis bald!\n{ASSINATURA}",
+        "fr": "Bonjour {NOME},\n\nMerci d'avoir séjourné chez nous. La prochaine fois, vous pouvez réserver directement auprès de nous et bénéficier de {DESCONTO} de réduction.\n\nPour réserver, il vous suffit de répondre en indiquant vos dates.\n\nÀ bientôt !\n{ASSINATURA}",
+        "nl": "Hallo {NOME},\n\nBedankt voor uw verblijf bij ons. De volgende keer kunt u rechtstreeks bij ons boeken en krijgt u {DESCONTO} korting.\n\nOm te boeken, antwoordt u gewoon met de data die u wilt.\n\nTot snel!\n{ASSINATURA}"
+      },
+      "curto": {
+        "pt-PT": "Olá {NOME}, Da próxima vez, pode reservar diretamente connosco e tem {DESCONTO} de desconto. Para reservar, basta responder com as datas que prefere.",
+        "pt-BR": "Olá, {NOME}! Da próxima vez, você pode reservar direto com a gente e ganha {DESCONTO} de desconto. Para reservar, é só responder com as datas que preferir.",
+        "es": "Hola, {NOME}: La próxima vez puede reservar directamente con nosotros y tendrá un {DESCONTO} de descuento. Para reservar, solo tiene que responder con las fechas que prefiera.",
+        "en": "Hello {NOME}, Next time you can book directly with us and get {DESCONTO} off. To book, just reply with the dates you'd like.",
+        "de": "Hallo {NOME}, Beim nächsten Mal können Sie direkt bei uns buchen und erhalten {DESCONTO} Rabatt. Antworten Sie zum Buchen einfach mit Ihren Wunschdaten.",
+        "fr": "Bonjour {NOME}, La prochaine fois, vous pouvez réserver directement auprès de nous et bénéficier de {DESCONTO} de réduction. Pour réserver, il vous suffit de répondre en indiquant vos dates.",
+        "nl": "Hallo {NOME}, De volgende keer kunt u rechtstreeks bij ons boeken en krijgt u {DESCONTO} korting. Om te boeken, antwoordt u gewoon met de data die u wilt."
+      }
+    },
+    "semana": {
+      "nome": "Uma semana",
+      "perfil": "longas",
+      "desconto": 0.1,
+      "assunto": {
+        "pt-PT": "Uma semana connosco, com {DESCONTO} de desconto",
+        "pt-BR": "Uma semana com a gente, com {DESCONTO} de desconto",
+        "es": "Una semana con nosotros, con un {DESCONTO} de descuento",
+        "en": "A week with us, with {DESCONTO} off",
+        "de": "Eine Woche bei uns, mit {DESCONTO} Rabatt",
+        "fr": "Une semaine chez nous, avec {DESCONTO} de réduction",
+        "nl": "Een week bij ons, met {DESCONTO} korting"
+      },
+      "email": {
+        "pt-PT": "Olá {NOME},\n\nObrigada por ter ficado connosco. Para estadas de 7 noites ou mais, reservadas diretamente connosco, tem {DESCONTO} de desconto.\n\nPara reservar, basta responder com as datas que prefere.\n\nAté breve!\n{ASSINATURA}",
+        "pt-BR": "Olá, {NOME}!\n\nObrigada por ter se hospedado com a gente. Para estadias de 7 noites ou mais, reservadas direto com a gente, você tem {DESCONTO} de desconto.\n\nPara reservar, é só responder com as datas que preferir.\n\nAté breve!\n{ASSINATURA}",
+        "es": "Hola, {NOME}:\n\nGracias por alojarse con nosotros. Para estancias de 7 noches o más, reservadas directamente con nosotros, tiene un {DESCONTO} de descuento.\n\nPara reservar, solo tiene que responder con las fechas que prefiera.\n\n¡Hasta pronto!\n{ASSINATURA}",
+        "en": "Hello {NOME},\n\nThank you for staying with us. For stays of 7 nights or more booked directly with us, you get {DESCONTO} off.\n\nTo book, just reply with the dates you'd like.\n\nSee you soon!\n{ASSINATURA}",
+        "de": "Hallo {NOME},\n\nvielen Dank für Ihren Aufenthalt bei uns. Für Aufenthalte ab 7 Nächten, die Sie direkt bei uns buchen, erhalten Sie {DESCONTO} Rabatt.\n\nAntworten Sie zum Buchen einfach mit Ihren Wunschdaten.\n\nBis bald!\n{ASSINATURA}",
+        "fr": "Bonjour {NOME},\n\nMerci d'avoir séjourné chez nous. Pour les séjours de 7 nuits ou plus réservés directement auprès de nous, vous bénéficiez de {DESCONTO} de réduction.\n\nPour réserver, il vous suffit de répondre en indiquant vos dates.\n\nÀ bientôt !\n{ASSINATURA}",
+        "nl": "Hallo {NOME},\n\nBedankt voor uw verblijf bij ons. Voor verblijven van 7 nachten of langer die u rechtstreeks bij ons boekt, krijgt u {DESCONTO} korting.\n\nOm te boeken, antwoordt u gewoon met de data die u wilt.\n\nTot snel!\n{ASSINATURA}"
+      },
+      "curto": {
+        "pt-PT": "Olá {NOME}, Para estadas de 7 noites ou mais, reservadas diretamente connosco, tem {DESCONTO} de desconto. Para reservar, basta responder com as datas que prefere.",
+        "pt-BR": "Olá, {NOME}! Para estadias de 7 noites ou mais, reservadas direto com a gente, você tem {DESCONTO} de desconto. Para reservar, é só responder com as datas que preferir.",
+        "es": "Hola, {NOME}: Para estancias de 7 noches o más, reservadas directamente con nosotros, tiene un {DESCONTO} de descuento. Para reservar, solo tiene que responder con las fechas que prefiera.",
+        "en": "Hello {NOME}, For stays of 7 nights or more booked directly with us, you get {DESCONTO} off. To book, just reply with the dates you'd like.",
+        "de": "Hallo {NOME}, Für Aufenthalte ab 7 Nächten, die Sie direkt bei uns buchen, erhalten Sie {DESCONTO} Rabatt. Antworten Sie zum Buchen einfach mit Ihren Wunschdaten.",
+        "fr": "Bonjour {NOME}, Pour les séjours de 7 nuits ou plus réservés directement auprès de nous, vous bénéficiez de {DESCONTO} de réduction. Pour réserver, il vous suffit de répondre en indiquant vos dates.",
+        "nl": "Hallo {NOME}, Voor verblijven van 7 nachten of langer die u rechtstreeks bij ons boekt, krijgt u {DESCONTO} korting. Om te boeken, antwoordt u gewoon met de data die u wilt."
+      }
+    },
+    "livre": {
+      "nome": "Mensagem livre",
+      "perfil": null,
+      "desconto": 0,
+      "assunto": {
+        "pt-PT": "",
+        "pt-BR": "",
+        "es": "",
+        "en": "",
+        "de": "",
+        "fr": "",
+        "nl": ""
+      },
+      "email": {
+        "pt-PT": "Olá {NOME},\n\n\n\nAté breve!\n{ASSINATURA}",
+        "pt-BR": "Olá, {NOME}!\n\n\n\nAté breve!\n{ASSINATURA}",
+        "es": "Hola, {NOME}:\n\n\n\n¡Hasta pronto!\n{ASSINATURA}",
+        "en": "Hello {NOME},\n\n\n\nSee you soon!\n{ASSINATURA}",
+        "de": "Hallo {NOME},\n\n\n\nBis bald!\n{ASSINATURA}",
+        "fr": "Bonjour {NOME},\n\n\n\nÀ bientôt !\n{ASSINATURA}",
+        "nl": "Hallo {NOME},\n\n\n\nTot snel!\n{ASSINATURA}"
+      },
+      "curto": {
+        "pt-PT": "Olá {NOME}, ",
+        "pt-BR": "Olá, {NOME}! ",
+        "es": "Hola, {NOME}: ",
+        "en": "Hello {NOME}, ",
+        "de": "Hallo {NOME}, ",
+        "fr": "Bonjour {NOME}, ",
+        "nl": "Hallo {NOME}, "
+      }
+    }
+  }
+}
