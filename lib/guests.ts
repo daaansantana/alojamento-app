@@ -10,14 +10,17 @@ import {
   WINTER,
 } from "@/lib/dates";
 import type {
+  AddedGuest,
   Booking,
   ChannelTransition,
   GuestCard,
+  GuestEdit,
   GuestLevel,
   GuestProfile,
   GuestProfileId,
   GuestRules,
   GuestTotals,
+  GuestView,
   LanguageCode,
   Season,
   SegmentCounts,
@@ -303,4 +306,79 @@ export function segmentCounts(
     if (card.platformAlias) counts.platformAlias += 1;
   }
   return counts;
+}
+
+/** A guest added by hand, as a card: one stay in the month she chose. */
+export function addedGuestCard(
+  guest: AddedGuest,
+  rules: GuestRules,
+): GuestCard {
+  const season = seasonOf(guest.checkIn);
+  return {
+    email: guest.email,
+    name: guest.name,
+    country: guest.country,
+    countries: [guest.country],
+    language: guest.language,
+    flag: COUNTRY_LANGUAGE[guest.country]?.flag ?? null,
+    stays: 1,
+    spent: 0,
+    avgNights: guest.nights,
+    season,
+    level: levelOf(1, rules),
+    profile: profileOf(guest.nights, season, rules),
+    bigSpender: false,
+    lastCheckIn: guest.checkIn,
+    lastChannel: "Direto",
+    history: [],
+    platformAlias: isPlatformAlias(guest.email),
+  };
+}
+
+/** The cards with the host's changes on top; the added guests come first. */
+export function guestViews(
+  cards: GuestCard[],
+  added: AddedGuest[],
+  edits: Record<string, GuestEdit>,
+  rules: GuestRules,
+): GuestView[] {
+  const all = [
+    ...added.map((guest) => ({
+      card: addedGuestCard(guest, rules),
+      added: true,
+      phone: guest.phone,
+    })),
+    ...cards.map((card) => ({ card, added: false, phone: "" })),
+  ];
+  return all.map(({ card, added: isAdded, phone }) => {
+    const edit = edits[card.email] ?? {};
+    const country = edit.country ?? card.country;
+    const email = edit.email ?? card.email;
+    const platformAlias = isPlatformAlias(email);
+    return {
+      ...card,
+      key: card.email,
+      name: edit.name ?? card.name,
+      email,
+      country,
+      flag: COUNTRY_LANGUAGE[country]?.flag ?? null,
+      language: edit.language ?? card.language,
+      level: edit.level ?? card.level,
+      profile: edit.profile ?? card.profile,
+      platformAlias,
+      phone: edit.phone ?? phone,
+      acceptsOffers: !platformAlias && (edit.acceptsOffers ?? true),
+      labels: edit.labels ?? [],
+      notes: edit.notes ?? "",
+      added: isAdded,
+      manual: {
+        name: edit.name !== undefined,
+        email: edit.email !== undefined,
+        country: edit.country !== undefined,
+        language: edit.language !== undefined,
+        level: edit.level !== undefined,
+        profile: edit.profile !== undefined,
+      },
+    };
+  });
 }

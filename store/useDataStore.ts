@@ -6,7 +6,15 @@ import {
 } from "zustand/middleware";
 import { dayOf } from "@/lib/dates";
 import { fetchBookings, fetchRooms } from "@/services/data";
-import type { Booking, DataStatus, Room, TextSize } from "@/types";
+import type {
+  AddedGuest,
+  Booking,
+  DataStatus,
+  GuestEdit,
+  GuestRules,
+  Room,
+  TextSize,
+} from "@/types";
 
 interface DataState {
   rooms: Room[];
@@ -18,11 +26,25 @@ interface DataState {
   // remembered on this device
   textSize: TextSize;
   contacted: Record<string, string>; // guest email → the day she wrote, "YYYY-MM-DD"
+  guestEdits: Record<string, GuestEdit>; // by the guest's original email
+  addedGuests: AddedGuest[];
+  guestRules: GuestRules | null; // null: the starting values, GUEST_RULES
+  signature: string;
+  editedTexts: Record<string, { subject?: string; body?: string }>; // "template|language|channel"
   load: () => Promise<void>;
   setSelectedMonth: (month: number | null) => void;
   setTextSize: (size: TextSize) => void;
   markContacted: (email: string) => void;
   unmarkContacted: (email: string) => void;
+  editGuest: (email: string, patch: GuestEdit) => void;
+  clearGuestField: (email: string, field: keyof GuestEdit) => void;
+  addGuest: (guest: AddedGuest) => void;
+  setGuestRules: (rules: GuestRules | null) => void;
+  setSignature: (signature: string) => void;
+  setEditedText: (
+    key: string,
+    text: { subject?: string; body?: string } | null,
+  ) => void;
 }
 
 // Storage can be missing or refuse to work (private windows, blocked site
@@ -54,7 +76,8 @@ const safeStorage: StateStorage = {
 // Reads quartos.json and reservas.json once and shares them between pages.
 // The data is the same static files for everyone and is only loaded in the
 // browser, so one module-level store is enough. Only her choices are kept
-// in storage: the text size and who she has written to.
+// in storage: the text size, who she has written to, and what she changed
+// in the guests' cards, the label rules and the message texts.
 export const useDataStore = create<DataState>()(
   persist(
     (set, get) => ({
@@ -65,6 +88,32 @@ export const useDataStore = create<DataState>()(
       selectedMonth: null,
       textSize: "normal",
       contacted: {},
+      guestEdits: {},
+      addedGuests: [],
+      guestRules: null,
+      signature: "Isabel",
+      editedTexts: {},
+      editGuest: (email, patch) =>
+        set((state) => ({
+          guestEdits: {
+            ...state.guestEdits,
+            [email]: { ...state.guestEdits[email], ...patch },
+          },
+        })),
+      clearGuestField: (email, field) =>
+        set((state) => {
+          const { [field]: _, ...rest } = state.guestEdits[email] ?? {};
+          return { guestEdits: { ...state.guestEdits, [email]: rest } };
+        }),
+      addGuest: (guest) =>
+        set((state) => ({ addedGuests: [guest, ...state.addedGuests] })),
+      setGuestRules: (guestRules) => set({ guestRules }),
+      setSignature: (signature) => set({ signature }),
+      setEditedText: (key, text) =>
+        set((state) => {
+          const { [key]: _, ...rest } = state.editedTexts;
+          return { editedTexts: text ? { ...rest, [key]: text } : rest };
+        }),
       setSelectedMonth: (month) => set({ selectedMonth: month }),
       setTextSize: (textSize) => set({ textSize }),
       markContacted: (email) =>
@@ -100,6 +149,11 @@ export const useDataStore = create<DataState>()(
       partialize: (state) => ({
         textSize: state.textSize,
         contacted: state.contacted,
+        guestEdits: state.guestEdits,
+        addedGuests: state.addedGuests,
+        guestRules: state.guestRules,
+        signature: state.signature,
+        editedTexts: state.editedTexts,
       }),
       // Read after the first render, so the prerendered HTML and the first
       // client render match.

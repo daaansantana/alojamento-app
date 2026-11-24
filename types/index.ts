@@ -131,6 +131,49 @@ export interface SegmentCounts {
   platformAlias: number;
 }
 
+/** What the host changed in a guest's card, by the guest's original email. */
+export interface GuestEdit {
+  name?: string;
+  email?: string;
+  phone?: string;
+  country?: string;
+  language?: LanguageCode;
+  level?: GuestLevel;
+  profile?: GuestProfileId;
+  labels?: string[];
+  acceptsOffers?: boolean;
+  notes?: string;
+}
+
+/** A guest the host added by hand. */
+export interface AddedGuest {
+  email: string;
+  name: string;
+  phone: string;
+  country: string;
+  language: LanguageCode;
+  checkIn: string; // "YYYY-MM-01", the month of the stay
+  nights: number;
+}
+
+/** A guest as the page shows them: the card with the host's changes. */
+export interface GuestView extends GuestCard {
+  key: string; // the original email, which keeps the host's changes
+  phone: string;
+  acceptsOffers: boolean;
+  labels: string[];
+  notes: string;
+  added: boolean;
+  manual: {
+    name: boolean;
+    email: boolean;
+    country: boolean;
+    language: boolean;
+    level: boolean;
+    profile: boolean;
+  };
+}
+
 export interface DirectBookingScenario {
   commissionRate: number; // what the platforms charge
   conversionRate: number; // share of platform return stays that move to direct
