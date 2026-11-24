@@ -135,7 +135,7 @@ export function MarketAlerts({
                       {a.rows.length ? (
                         <div className="flex flex-col gap-2">
                           <div className="overflow-x-auto">
-                            <table className="w-full min-w-[420px] border-collapse text-left">
+                            <table className="w-full border-collapse text-left">
                               <thead>
                                 <tr className="border-b text-sm">
                                   <th scope="col" className="py-2 pr-3">
