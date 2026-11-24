@@ -352,4 +352,16 @@ Contexto da persona, em `PRODUCT.md`:
 
 Um agente que vigia os preços do mercado à volta da casa e avisa a dona quando vale a pena mudar o preço. Respondia ao limite dos preços da concorrência. Precisa de dados de fora e de um servidor que corra sozinho, e o enunciado não prevê nenhum dos dois: a app de hoje não tem servidor e só lê os ficheiros de `public/data/`.
 
+**Avisos de mercado (protótipo).** A página Preços já mostra como seria, com dados simulados: avisos com quanto e quando mudar, os próximos 90 dias por quarto e de onde vêm os dados.
+
+| O que seria real | Porque não está ligado | Fonte |
+| --- | --- | --- |
+| O mercado oficial | O INE é grátis, mas sai uma vez por mês, com atraso | INE |
+| Os preços dos vizinhos, dia a dia | Só por serviços pagos (PriceLabs, AirDNA). Copiar do Booking com um programa é proibido pelas regras dele | Booking.com, termos de serviço |
+| Atualizar sozinho | No plano grátis da Vercel, uma tarefa automática só corre uma vez por dia | Vercel, Cron Jobs |
+
+Por isso os dados são simulados, ancorados no INE (novembro a fevereiro, mais 2,4%, o crescimento do ADR no 2.º trimestre de 2026) e nos preços reais da casa. A IA teria um papel só: escrever a explicação a partir dos números. Quanto e quando saem de regras testadas (SPEC, versão 5), e a IA nunca inventa um número. A nexo também não muda os preços no Booking nem no Airbnb: diz quanto e quando, e quem muda é a dona.
+
+Fontes: [Booking.com, termos de serviço](https://www.booking.com/content/terms.html); [Vercel, Cron Jobs](https://vercel.com/docs/cron-jobs/usage-and-pricing); [Governo de Portugal, alojamento turístico no 2.º trimestre de 2026](https://portugal.gov.pt/gc25/comunicacao/noticias/alojamento-turistico-mantem-trajetoria-de-crescimento-no-segundo-trimestre-de-2026).
+
 O resto da visão do produto (ser encontrada no Google, a página da casa, o cartão à saída e o calendário único) está em [PRODUCT.md](../PRODUCT.md), na secção «Product Vision».

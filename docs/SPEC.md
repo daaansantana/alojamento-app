@@ -332,6 +332,30 @@ interface MarketComparison {
 }
 ```
 
+### Version 5: simulated market alerts
+
+A prototype of a market-data service, without the service: `public/data/mercado-simulado.json` holds what a paid daily source (PriceLabs, AirDNA) would send, and the page says it is a simulation. Types in `types/mercado.ts`; the file is loaded by `fetchMarketSimulation` (`services/data.ts`) through `useMarketSimulation`.
+
+- **The house's prices are real**: `quartos` copies `quartos.json`. The **market** of a double room starts from INE's ADR and occupancy (RevPAR ÷ ADR) for November to February, raised by 2.4% (INE's ADR growth in Q2 2026), with a day-of-week effect, the Portuguese public holidays and a fixed random seed. Each room type has a factor (`fatorTipo`: Suite 1.45, Familiar 1.2, Estúdio 1.1, Duplo 1, Twin 0.86, Individual 0.64). The 8 neighbours, the area's occupancy and the house's future bookings are simulated.
+- **The alerts** follow `definicoes`: warn 21 days before the first night; only when the gap to the market is 10% or more; raise at most 15% and lower at most 10% at a time; never below 75% of today's price. Suggested prices are rounded down to 5 € when raising and up when lowering. The `ia` text is an example of what a language model would write from the numbers: the numbers come from the rules, never from the model.
+
+| File | Function | Returns |
+| --- | --- | --- |
+| `lib/market-sim.ts` | `roomDays(sim, roomName, doneIds)` | `RoomDay[]`, 90 days: the market × the room type's factor, the house's price (or an alert's new price once marked done), `gap` = median ÷ price − 1, `state` |
+| `lib/market-sim.ts` | `alertTag(alert, rules)` | «Fazer hoje», «Esta semana», «Até» + the first night − `avisarDiasAntes`, «Mais tarde», «Para saber» |
+| `lib/market-sim.ts` | `alertHowMuch(alert)` | «subir 8 quartos, de 60–140 € para 65–160 € por noite», or null |
+| `lib/market-sim.ts` | `weekdayOffset(date)` | 0 for Monday to 6 for Sunday |
+
+| Expected (tested in `scripts/test-market-sim.ts`) | Value |
+| --- | --- |
+| Days | 90, 2026-11-24 to 2027-02-21; the first is a Tuesday (offset 1) |
+| Quarto Duplo Vista Mar 1, 2026-12-31 | market 172, price 105, gap 172/105 − 1 ≈ 0.638, `market-above` |
+| The same room, 2027-01-12 | market 87, gap 87/105 − 1 ≈ −0.171, `house-above` |
+| The same room, 2026-11-28 | market 114, gap 114/105 − 1 ≈ 0.086, `near` |
+| With `passagem-de-ano` done | 2026-12-31 at 120 € |
+| Rooms per alert | passagem-de-ano 8, fins-de-semana 3, janeiro 4, carnaval 6, ine-outubro 0 |
+| January | Duplo Vista Mar 1 and 2: 105 → 95; Familiar 120 → 110; Estúdio Terraço 110 → 100; tag «Até 14 dez» |
+
 ## 3. Functions
 
 | File | Function | Returns |
