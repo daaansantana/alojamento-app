@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 /** The columns under the header: the main one and the side one. */
 export const COLUMNS =
-  "grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12";
+  "grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-12";
 
 /**
  * The top of every page, across the full width: the title, one sentence
